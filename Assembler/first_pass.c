@@ -2,7 +2,7 @@
 
 int main()
 {
-    /*debuggi  ng*/
+    /*debugging*/
 
     symbols_table_entry* symbol_table = (symbols_table_entry *) malloc_or_exit(sizeof(symbol_table));
     data_table_entry *data_table = (data_table_entry *)malloc_or_exit(sizeof(data_table));
