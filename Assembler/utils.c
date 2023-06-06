@@ -13,7 +13,7 @@ char* add_file_postfix(char* file_name, char* postfix) {
 }
 
 
-void* malloc_with_check(long length) {
+void* malloc_with_check(size_t length) {
 	void* pointer = malloc(length);
 	if (pointer == NULL) {
 		printf("Error: memory allocation failed\n");
@@ -23,7 +23,7 @@ void* malloc_with_check(long length) {
 }
 
 
-void* realloc_with_check(char* ptr, long length) {
+void* realloc_with_check(char* ptr, size_t length) {
 	void* pointer = realloc(ptr, length);
 	if (pointer == NULL) {
 		printf("Error: memory reallocation failed\n");

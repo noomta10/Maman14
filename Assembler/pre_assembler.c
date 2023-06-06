@@ -204,7 +204,9 @@ void pre_assembler(FILE* source_file, char* file_name) {
 	/* free allocated memory */
 	free(saved_line);
 	free(saved_mcro_name);
-	free_table_memory(&first_mcro_entry);
+	/*if first_macro_entry not null, free it*/
+	if(first_mcro_entry)
+		free_table_memory(&first_mcro_entry);
 
 	LOG_DEBUG("pre assember done");
 }

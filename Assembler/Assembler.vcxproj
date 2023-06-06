@@ -149,6 +149,9 @@
     <None Include="my_file.am" />
     <None Include="my_file.as" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="data_test.as" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -20,12 +20,17 @@ boolean first_pass(FILE *am_file, symbols_table_entry* symbol_table, data_table_
     char line_content[MAX_LINE_LENGTH];
     line_info* line = (line_info*)malloc_with_check(sizeof(line_info));
     boolean* error_in_code = (boolean*)malloc_with_check(sizeof(error_in_code));
+    int line_number = 0;/*for debugging*/
     *DC = *IC = 0;/*end of page 48*/
     *error_in_code = FALSE;
     reset_line_info(line); /*initializing line*/
 
     while (fgets(line_content, MAX_LINE_LENGTH, am_file) != NULL) /*reading .as file line by line*/
     {
+        line_number++;
+
+        printf("debug: line number: %d\n", line_number);
+
         if (ignore_line(line_content))
         { /*empty or command line*/
             printf("debug: empty or command line\n");
@@ -55,11 +60,6 @@ boolean first_pass(FILE *am_file, symbols_table_entry* symbol_table, data_table_
 void process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_entry* symbol_table, data_table_entry* data_table,
     entry_entry* ent, extern_entry* ext, boolean* error_in_code)
 {
-    static int line_number = 0;
-    line_number++;
-
-    printf("debug: line number: %d\n", line_number);
-
     if (!validate_line(line)) /*validating line*/
     {
         printf("debug: invalid line\n");

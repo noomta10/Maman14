@@ -59,7 +59,7 @@ void reset_line_info(line_info* line)
 
 boolean add_data_to_table(line_info* line, symbols_table_entry* symbol_table, data_table_entry* data_table, extern_entry* ext, entry_entry* ent, long* DC, boolean* error_in_code)
 {
-    extern_entry* ext_ptr = ext;/*temperery pointers are also changing original value*/
+    extern_entry* ext_ptr = ext;
     entry_entry* ent_ptr = ent;
     symbols_table_entry* symbol_table_ptr = symbol_table;
     char* data_to_extract = line->instruction_data;

@@ -33,6 +33,9 @@
     <ClCompile Include="tables.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="debuging.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debuging.h">
@@ -61,5 +64,8 @@
     <None Include="makefile" />
     <None Include="my_file.am" />
     <None Include="my_file.as" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="data_test.as" />
   </ItemGroup>
 </Project>
