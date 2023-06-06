@@ -1,5 +1,8 @@
+#include <stdio.h>
+#include <string.h>
 #include "string_handling.h"
 #include "assembler.h"
+#include "utils.h"
 
 
 void reset_str(char* str) /*clears string*/

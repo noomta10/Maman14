@@ -1,6 +1,10 @@
+#include <stdio.h>
+#include <ctype.h>
 #include "first_pass.h"
 #include "utils.h"
 #include "tables.h"
+#include "string_handling.h"
+#include "assembler.h"
 
 
 boolean first_pass(FILE *am_file, symbols_table_entry* symbol_table, data_table_entry* data_table, entry_entry* ent, extern_entry* ext, long* IC, long* DC) /*processes file*/

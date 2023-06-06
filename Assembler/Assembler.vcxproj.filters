@@ -27,6 +27,12 @@
     <ClCompile Include="first_pass.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="string_handling.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tables.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debuging.h">
@@ -42,6 +48,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="assembler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="string_handling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tables.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
