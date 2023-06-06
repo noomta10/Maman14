@@ -1,4 +1,18 @@
 
+typedef struct {
+    char *label;
+    char *instruction;
+    char *opcode;
+    char *source_operand;
+    char *target_operand;
+    char *instruction_data;
+	boolean comma;
+    boolean is_label;
+    boolean is_data;
+    boolean is_instruction;
+     
+} line_info;
+
 
 typedef enum {
 	TYPE_STRING,

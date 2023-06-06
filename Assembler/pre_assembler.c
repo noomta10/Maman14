@@ -3,9 +3,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "assembler.h"
+#include "tables.h"
 #include "debuging.h"
 #include "pre_assembler.h"
-#include "assembler.h"
 #include "utils.h"
 
 

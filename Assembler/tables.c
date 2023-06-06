@@ -1,5 +1,14 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+
+
+#include "assembler.h"
 #include "tables.h"
-#include "assembly.h"
+#include "first_pass.h"
+#include "utils.h"
+#include "string_handling.h"
 
 
 
@@ -56,10 +65,9 @@ boolean add_data_to_table(line_info* line, symbols_table_entry* symbol_table, da
     char* token = (char*)malloc_with_check(sizeof(char) * (MAX_LABEL_LENGTH + 1));
     int i = 0;
     long L = 0;
-    skip_white_spaces(&data_to_extract);
     symbol_data_types data_type = (symbol_data_types)malloc_with_check(sizeof(data_type));/*for label if exist*/
-    data_table_entry* data_table_ptr = data_table;
 
+    skip_white_spaces(&data_to_extract);
     while (data_table->next != NULL)/*temp solution for not printing data table. fix, needs attention. to slow*/
         data_table = data_table->next;
 

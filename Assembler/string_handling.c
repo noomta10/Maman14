@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <string.h>
-#include "string_handling.h"
+#include <ctype.h>
 #include "assembler.h"
+#include "string_handling.h"
 #include "utils.h"
 
 

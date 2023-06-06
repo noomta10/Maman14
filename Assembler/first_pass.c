@@ -3,17 +3,19 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "assembler.h"
+#include "tables.h"
 #include "first_pass.h"
 #include "utils.h"
-#include "tables.h"
 #include "string_handling.h"
-#include "assembler.h"
 
 
 
 
 
-boolean first_pass(FILE *am_file, symbols_table_entry* symbol_table, data_table_entry* data_table, entry_entry* ent, extern_entry* ext, long* IC, long* DC) /*processes file*/
+
+boolean first_pass(FILE *am_file, symbols_table_entry* symbol_table, data_table_entry* data_table,
+                   entry_entry* ent, extern_entry* ext, long* IC, long* DC) /*processes file*/
 {
     char line_content[MAX_LINE_LENGTH];
     line_info* line = (line_info*)malloc_with_check(sizeof(line_info));
@@ -55,7 +57,6 @@ void process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_
 {
     static int line_number = 0;
     line_number++;
-    //boolean label_exists;
 
     printf("debug: line number: %d\n", line_number);
 

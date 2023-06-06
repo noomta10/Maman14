@@ -2,12 +2,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "debuging.h"
 #include "assembler.h" 
 #include "utils.h" 
 #include "pre_assembler.h"
-#include "first_pass.h"
 #include "tables.h"
+#include "debuging.h"
+#include "first_pass.h"
+
+
 
 
 
@@ -33,8 +35,8 @@ void process_file(char* file_name) {
 	boolean error_flag = FALSE;
 
 	/*for Noam, do we need to set IC to 0 and start adding information from the address 100? */
-	int IC = IC_START_ADDRESS;
-	int DC = 0;
+	long IC = IC_START_ADDRESS;
+	long DC = 0;
 	symbols_table_entry* symbol_table = (symbols_table_entry*)malloc_with_check(sizeof(symbol_table));
     data_table_entry* data_table = (data_table_entry*)malloc_with_check(sizeof(data_table));
     entry_entry* ent = (entry_entry*)malloc_with_check(sizeof(ent));
@@ -78,7 +80,7 @@ void process_file(char* file_name) {
 	}
 
 	/*call first_pass*/
-	error_flag = first_pass(full_am_name, symbol_table, data_table, ent, ext, &IC, &DC);
+	error_flag = first_pass(file_pointer, symbol_table, data_table, ent, ext, &IC, &DC);
 
 
 	/*printing data_tables for debugging*/

@@ -1,7 +1,9 @@
 #include <stdio.h>
+
+#include "assembler.h"
+#include "tables.h"
 #include "first_pass.h"
 #include "debuging.h"
-#include "tables.h"
 
 
 
