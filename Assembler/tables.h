@@ -1,5 +1,7 @@
 #include "utils.h"
-#include "tables.h"
+#include "assembler.h"
+#include "first_pass.h"
+
 
 typedef enum {
 	TYPE_STRING,
@@ -62,3 +64,4 @@ void reset_data(data_table_entry* data);
 void reset_extern(extern_entry *ext);
 void reset_entry(entry_entry *ent);
 void reset_symbol(symbols_table_entry* symbol);
+void reset_line_info(line_info *line);

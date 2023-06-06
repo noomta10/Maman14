@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "first_pass.h"
 #include "debuging.h"
+#include "tables.h"
 
 
 

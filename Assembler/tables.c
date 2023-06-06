@@ -34,6 +34,19 @@ void reset_data(data_table_entry* data)
     data->next = NULL;
 }
 
+void reset_line_info(line_info* line)
+{
+    line->is_label = FALSE;
+    line->is_instruction = FALSE;
+    line->is_data = FALSE;
+    line->comma = FALSE;
+    line->label = NULL;
+    line->instruction = NULL;
+    line->opcode = NULL;
+    line->source_operand = NULL;
+    line->target_operand = NULL;
+    line->instruction_data = NULL;
+}
 
 boolean add_data_to_table(line_info* line, symbols_table_entry* symbol_table, data_table_entry* data_table, extern_entry* ext, entry_entry* ent, long* DC, boolean* error_in_code)
 {
@@ -214,3 +227,4 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry* symbol_table, 
     reset_symbol(symbol_table_ptr);
     return TRUE;
 }
+

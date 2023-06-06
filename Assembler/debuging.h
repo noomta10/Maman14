@@ -6,6 +6,9 @@
 #define LOG_DEBUG(x) 
 #endif
 
+#include "tables.h"
+#include "first_pass.h"
+
 void print_line_info(line_info *line);
 void print_symbol_table(symbols_table_entry *symbol_table);
 void print_data_table(data_table_entry *data_table);

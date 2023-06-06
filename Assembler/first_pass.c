@@ -64,25 +64,6 @@ void process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_
     /*continue here */
 }
 
-void reset_str(char* str) /*clears string*/
-{
-    while (*str != '\0')
-        *str++ = '\0';
-}
-
-void reset_line_info(line_info* line)
-{
-    line->is_label = FALSE;
-    line->is_instruction = FALSE;
-    line->is_data = FALSE;
-    line->comma = FALSE;
-    line->label = NULL;
-    line->instruction = NULL;
-    line->opcode = NULL;
-    line->source_operand = NULL;
-    line->target_operand = NULL;
-    line->instruction_data = NULL;
-}
 
 boolean validate_line(line_info* line) /*validates line*/
 {
@@ -250,102 +231,12 @@ boolean check_comma(char** str)
     return FALSE;
 }
 
-char* get_label(char** str)
-{
-    char* temp = *str;
-    char* token;
-    int i = 0;
-    while (!isspace(*temp) && *temp != '\0')
-    {
-        temp++;
-        i++;
-    }
-    token = (char*)malloc_with_check(sizeof(char) * (i + 1));
-    strncpy(token, *str, i);
-    token[i] = '\0';
-    *str = temp;
-    return token;
-}
 
-char* get_opcode(char** str)
-{
-    int i = 0;
-    char* temp = *str;
-    char* token;
-    while (!isspace(*temp) && *temp != '\0')
-    {
-        temp++;
-        i++;
-    }
-    token = (char*)malloc_with_check(sizeof(char) * (i + 1));
-    strncpy(token, *str, i);
-    token[i] = '\0';
-    *str = temp;
-    return token;
-}
-
-char* get_operand(char** str)
-{
-    int i = 0;
-    char* temp = *str;
-    char* token;
-    while (!isspace(*temp) && *temp != '\0')
-    {
-        if (*temp == ',')
-            break;
-        temp++;
-        i++;
-    }
-    token = (char*)malloc_with_check(sizeof(char) * (i + 1));
-    strncpy(token, *str, i);
-    token[i] = '\0';
-    *str = temp;
-    return token;
-}
-
-char* get_instruction(char** str)
-{
-    char* temp = ++ * str; /*skip '.'*/
-    char* token;
-    int i = 0;
-    while (!isspace(*temp) && *temp != '\0')
-    {
-        temp++;
-        i++;
-    }
-    token = (char*)malloc_with_check(sizeof(char) * (i + 1));
-    strncpy(token, *str, i);
-    token[i] = '\0';
-    *str = temp;
-    return token;
-}
-
-boolean end_of_string(char* str)
-{
-    if (*str == '\0' || *str == '\n')
-        return TRUE;
-    return FALSE;
-}
-
-void skip_white_spaces(char** str)
-{
-    char* temp = *str;
-    while (*temp == ' ' || *temp == '\t') /*skip  white space*/
-        temp++;
-    *str = temp;
-}
 
 boolean check_instruction(char* str)
 {
     if (strcmp(str, "data") || strcmp(str, "string") ||
         strcmp(str, "entry") || strcmp(str, "extern"))
-        return TRUE;
-    return FALSE;
-}
-
-boolean ignore_line(char* line)
-{
-    if (*line == '\n' || *line == ';')
         return TRUE;
     return FALSE;
 }
@@ -364,30 +255,5 @@ boolean bad_label(char* str)
     }
     return FALSE;
 }
-
-char* get_word(char** str)
-{
-    int i = 0;
-    char* res = (char*)malloc_with_check(MAX_LINE_LENGTH);
-    char* temp = *str;
-
-    if (str == NULL)
-        return NULL;
-
-    while (*temp != '\0' && i < MAX_LINE_LENGTH)
-    {
-        if (isspace(*temp))
-        {
-            temp++;
-            continue;
-        }
-
-        res[i++] = *temp++;
-    }
-
-    res[i] = '\0';
-    return res;
-}
-
 
 

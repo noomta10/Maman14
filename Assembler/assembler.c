@@ -7,6 +7,7 @@
 #include "utils.h" 
 #include "pre_assembler.h"
 #include "first_pass.h"
+#include "tables.h"
 
 
 
