@@ -3,8 +3,10 @@
 typedef enum {
 	TYPE_STRING,
 	TYPE_NUMBER,
-	TYPE_ENTRY,//?
-	TYPE_EXTERN//?
+
+	/*unused so for*/
+	TYPE_ENTRY,
+	TYPE_EXTERN
 } data_types, symbol_data_types;
 
 
@@ -13,7 +15,7 @@ typedef union{
 	long number;
 } data_value;
 
-typedef enum{// unused so far
+typedef enum{/*unused so far*/
 	EXTERNAL,
 	RELOCATEABLE
 } symbol_type;

@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include "first_pass.h"
 #include "utils.h"
 #include "tables.h"
@@ -7,12 +10,15 @@
 #include "assembler.h"
 
 
+
+
+
 boolean first_pass(FILE *am_file, symbols_table_entry* symbol_table, data_table_entry* data_table, entry_entry* ent, extern_entry* ext, long* IC, long* DC) /*processes file*/
 {
     char line_content[MAX_LINE_LENGTH];
     line_info* line = (line_info*)malloc_with_check(sizeof(line_info));
     boolean* error_in_code = (boolean*)malloc_with_check(sizeof(error_in_code));
-    //*DC = *IC = 0;/*end of page 48*/
+    *DC = *IC = 0;/*end of page 48*/
     *error_in_code = FALSE;
     reset_line_info(line); /*initializing line*/
 
