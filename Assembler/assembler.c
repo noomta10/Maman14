@@ -64,10 +64,10 @@ void process_file(char* file_name) {
 		return;
 	}
 
-	/* Call pre-assembler */
+	/* Call pre_assembler to create .am file */
 	pre_assembler(file_pointer, file_name);
 
-	/*close file and freeing data*/
+	/* Close file and free data */
 	fclose(file_pointer);
 	free(full_file_name);
 

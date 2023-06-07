@@ -31,21 +31,7 @@ static void free_table_memory(mcros_table_entry** first_mcro_entry) {
 }
 
 
-static void rename_file(char* file_name) {
-	char* new_file_name = add_file_postfix(file_name, ".am");
-
-	/* If file with '.am' postfix exists, remove it */
-	FILE* new_file = fopen(new_file_name, "r");
-	if (new_file != NULL) {
-		fclose(new_file);
-		remove(new_file_name);
-	}
-
-	(void)rename("template_file.txt", new_file_name);
-}
-
-
-static boolean handle_existing_mcro(mcros_table_entry** first_mcro_entry, char* first_word, FILE* template_file) {
+static boolean handle_existing_mcro(mcros_table_entry** first_mcro_entry, char* first_word, FILE* am_file) {
 	mcros_table_entry* current_mcro_entry = *first_mcro_entry;
 
 	/* If the mcros table is empty, return FALSE */
@@ -55,9 +41,9 @@ static boolean handle_existing_mcro(mcros_table_entry** first_mcro_entry, char* 
 
 	/* Loops through the table to check if the first word is a defined macro in the table */
 	while (current_mcro_entry) {
-		/* If the first word is a defined macro in the table, write its value to the template file, and return TRUE */
+		/* If the first word is a defined macro in the table, write its value to the .am file, and return TRUE */
 		if (strcmp(first_word, current_mcro_entry->name) == 0) {
-			fprintf(template_file, "%s", current_mcro_entry->value);
+			fprintf(am_file, "%s", current_mcro_entry->value);
 			return TRUE;
 		}
 
@@ -130,18 +116,12 @@ void pre_assembler(FILE* source_file, char* file_name) {
 	char* first_word;
 
 	LOG_DEBUG("pre assember starting");
+	char* am_file_name = add_file_postfix(file_name, ".am");
 
-	/* Create an empty file, close it, an reopen it in append mode */
-	FILE* template_file = fopen("template_file.txt", "w");
-	if (template_file == NULL) {
-		printf("Error: The file 'template_file.txt' could not be opened\n");
-		return;
-	}
-
-	fclose(template_file);
-	template_file = fopen("template_file.txt", "a");
-	if (template_file == NULL) {
-		printf("Error: The file 'template_file.txt' could not be opened\n");
+	/* Create an empty .am file */
+	FILE* am_file = fopen(am_file_name, "w");
+	if (am_file == NULL) {
+		printf("Error: The file '%s' could not be opened\n", am_file_name);
 		return;
 	}
 
@@ -153,14 +133,14 @@ void pre_assembler(FILE* source_file, char* file_name) {
 		strcpy(saved_line, line);
 		first_word = strtok(line, " \t\n");
 
-		/* If it is an empty line, print it to the template file continue to next line */
+		/* If it is an empty line, print it to the .am file continue to next line */
 		if (first_word == NULL) {
-			fprintf(template_file, "%s", "\n");
+			fprintf(am_file, "%s", "\n");
 			continue;
 		}
 
-		/* If first word is a defined mcro in the table, write its value to the template file and continue to next line */
-		if (handle_existing_mcro(&first_mcro_entry, first_word, template_file)){
+		/* If first word is a defined mcro in the table, write its value to the .am file and continue to next line */
+		if (handle_existing_mcro(&first_mcro_entry, first_word, am_file)){
 			continue;
 	    }
 
@@ -191,20 +171,19 @@ void pre_assembler(FILE* source_file, char* file_name) {
 			continue;
 		}
 
-		/* If the line is not a mcro name or definition, write it to the template file */
-		fprintf(template_file, "%s", saved_line);
+		/* If the line is not a mcro name or definition, write it to the .am file */
+		fprintf(am_file, "%s", saved_line);
 	}
 
 	/* Close the file */
-	fclose(template_file);
+	fclose(am_file);
 
-	/* Rename template file to '.am' file */
-	rename_file(file_name);
-
-	/* free allocated memory */
+	/* Free allocated memory */
+	free(am_file_name);
 	free(saved_line);
 	free(saved_mcro_name);
-	/*if first_macro_entry not null, free it*/
+
+	/* If there are mcros in the table, free it */
 	if(first_mcro_entry)
 		free_table_memory(&first_mcro_entry);
 

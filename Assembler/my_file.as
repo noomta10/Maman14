@@ -7,3 +7,10 @@ endmcro
 prn -5
 bne LOOP
 m1
+mcro cool
+hello world
+endmcro
+
+123
+cool
+123
