@@ -10,8 +10,8 @@
 #include "utils.h"
 
 
-static void free_table_memory(mcros_table_entry** first_mcro_entry) {
-	mcros_table_entry* current_mcro_entry = *first_mcro_entry;
+static void free_table_memory(mcros_table_entry* first_mcro_entry) {
+	mcros_table_entry* current_mcro_entry = first_mcro_entry;
 	mcros_table_entry* next_mcro_entry;
 	
 	/* Free mcros table */
@@ -31,13 +31,8 @@ static void free_table_memory(mcros_table_entry** first_mcro_entry) {
 }
 
 
-static boolean handle_existing_mcro(mcros_table_entry** first_mcro_entry, char* first_word, FILE* am_file) {
-	mcros_table_entry* current_mcro_entry = *first_mcro_entry;
-
-	/* If the mcros table is empty, return FALSE */
-	if (first_mcro_entry == NULL) {
-		return FALSE;
-	}
+static boolean handle_existing_mcro(mcros_table_entry* first_mcro_entry, char* first_word, FILE* am_file) {
+	mcros_table_entry* current_mcro_entry = first_mcro_entry;
 
 	/* Loops through the table to check if the first word is a defined macro in the table */
 	while (current_mcro_entry) {
@@ -140,7 +135,7 @@ void pre_assembler(FILE* source_file, char* file_name) {
 		}
 
 		/* If first word is a defined mcro in the table, write its value to the .am file and continue to next line */
-		if (handle_existing_mcro(&first_mcro_entry, first_word, am_file)){
+		if (handle_existing_mcro(first_mcro_entry, first_word, am_file)){
 			continue;
 	    }
 
@@ -185,7 +180,7 @@ void pre_assembler(FILE* source_file, char* file_name) {
 
 	/* If there are mcros in the table, free it */
 	if(first_mcro_entry)
-		free_table_memory(&first_mcro_entry);
+		free_table_memory(first_mcro_entry);
 
 	LOG_DEBUG("pre assember done");
 }
