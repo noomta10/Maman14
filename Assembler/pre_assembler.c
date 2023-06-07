@@ -44,14 +44,14 @@ static boolean handle_existing_mcro(mcros_table_entry* first_mcro_entry, char* f
 
 
 static void add_mcro_to_table(char* mcro_name, char* mcro_value, mcros_table_entry** first_mcro_entry) {
-	mcros_table_entry* new_mcro_entry = malloc_with_check(sizeof(mcros_table_entry));
+	mcros_table_entry* new_mcro_entry = (char*)malloc_with_check(sizeof(mcros_table_entry));
 	mcros_table_entry* current_mcro_entry;
 	int total_length;
 
 	/* If table is empty, add first mcro */
 	if (*first_mcro_entry == NULL) {
-		new_mcro_entry->name = malloc_with_check(strlen(mcro_name) + 1);
-		new_mcro_entry->value = malloc_with_check(strlen(mcro_value) + 1);
+		new_mcro_entry->name = (char*)malloc_with_check(strlen(mcro_name) + 1);
+		new_mcro_entry->value = (char*)malloc_with_check(strlen(mcro_value) + 1);
 		new_mcro_entry->next = NULL;
 		strcpy(new_mcro_entry->name, mcro_name);
 		strcpy(new_mcro_entry->value, mcro_value);
@@ -86,8 +86,8 @@ static void add_mcro_to_table(char* mcro_name, char* mcro_value, mcros_table_ent
 	}
 
 	/* If mcro does not exist, add it to the table */
-	new_mcro_entry->name = malloc_with_check(strlen(mcro_name) + 1);
-	new_mcro_entry->value = malloc_with_check(strlen(mcro_value) + 1);
+	new_mcro_entry->name = (char*)malloc_with_check(strlen(mcro_name) + 1);
+	new_mcro_entry->value = (char*)malloc_with_check(strlen(mcro_value) + 1);
 	new_mcro_entry->next = NULL;
 	strcpy(new_mcro_entry->name, mcro_name);
 	strcpy(new_mcro_entry->value, mcro_value);
@@ -100,6 +100,7 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 	char* first_word;
 	char* mcro_name = NULL;
 	char* saved_mcro_name = NULL;
+
 	first_word = strtok(line, " \t\n");
 
 	/* If it is an empty line, print it to the .am file continue to next line */
@@ -118,7 +119,7 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 		mcro_name = strtok(NULL, " \t\n");
 
 		/* Allocate memory for the mcro name, and copy it */
-		saved_mcro_name = malloc_with_check(strlen(mcro_name) + 1);
+		saved_mcro_name = (char*)malloc_with_check(strlen(mcro_name) + 1);
 		strcpy(saved_mcro_name, mcro_name);
 
 		/* Mcros definition, adds its value to the table, add all its lines to the mcros table and continue to next line */
@@ -165,7 +166,7 @@ void pre_assembler(FILE* source_file, char* file_name) {
 	while (fgets(line, MAX_LINE_LENGTH, source_file) != NULL) {
 		
 		/* Allocate memory for the line, and copy it */
-		saved_line = malloc_with_check(sizeof(line));
+		saved_line = (char*)malloc_with_check(sizeof(line));
 		strcpy(saved_line, line);
 
 		/* If the line is a mcro name or definiton, handle it */
