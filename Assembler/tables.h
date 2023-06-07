@@ -68,8 +68,8 @@ typedef struct symbols_table_entry{/*struct for the symbols table*/
 
 
 
-boolean add_data_to_table(line_info* line, symbols_table_entry* symbol_table, data_table_entry* data_table, extern_entry* ext, entry_entry* ent, long* DC);
-boolean add_symbol_to_table(line_info* line, symbols_table_entry* symbol_table, symbol_data_types data_type, extern_entry* ext, long* DC, long L);
+boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table, data_table_entry** data_table, extern_entry** ext, entry_entry** ent, long* DC);
+boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table, symbol_data_types data_type, extern_entry** ext, long* DC, long L);
 
 void reset_line_info(line_info *line);
 

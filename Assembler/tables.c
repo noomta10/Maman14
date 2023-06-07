@@ -88,13 +88,13 @@ void free_entry_table(entry_entry* head) {
     }
 }
 
-boolean add_data_to_table(line_info* line, symbols_table_entry* symbol_table_head, data_table_entry* data_table_head, extern_entry* ext_head, entry_entry* ent_head, long* DC)
+boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_head, data_table_entry** data_table_head, extern_entry** ext_head, entry_entry** ent_head, long* DC)
 {
     /*declaring pointers*/
-    extern_entry* ext_ptr = ext_head;
-    entry_entry* ent_ptr = ent_head;
-    symbols_table_entry* symbol_table_ptr = symbol_table_head;
-    data_table_entry* data_table_ptr = data_table_head;
+    extern_entry* ext_ptr = *ext_head;
+    entry_entry* ent_ptr = *ent_head;
+    symbols_table_entry* symbol_table_ptr = *symbol_table_head;
+    data_table_entry* data_table_ptr = *data_table_head;
 
     char* data_to_extract = line->instruction_data;
     char* token;
@@ -280,9 +280,9 @@ boolean add_data_to_table(line_info* line, symbols_table_entry* symbol_table_hea
 
                 /*reseting for next use*/
                 SKIP_ADDING_ENTRY_LABLE:
-                symbol_table_ptr = symbol_table_head;
-                ext_ptr = ext_head;
-                ent_ptr = ent_head;
+                symbol_table_ptr = *symbol_table_head;
+                ext_ptr = *ext_head;
+                ent_ptr = *ent_head;
                 i = 0;
 
                 /*if there is a label before entry, print warning*/
@@ -355,15 +355,15 @@ boolean add_data_to_table(line_info* line, symbols_table_entry* symbol_table_hea
     return !error_flag;
 }
 
-boolean add_symbol_to_table(line_info* line, symbols_table_entry* symbol_table, symbol_data_types data_type, extern_entry* ext, long* DC, long L)
+boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table, symbol_data_types data_type, extern_entry** ext, long* DC, long L)
 {
-    extern_entry* ext_ptr = ext;
-    symbols_table_entry* symbol_table_ptr = symbol_table;
+    extern_entry* ext_ptr = *ext;
+    symbols_table_entry* symbol_table_ptr = *symbol_table;
 
     
     while (symbol_table_ptr != NULL)
     {
-        if (strcmp(symbol_table->name, line->label) == 0)/*checking if double declaration of label*/
+        if (strcmp(symbol_table_ptr->name, line->label) == 0)/*checking if double declaration of label*/
         {
             printf("Error: label already exist");
             return FALSE;

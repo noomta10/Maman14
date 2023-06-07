@@ -31,10 +31,10 @@ void process_file(char* file_name) {
 
 	long IC = IC_START_ADDRESS;
 	long DC = 0;
-	symbols_table_entry symbol_table_head;
-    data_table_entry data_table_head;
-    entry_entry ent_head;
-    extern_entry ext_head;
+	symbols_table_entry* symbol_table_head = NULL;
+    data_table_entry* data_table_head = NULL;
+    entry_entry* ent_head = NULL;
+    extern_entry* ext_head = NULL;
 
 	/* Concatenate '.as' postfix to file name */
 	char* full_file_name = add_file_postfix(file_name, ".as");
@@ -76,18 +76,18 @@ void process_file(char* file_name) {
 	printf("IC = %ld\n", IC);
     printf("DC = %ld\n", DC);
     printf("\n");
-    print_data_table(&data_table_head);
-    print_symbol_table(&symbol_table_head);
-    print_entry_table(&ent_head);
-    print_extern_table(&ext_head);
+    print_data_table(data_table_head);
+    print_symbol_table(symbol_table_head);
+    print_entry_table(ent_head);
+    print_extern_table(ext_head);
 
 
 
 	/* Free memory */
-	free_data_table(&data_table_head);
-	free_entry_table(&ent_head);
-	free_extern_table(&ext_head);
-	free_symbols_table(&symbol_table_head);
+	free_data_table(data_table_head);
+	free_entry_table(ent_head);
+	free_extern_table(ext_head);
+	free_symbols_table(symbol_table_head);
 	/* Close file */
 	fclose(file_pointer);
 	
