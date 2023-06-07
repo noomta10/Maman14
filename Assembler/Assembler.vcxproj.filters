@@ -61,7 +61,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="my_file.am" />
     <None Include="my_file.as" />
     <None Include="makefile" />
   </ItemGroup>

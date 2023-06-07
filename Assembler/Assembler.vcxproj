@@ -146,7 +146,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="makefile" />
-    <None Include="my_file.am" />
     <None Include="my_file.as" />
   </ItemGroup>
   <ItemGroup>
