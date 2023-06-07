@@ -95,7 +95,10 @@ void process_file(char* file_name) {
 
 
 	/* Free memory */
-
+	free_data_table(data_table);
+	free_entry_table(ent);
+	free_extern_table(ext);
+	free_symbols_table(symbol_table);
 	/* Close file */
 	fclose(file_pointer);
 	

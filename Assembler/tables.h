@@ -20,7 +20,8 @@ typedef enum {
 
 	/*unused so for*/
 	TYPE_ENTRY,
-	TYPE_EXTERN
+	TYPE_EXTERN,
+	DEFAULT
 } data_types, symbol_data_types;
 
 
@@ -43,7 +44,7 @@ typedef struct data_table_entry{/*data table for data values*/
 } data_table_entry;
 
 
-typedef struct extern_entry{/*data talel for extern flags */
+typedef struct extern_entry{/*data table for extern flags */
 	struct extern_entry *next;
 	long address;
 	char *name;
@@ -70,7 +71,7 @@ typedef struct symbols_table_entry{/*struct for the symbols table*/
 
 
 
-boolean add_data_to_table(line_info* line, symbols_table_entry* symbol_table, data_table_entry* data_table, extern_entry* ext, entry_entry* ent, long* DC, boolean* error_in_code);
+boolean add_data_to_table(line_info* line, symbols_table_entry* symbol_table, data_table_entry* data_table, extern_entry* ext, entry_entry* ent, long* DC);
 boolean add_symbol_to_table(line_info* line, symbols_table_entry* symbol_table, symbol_data_types data_type, extern_entry* ext, long* DC, long L);
 
 void reset_data(data_table_entry* data);
@@ -78,3 +79,8 @@ void reset_extern(extern_entry *ext);
 void reset_entry(entry_entry *ent);
 void reset_symbol(symbols_table_entry* symbol);
 void reset_line_info(line_info *line);
+
+void free_data_table(data_table_entry*);
+void free_symbols_table(symbols_table_entry*);
+void free_extern_table(extern_entry*);
+void free_entry_table(entry_entry*);
