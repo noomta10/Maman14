@@ -12,43 +12,13 @@
 
 
 
-void reset_entry(entry_entry* ent)
-{
-    ent->address = 0;
-    ent->name = NULL;
-    ent->next = NULL;
-}
-
-void reset_extern(extern_entry* ext)
-{
-    ext->address = 0;
-    ext->name = NULL;
-    ext->next = NULL;
-}
-
-void reset_symbol(symbols_table_entry* symbol)
-{
-    symbol->address = 0;
-    symbol->data_type = 0;
-    symbol->L = 0;
-    symbol->name = NULL;
-    symbol->next = NULL;
-}
-
-void reset_data(data_table_entry* data)
-{
-    data->type = 0;
-    data->data.character = '\0';
-    data->data.number = 0;
-    data->next = NULL;
-}
-
 void reset_line_info(line_info* line)
 {
-    line->is_label = FALSE;
-    line->is_instruction = FALSE;
-    line->is_data = FALSE;
-    line->comma = FALSE;
+    line->label_flag = FALSE;
+    line->instruction_flag = FALSE;
+    line->data_flag = FALSE;
+    line->comma_flag = FALSE;
+    line->extra_chars_flag = FALSE;
     line->label = NULL;
     line->instruction = NULL;
     line->opcode = NULL;
@@ -57,138 +27,187 @@ void reset_line_info(line_info* line)
     line->instruction_data = NULL;
 }
 
-void free_data_table(data_table_entry* data_table)
+void free_data_table(data_table_entry* head)
 {
     data_table_entry* temp;
-    while (data_table->next != NULL)
+    
+    /*if head is null, return*/
+    if(!head)
+        return;
+    
+    /*freeing all nodes*/
+    while(head->next != NULL)
     {
-        temp = data_table->next;
-        free(data_table);
-        data_table = temp;
-    }
+        temp = head->next;
+        free(head);
+        head = temp;
+    }    
 }
 
-void free_symbols_table(symbols_table_entry* symbol_table) {
+void free_symbols_table(symbols_table_entry* head) {
     symbols_table_entry* temp;
-    while (symbol_table->next != NULL) {
-        free(symbol_table->name);
-        temp = symbol_table->next;
-        free(symbol_table);
-        symbol_table = temp;
+
+    /*if head is null, return*/
+    if (!head)
+        return;
+    
+    /*freeing all nodes*/
+    while (head->next != NULL) {
+        free(head->name);
+        temp = head->next;
+        free(head);
+        head = temp;
     }
 }
 
-void free_extern_table(extern_entry* ext) {
+void free_extern_table(extern_entry* head) {
     extern_entry* temp;
-    while (ext->next != NULL) {
-        free(ext->name);
-        temp = ext->next;
-        free(ext);
-        ext = temp;
+    /*if head is null, return*/
+    if (!head)
+        return;
+
+    /*freeing all nodes*/
+    while (head->next != NULL) {
+        free(head->name);
+        temp = head->next;
+        free(head);
+        head = temp;
     }
 }
 
-void free_entry_table(entry_entry* ent) {
+void free_entry_table(entry_entry* head) {
     entry_entry* temp;
-    while (ent->next != NULL) {
-        free(ent->name);
-        temp = ent->next;
-        free(ent);
-        ent = temp;
+    /*if head is null, return*/
+    if (!head)
+        return;
+    while (head->next != NULL) {
+        free(head->name);
+        temp = head->next;
+        free(head);
+        head = temp;
     }
 }
 
-boolean add_data_to_table(line_info* line, symbols_table_entry* symbol_table, data_table_entry* data_table, extern_entry* ext, entry_entry* ent, long* DC)
+boolean add_data_to_table(line_info* line, symbols_table_entry* symbol_table_head, data_table_entry* data_table_head, extern_entry* ext_head, entry_entry* ent_head, long* DC)
 {
-    extern_entry* ext_ptr = ext;/*temperery pointers are also changing original value*/
-    entry_entry* ent_ptr = ent;
-    symbols_table_entry* symbol_table_ptr = symbol_table;
-    data_table_entry* data_table_ptr = data_table;
+    /*declaring pointers*/
+    extern_entry* ext_ptr = ext_head;
+    entry_entry* ent_ptr = ent_head;
+    symbols_table_entry* symbol_table_ptr = symbol_table_head;
+    data_table_entry* data_table_ptr = data_table_head;
+
     char* data_to_extract = line->instruction_data;
     char* token;
     int i = 0;
     long L = 0;
-    symbol_data_types data_type = DEFAULT; /* = (line->is_label) ? (symbol_data_types)malloc_with_check(sizeof(data_type)) : NULL;/*for label if exist*/
-    boolean error_in_code = FALSE;
+    symbol_data_types data_type = DEFAULT;
+    boolean error_flag = FALSE;
     
+    /*instruction is a string*/    
     skip_white_spaces(&data_to_extract);
-    while (data_table_ptr->next != NULL)/*temp solution for not printing data table. fix, needs attention. to slow*/
-        data_table_ptr = data_table_ptr->next;
-
     if (strcmp(line->instruction, "string") == 0)
     {
+        /*goto the end of the list*/
+        while(data_table_ptr != NULL)
+            data_table_ptr = data_table_ptr->next;
+            
         token = (char*)malloc_with_check(sizeof(sizeof(data_to_extract)));
+
+        /*check if string starts with " and skip it"*/
         if (*data_to_extract != '"')
         {
             printf("Error: string data must start and end with \"\n");
             free(token);
             return FALSE;
         }
-        data_to_extract++;/*skip "*/
-        while (*data_to_extract != '"')
+        data_to_extract++;
+
+        /*copying the string to data_table until " reached"*/
+        while (*data_to_extract != '"' && !end_of_string(data_to_extract))
         {
-            data_table->type = TYPE_STRING;
-            data_table->data.character = *data_to_extract++;
-            data_table->next = (data_table_entry*)malloc_with_check(sizeof(data_table));
-            data_table = data_table->next;
-            reset_data(data_table);
+            data_table_ptr = (data_table_entry*)malloc_with_check(sizeof(data_table_entry));
+            data_table_ptr->type = TYPE_STRING;
+            data_table_ptr->data.character = *data_to_extract++;
+            data_table_ptr = data_table_ptr->next;
+            data_table_ptr = NULL;
             L++;
         }
-        data_table->data.character = '\0';
-        data_table->type = TYPE_STRING;
-        data_table->next = (data_table_entry*)malloc_with_check(sizeof(data_table));
-        data_table = data_table->next;
 
-        reset_data(data_table);
+        /*adding \0 to the end of the string*/
+        data_table_ptr = (data_table_entry*)malloc_with_check(sizeof(data_table_entry));
+        data_table_ptr->data.character = '\0';
+        data_table_ptr->type = TYPE_STRING;
+        data_table_ptr = data_table_ptr->next;
+        data_table_ptr = NULL;
         L++;
 
-        data_to_extract++;/*skip "*/
+        /*check if string ends with " and skip it, else print error*/
+        if(*data_to_extract == '"')
+            data_to_extract++;
+        else
+        {
+            printf("Error: string data must start and end with \"\n");
+            free(token);
+            return FALSE;
+        }
 
+        /*check if there are extra characters after the string*/
         if (!end_of_string(data_to_extract))
         {
             printf("Error: extra character after string \"\n");
-            error_in_code = TRUE;
+            error_flag = TRUE;
         }
 
-        if (line->is_label)/*add label to table*/
+        /*check if there is a label and add it*/
+        if (line->label)
         {
             data_type = TYPE_STRING;
-            if (!add_symbol_to_table(line, symbol_table, data_type, ext, DC, L))
-                error_in_code = TRUE;
+            if (!add_symbol_to_table(line, symbol_table_head, data_type, ext_head, DC, L))
+                error_flag = TRUE;
         }
         *DC += L;
 
-        return TRUE;
+        return !error_flag;
     }
+
+    /*instruction is numbers*/
     if (strcmp(line->instruction, "data") == 0)
     {
+        /*goto the end of the list*/
+        while (data_table_ptr != NULL)
+            data_table_ptr = data_table_ptr->next;
         token = (char*)malloc_with_check(sizeof(sizeof(data_to_extract)));
 
-        while (!end_of_string(data_to_extract))/*reading numbers until end of line reached*/
+        /*reading numbers*/
+        while (!end_of_string(data_to_extract))
         {
+            /*read the number*/
             if (*data_to_extract == '-' || *data_to_extract == '+')/*check for + or - sign*/
                 token[i++] = *data_to_extract++;
-
-            while (isdigit(*data_to_extract))/*copy the number*/
+            while (isdigit(*data_to_extract))
                 token[i++] = *data_to_extract++;
             token[i] = '\0';
 
-            if (strlen(token) == 0 || strcmp(token, "-") == 0 || strcmp(token, "+") == 0)/*error checking no number, empty string*/
+            /*checking for errors in the number*/
+            if (strlen(token) == 0 || strcmp(token, "-") == 0 || strcmp(token, "+") == 0)
             {
                 printf("Error: missing number\n");
                 return FALSE;
             }
-            data_table->type = TYPE_NUMBER;
-            data_table->data.number = atoi(token);
-            data_table->next = (data_table_entry*)malloc_with_check(sizeof(data_table));
-            data_table = data_table->next;
-            reset_data(data_table);
 
-
+            /*adding the number to the data table*/
+            data_table_ptr = (data_table_entry*)malloc_with_check(sizeof(data_table_entry));
+            data_table_ptr->type = TYPE_NUMBER;
+            data_table_ptr->data.number = atoi(token);
+            data_table_ptr = data_table_ptr->next;
+            data_table_ptr = NULL;
             L++;
+
+            /*resetting the token*/
             i = 0;
             reset_str(token);
 
+            /*check for comma and extra characters after the number*/
             skip_white_spaces(&data_to_extract);
             if (*data_to_extract == ',')
             {
@@ -198,125 +217,142 @@ boolean add_data_to_table(line_info* line, symbols_table_entry* symbol_table, da
             else if (!end_of_string(data_to_extract))
             {
                 printf("Error: expected a comma between numbers\n");
-                error_in_code = TRUE;
-                return FALSE;
+                error_flag = TRUE;
             }
-        }/*end of while reading numbers*/
-        if (line->is_label && !error_in_code)
-            error_in_code = !add_symbol_to_table(line, symbol_table, data_type, ext, DC, L);
+        }/*end of reading numbers*/
 
-        if (line->is_label)/*add label to table*/
-        {
-            data_type = TYPE_NUMBER;
-            if (!add_symbol_to_table(line, symbol_table, data_type, ext, DC, L))
-                error_in_code = TRUE;
-        }
-        DC += L;/*increases DC by the number of numbers in the instruction*/
-        return TRUE;
+        /*check if there is a label and add it*/
+        if (line->label && !error_flag)
+            error_flag = !add_symbol_to_table(line, symbol_table_head, data_type, ext_head, DC, L);
+        DC += L;
+
+        free(token);
+        return !error_flag;
     }
+
+    /*instruction is entry or extern*/
     if (strcmp(line->instruction, "entry") == 0 || strcmp(line->instruction, "extern") == 0)
     {
-        while (!end_of_string(data_to_extract))/*more entry or extern labels to add*/
+        /*adding all lables*/
+        while (!end_of_string(data_to_extract))
         {
+            /*getting next label*/
             token = (char*)malloc_with_check(sizeof(sizeof(data_to_extract)));
-            while (!isspace(*data_to_extract))/*getting next label*/
+            while (!isspace(*data_to_extract))
             {
                 token[i++] = *data_to_extract++;
             }
             token[i] = '\0';
             skip_white_spaces(&data_to_extract);
             
+            /*if instruction is entry type, add the lable to entry table*/
             if (strcmp(line->instruction, "entry") == 0)
             {
-                while (ext_ptr->next != NULL)
+                /*check if the lable already exist in entry or extern*/
+                while (ext_ptr != NULL)
                 {
                     if (strcmp(ext_ptr->name, token) == 0)
                     {
                         printf("Error: `%s` already diffined as extern\n", token);
                         free(token);
-                        error_in_code = TRUE;
-                        goto NOT_ADD_ENTRY_LABLE;
+                        error_flag = TRUE;
+                        goto SKIP_ADDING_ENTRY_LABLE;
                     }
                     ext_ptr = ext_ptr->next;
                 }
-                while(ent_ptr->next != NULL)
+                while(ent_ptr != NULL)
                 {
                     if (strcmp(ent_ptr->name, token) == 0)
                     {
                         printf("Error: the lable `%s` already exist in entry\n", token);
                         free(token);
-                        error_in_code = TRUE;
-                        goto NOT_ADD_ENTRY_LABLE;
+                        error_flag = TRUE;
+                        goto SKIP_ADDING_ENTRY_LABLE;
                     }
                     ent_ptr = ent_ptr->next;
                 }
-                ent_ptr->name = token;
-                ent_ptr->address = *DC++;
-                ent_ptr->next = (entry_entry*)malloc_with_check(sizeof(ent));
-                reset_entry(ent_ptr->next);
 
-                NOT_ADD_ENTRY_LABLE:
-                symbol_table_ptr = symbol_table;
-                ext_ptr = ext;
-                ent_ptr = ent;
+                /*add the lable to entry table*/
+                ent_ptr = malloc_with_check(sizeof(entry_entry));
+                ent_ptr->name = token;
+                ent_ptr->address = 0;
+                ent_ptr->next = NULL;
+
+                /*reseting for next use*/
+                SKIP_ADDING_ENTRY_LABLE:
+                symbol_table_ptr = symbol_table_head;
+                ext_ptr = ext_head;
+                ent_ptr = ent_head;
                 i = 0;
+
+                /*if there is a label before entry, print warning*/
                 if (line->label)
                     printf("Warning: label before .entry is undefined\n");
             }
             else/*type extern*/
             {
-                while (ext_ptr->next != NULL)
+                /*check if the lable already exist*/
+                while (ext_ptr != NULL)
                 {
                     if (strcmp(ext_ptr->name, token) == 0)
                     {
                         printf("Error: double declaration of `%s` as extern\n", token);
                         free(token);
-                        error_in_code = TRUE;
+                        error_flag = TRUE;
                         goto NOT_ADD_EXTERN_LABLE;
 
                     }
                     ext_ptr = ext_ptr->next;
                 }
-                while(symbol_table_ptr->next != NULL)
+
+                /*check if lable already defined as symbol*/
+                while(symbol_table_ptr != NULL)
                 {
                     if (strcmp(symbol_table_ptr->name, token) == 0)
                     {
                         printf("Error: the lable `%s` already exist in local file\n", token);
                         free(token);
-                        error_in_code = TRUE;
+                        error_flag = TRUE;
                         goto NOT_ADD_EXTERN_LABLE;
                     }
-                    symbol_table = symbol_table->next;
+                    symbol_table_ptr = symbol_table_ptr->next;
                 }
-                while(ent_ptr->next != NULL)
+
+                /*check if lable already defined as entry*/
+                while(ent_ptr != NULL)
                 {
                     if (strcmp(ent_ptr->name, token) == 0)
                     {
                         printf("Error: the lable `%s` already exist in entry\n", token);
                         free(token);
-                        error_in_code = TRUE;
+                        error_flag = TRUE;
                         goto NOT_ADD_EXTERN_LABLE;
                     }
                     ent_ptr = ent_ptr->next;
                 }
+                
+                /*add the lable to extern table*/
+                ext_ptr = malloc_with_check(sizeof(extern_entry));
                 ext_ptr->name = token;
-                ext_ptr->address = *DC;
-                ext_ptr->next = (extern_entry*)malloc_with_check(sizeof(ext));
-                reset_extern(ext_ptr->next);
+                ext_ptr->address = 0;
+                ext_ptr = ext_ptr->next;
+                ext_ptr = NULL;
                 i = 0;
 
+                /*reseting for next use*/
                 NOT_ADD_EXTERN_LABLE:
-                ext_ptr = ext;
-                ent_ptr = ent;
-                symbol_table_ptr = symbol_table;
-                if (line->is_label)
-                    printf("Warning: label before .extern is undefined\n");
+                ext_ptr = ext_head;
+                ent_ptr = ent_head;
+                symbol_table_ptr = symbol_table_head;
 
+                /*if there is a label before extern, print warning*/
+                if (line->label)
+                    printf("Warning: label before .extern is undefined\n");
             }
 
         }/*end of while*/
     }
-    return !error_in_code;
+    return !error_flag;
 }
 
 boolean add_symbol_to_table(line_info* line, symbols_table_entry* symbol_table, symbol_data_types data_type, extern_entry* ext, long* DC, long L)
@@ -324,7 +360,8 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry* symbol_table, 
     extern_entry* ext_ptr = ext;
     symbols_table_entry* symbol_table_ptr = symbol_table;
 
-    while (symbol_table_ptr->next != NULL)
+    
+    while (symbol_table_ptr != NULL)
     {
         if (strcmp(symbol_table->name, line->label) == 0)/*checking if double declaration of label*/
         {
@@ -333,7 +370,7 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry* symbol_table, 
         }
         symbol_table_ptr = symbol_table_ptr->next;
     }
-    while(ext_ptr->next != NULL)
+    while(ext_ptr != NULL)
     {
         if (strcmp(ext_ptr->name, line->label) == 0)/*checking if lable declared alredy as extern*/
         {
@@ -342,13 +379,14 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry* symbol_table, 
         }
         ext_ptr = ext_ptr->next;
     }
+
+    /*adding the label to symbol table*/
+    symbol_table_ptr = malloc_with_check(sizeof(symbols_table_entry));
     symbol_table_ptr->data_type = data_type;
     symbol_table_ptr->address = *DC;
     symbol_table_ptr->L = L;
     symbol_table_ptr->name = line->label;
-    symbol_table_ptr->next = (symbols_table_entry*)malloc_with_check(sizeof(symbol_table));
-    symbol_table_ptr = symbol_table_ptr->next;
-    reset_symbol(symbol_table_ptr);
+    symbol_table_ptr->next = NULL;
     return TRUE;
 }
 

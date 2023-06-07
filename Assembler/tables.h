@@ -6,21 +6,18 @@ typedef struct {
     char *source_operand;
     char *target_operand;
     char *instruction_data;
-	boolean comma;
-    boolean is_label;
-    boolean is_data;
-    boolean is_instruction;
-     
+	boolean comma_flag;
+    boolean label_flag;
+    boolean data_flag;
+    boolean instruction_flag;
+    boolean extra_chars_flag;
 } line_info;
+
 
 
 typedef enum {
 	TYPE_STRING,
 	TYPE_NUMBER,
-
-	/*unused so for*/
-	TYPE_ENTRY,
-	TYPE_EXTERN,
 	DEFAULT
 } data_types, symbol_data_types;
 
@@ -74,10 +71,6 @@ typedef struct symbols_table_entry{/*struct for the symbols table*/
 boolean add_data_to_table(line_info* line, symbols_table_entry* symbol_table, data_table_entry* data_table, extern_entry* ext, entry_entry* ent, long* DC);
 boolean add_symbol_to_table(line_info* line, symbols_table_entry* symbol_table, symbol_data_types data_type, extern_entry* ext, long* DC, long L);
 
-void reset_data(data_table_entry* data);
-void reset_extern(extern_entry *ext);
-void reset_entry(entry_entry *ent);
-void reset_symbol(symbols_table_entry* symbol);
 void reset_line_info(line_info *line);
 
 void free_data_table(data_table_entry*);

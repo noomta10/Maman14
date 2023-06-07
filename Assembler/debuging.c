@@ -10,7 +10,7 @@
 void print_data_table(data_table_entry* data_table)
 {
     printf("printing data_table_entry:\n");
-    while (data_table->next != NULL)
+    while (data_table != NULL)
     {
         if (data_table->type == TYPE_STRING)
         {
@@ -32,7 +32,7 @@ void print_data_table(data_table_entry* data_table)
 void print_extern_table(extern_entry* ext)
 {
     printf("printing extern labels:\n");
-    while (ext->next != NULL)
+    while (ext != NULL)
     {
         printf("name: %s    address: %ld\n", ext->name, ext->address);
         ext = ext->next;
@@ -43,7 +43,7 @@ void print_extern_table(extern_entry* ext)
 void print_entry_table(entry_entry* ent)
 {
     printf("printing entry table:\n");
-    while (ent->next != NULL)
+    while (ent != NULL)
     {
         printf("name: %s    address: %ld\n", ent->name, ent->address);
         ent = ent->next;
@@ -54,14 +54,12 @@ void print_entry_table(entry_entry* ent)
 void print_symbol_table(symbols_table_entry* symbol_table)
 {
     printf("printing symbol table:\n");
-    while (symbol_table->next != NULL)
+    while (symbol_table != NULL)
     {
         printf("name: %s\n", symbol_table->name);
         printf("address: %ld\n", symbol_table->address);
         printf("length (L): %ld\n", symbol_table->L);
         printf("is_data: %s\n", (symbol_table->is_data) ? "TRUE" : "FALSE");
-        printf("is_external: %s\n", (symbol_table->type == TYPE_EXTERN) ? "TRUE" : "FALSE");
-        printf("is_entry: %s\n", (symbol_table->type == TYPE_ENTRY) ? "TRUE" : "FALSE");
         symbol_table = symbol_table->next;
         printf("\n");
     }
@@ -70,11 +68,11 @@ void print_symbol_table(symbols_table_entry* symbol_table)
 
 void print_line_info(line_info* line)
 {
-    printf("is_label: %s\n", (line->is_label) ? "TRUE" : "FALSE");
+    printf("is_label: %s\n", (line->label_flag) ? "TRUE" : "FALSE");
     printf("label: %s\n", line->label);
-    printf("is_instruction: %s\n", (line->is_instruction) ? "TRUE" : "FALSE");
+    printf("is_instruction: %s\n", (line->instruction_flag) ? "TRUE" : "FALSE");
     printf("instruction: %s\n", line->instruction);
-    printf("is_data: %s\n", (line->is_data) ? "TRUE" : "FALSE");
+    printf("is_data: %s\n", (line->data_flag) ? "TRUE" : "FALSE");
     printf("instruction_data: %s\n", line->instruction);
     printf("instruction_data: %s\n", line->instruction_data);
     printf("opcode: %s\n", line->opcode);

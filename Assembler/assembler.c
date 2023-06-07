@@ -29,24 +29,17 @@ void process_file(char* file_name) {
 	FILE* file_pointer = NULL;
 	boolean error_flag = FALSE;
 
-	/*for Noam, do we need to set IC to 0 and start adding information from the address 100? */
 	long IC = IC_START_ADDRESS;
 	long DC = 0;
-	symbols_table_entry* symbol_table = (symbols_table_entry*)malloc_with_check(sizeof(symbol_table));
-    data_table_entry* data_table = (data_table_entry*)malloc_with_check(sizeof(data_table));
-    entry_entry* ent = (entry_entry*)malloc_with_check(sizeof(ent));
-    extern_entry* ext = (extern_entry*)malloc_with_check(sizeof(ext));
+	symbols_table_entry symbol_table_head;
+    data_table_entry data_table_head;
+    entry_entry ent_head;
+    extern_entry ext_head;
 
 	/* Concatenate '.as' postfix to file name */
 	char* full_file_name = add_file_postfix(file_name, ".as");
 	/* Concatenate '.am' postfix to file name */
 	char* full_am_name = add_file_postfix(file_name, ".am");
-
-	/* Reset tables */
-    reset_entry(ent);
-    reset_extern(ext);
-    reset_symbol(symbol_table);
-    reset_data(data_table);
 
 	LOG_DEBUG("process_file start");
 
@@ -76,25 +69,25 @@ void process_file(char* file_name) {
 
 
 	/*call first_pass*/
-	error_flag = first_pass(file_pointer, symbol_table, data_table, ent, ext, &IC, &DC);
+	error_flag = first_pass(file_pointer, &symbol_table_head, &data_table_head, &ent_head, &ext_head, &IC, &DC);
 
 
 	/*printing data_tables for debugging*/
 	printf("IC = %ld\n", IC);
     printf("DC = %ld\n", DC);
     printf("\n");
-    print_data_table(data_table);
-    print_symbol_table(symbol_table);
-    print_entry_table(ent);
-    print_extern_table(ext);
+    print_data_table(&data_table_head);
+    print_symbol_table(&symbol_table_head);
+    print_entry_table(&ent_head);
+    print_extern_table(&ext_head);
 
 
 
 	/* Free memory */
-	free_data_table(data_table);
-	free_entry_table(ent);
-	free_extern_table(ext);
-	free_symbols_table(symbol_table);
+	free_data_table(&data_table_head);
+	free_entry_table(&ent_head);
+	free_extern_table(&ext_head);
+	free_symbols_table(&symbol_table_head);
 	/* Close file */
 	fclose(file_pointer);
 	
