@@ -10,11 +10,6 @@
 #include "first_pass.h"
 
 
-
-
-
-
-
 static void process_file(char* file_name);
 
 int main(int argc, char* argv[]) {

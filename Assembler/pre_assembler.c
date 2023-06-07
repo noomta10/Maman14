@@ -15,19 +15,13 @@ static void free_table_memory(mcros_table_entry* first_mcro_entry) {
 	mcros_table_entry* next_mcro_entry;
 	
 	/* Free mcros table */
-	while (current_mcro_entry->next != NULL) {
+	while (current_mcro_entry) {
 		next_mcro_entry = current_mcro_entry->next;
 		free(current_mcro_entry->name);
 		free(current_mcro_entry->value);
 		free(current_mcro_entry);
 		current_mcro_entry = next_mcro_entry;
 	} 
-
-	/* Free last mcro entry */
-	free(current_mcro_entry->name);
-	free(current_mcro_entry->value);
-	free(current_mcro_entry);
-
 }
 
 
@@ -57,8 +51,6 @@ static void add_mcro_to_table(char* mcro_name, char* mcro_value, mcros_table_ent
 	/* If table is empty, add first mcro */
 	if (*first_mcro_entry == NULL) {
 		new_mcro_entry->name = malloc_with_check(strlen(mcro_name) + 1);
-		LOG_DEBUG("value allocate");
-
 		new_mcro_entry->value = malloc_with_check(strlen(mcro_value) + 1);
 		new_mcro_entry->next = NULL;
 		strcpy(new_mcro_entry->name, mcro_name);
@@ -73,7 +65,6 @@ static void add_mcro_to_table(char* mcro_name, char* mcro_value, mcros_table_ent
 	while (current_mcro_entry->next != NULL) {
 		if (strcmp(current_mcro_entry->name, mcro_name) == 0) {
 			total_length = strlen(current_mcro_entry->value) + strlen(mcro_value);
-			LOG_DEBUG("first realloc");
 			current_mcro_entry->value = realloc_with_check(current_mcro_entry->value, (total_length + 1));
 			strcpy(current_mcro_entry->value, current_mcro_entry->value);
 			strcat(current_mcro_entry->value, mcro_value);
@@ -87,7 +78,6 @@ static void add_mcro_to_table(char* mcro_name, char* mcro_value, mcros_table_ent
 	/* Check last mcro */
 	if (strcmp(current_mcro_entry->name, mcro_name) == 0) {
 		total_length = strlen(current_mcro_entry->value) + strlen(mcro_value);
-		LOG_DEBUG("second realloc");
 		current_mcro_entry->value = realloc_with_check(current_mcro_entry->value, (total_length + 1));
 		strcpy(current_mcro_entry->value, current_mcro_entry->value);
 		strcat(current_mcro_entry->value, mcro_value);
@@ -110,7 +100,6 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 	char* first_word;
 	char* mcro_name = NULL;
 	char* saved_mcro_name = NULL;
-
 	first_word = strtok(line, " \t\n");
 
 	/* If it is an empty line, print it to the .am file continue to next line */
@@ -188,10 +177,6 @@ void pre_assembler(FILE* source_file, char* file_name) {
 		fprintf(am_file, "%s", saved_line);
 	}
 
-	//while (first_mcro_entry->next != NULL) {
-	//	printf("%s\n%s\n", first_mcro_entry->name, first_mcro_entry->value);
-	//	first_mcro_entry = first_mcro_entry->next;
-	//}
 
 	/* Close the file */
 	fclose(am_file);
