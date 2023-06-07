@@ -79,6 +79,7 @@ void process_file(char* file_name) {
 		return;
 	}
 
+
 	/*call first_pass*/
 	error_flag = first_pass(file_pointer, symbol_table, data_table, ent, ext, &IC, &DC);
 
