@@ -67,7 +67,7 @@ void process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_
     }
 
     if (line->is_instruction) {/*if line is data. fix, is data*/
-        if (!add_data_to_table(line, symbol_table, data_table, ext, ent, DC, error_in_code))
+        if (!add_data_to_table(line, symbol_table, data_table, ext, ent, DC))
             *error_in_code = TRUE;
     }
 
