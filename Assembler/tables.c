@@ -92,10 +92,18 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
 {
     /*declaring pointers*/
     extern_entry* ext_ptr = *ext_head;
-    entry_entry* ent_ptr = *ent_head;
-    symbols_table_entry* symbol_table_ptr = *symbol_table_head;
-    data_table_entry* data_table_ptr = *data_table_head;
+    extern_entry* ext_prev = NULL;
 
+    entry_entry* ent_ptr = *ent_head;
+    entry_entry* ent_prev = NULL;
+
+    symbols_table_entry* symbol_table_ptr = *symbol_table_head;
+    symbols_table_entry* symbol_table_prev = NULL;
+
+    data_table_entry* data_table_ptr = *data_table_head;
+    data_table_entry* data_table_prev = NULL;
+
+    /*declaring variables*/
     char* data_to_extract = line->instruction_data;
     char* token;
     int i = 0;
@@ -128,17 +136,16 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
             data_table_ptr = (data_table_entry*)malloc_with_check(sizeof(data_table_entry));
             data_table_ptr->type = TYPE_STRING;
             data_table_ptr->data.character = *data_to_extract++;
-            data_table_ptr = data_table_ptr->next;
-            data_table_ptr = NULL;
+            ADD_NODE_TO_LIST(data_table_prev, data_table_ptr, data_table_head);
+
             L++;
         }
 
-        /*adding \0 to the end of the string*/
+        /*adding \0 to the end of the string */
         data_table_ptr = (data_table_entry*)malloc_with_check(sizeof(data_table_entry));
         data_table_ptr->data.character = '\0';
         data_table_ptr->type = TYPE_STRING;
-        data_table_ptr = data_table_ptr->next;
-        data_table_ptr = NULL;
+        ADD_NODE_TO_LIST(data_table_prev, data_table_ptr, data_table_head);
         L++;
 
         /*check if string ends with " and skip it, else print error*/
@@ -199,8 +206,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
             data_table_ptr = (data_table_entry*)malloc_with_check(sizeof(data_table_entry));
             data_table_ptr->type = TYPE_NUMBER;
             data_table_ptr->data.number = atoi(token);
-            data_table_ptr = data_table_ptr->next;
-            data_table_ptr = NULL;
+            ADD_NODE_TO_LIST(data_table_prev, data_table_ptr, data_table_head);
             L++;
 
             /*resetting the token*/
@@ -276,7 +282,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
                 ent_ptr = malloc_with_check(sizeof(entry_entry));
                 ent_ptr->name = token;
                 ent_ptr->address = 0;
-                ent_ptr->next = NULL;
+                ADD_NODE_TO_LIST(ent_prev, ent_ptr, ent_head);
 
                 /*reseting for next use*/
                 SKIP_ADDING_ENTRY_LABLE:
@@ -335,15 +341,14 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
                 ext_ptr = malloc_with_check(sizeof(extern_entry));
                 ext_ptr->name = token;
                 ext_ptr->address = 0;
-                ext_ptr = ext_ptr->next;
-                ext_ptr = NULL;
+                ADD_NODE_TO_LIST(ext_prev, ext_ptr, ext_head);
                 i = 0;
 
                 /*reseting for next use*/
                 NOT_ADD_EXTERN_LABLE:
-                ext_ptr = ext_head;
-                ent_ptr = ent_head;
-                symbol_table_ptr = symbol_table_head;
+                ext_ptr = *ext_head;
+                ent_ptr = *ent_head;
+                symbol_table_ptr = *symbol_table_head;
 
                 /*if there is a label before extern, print warning*/
                 if (line->label)
@@ -355,10 +360,11 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
     return !error_flag;
 }
 
-boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table, symbol_data_types data_type, extern_entry** ext, long* DC, long L)
+boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_head, symbol_data_types data_type_head, extern_entry** ext_head, long* DC, long L)
 {
-    extern_entry* ext_ptr = *ext;
-    symbols_table_entry* symbol_table_ptr = *symbol_table;
+    extern_entry* ext_ptr = *ext_head;
+    symbols_table_entry* symbol_table_ptr = *symbol_table_head;
+    symbols_table_entry* symbol_table_prev = NULL;
 
     
     while (symbol_table_ptr != NULL)
@@ -382,11 +388,12 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table,
 
     /*adding the label to symbol table*/
     symbol_table_ptr = malloc_with_check(sizeof(symbols_table_entry));
-    symbol_table_ptr->data_type = data_type;
     symbol_table_ptr->address = *DC;
     symbol_table_ptr->L = L;
     symbol_table_ptr->name = line->label;
-    symbol_table_ptr->next = NULL;
+    ADD_NODE_TO_LIST(symbol_table_prev, symbol_table_ptr, symbol_table_head);
+
+    
     return TRUE;
 }
 

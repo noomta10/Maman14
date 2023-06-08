@@ -1,4 +1,17 @@
 
+
+#define ADD_NODE_TO_LIST(prev, ptr, head) \
+/*seting the list root if list is empty*/ \
+if (!*(head)) \
+	*(head) = (ptr);  \
+/*adding the node to the list*/ \
+if(prev) \
+	(prev)->next = (ptr); \
+(prev) = (ptr);\
+(ptr) = (ptr)->next = NULL;
+
+
+
 typedef struct {
     char *label;
     char *instruction;
