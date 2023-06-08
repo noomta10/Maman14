@@ -97,7 +97,7 @@ char* get_operand(char** str)
     return token;
 }
 
-char* get_instruction(char** str)
+char* get_directive(char** str)
 {
     char* temp = ++ * str; /*skip '.'*/
     char* token;

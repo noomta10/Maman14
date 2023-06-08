@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
@@ -70,7 +72,7 @@ void process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_
     }
 
     /*if the line contans data, add it to the memory*/
-    if (line->instruction_flag) {
+    if (line->directive_flag) {
         if (!add_data_to_table(line, symbol_table_head, data_table, ext, ent, DC))
             *error_flag = TRUE;
     }
@@ -82,22 +84,57 @@ void process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_
 
 boolean validate_line(line_info* line)
 {
+    boolean valid = TRUE;
     /*label checking*/
     if (line->label_flag)
     {
         if (bad_label(line->label))
-            return FALSE;
+            valid = FALSE;
     }
 
-    /*checks for errors in instruction lines*/
-    if (line->instruction_flag) 
+    /*checks for errors in directive lines*/
+    if (line->directive_flag) 
     {
-        if (!check_instruction(line->instruction))
-            return FALSE;
+        if(strcmp(line->directive_command, "data") == 0)
+        {
+            if(strcmp(line->directive_data, "") == 0)
+            {
+                printf("Error: in line\n%d %s\nmissing data\n", line->line_number, line->line_content);
+                valid = FALSE;
+            }
+        }
+        else if(strcmp(line->directive_command, "string") == 0)
+        {
+            if(strcmp(line->directive_data, "") == 0)
+            {
+                printf("Error: in line\n%ld %s\nmissing data\n", line->line_number, line->line_content);
+                valid = FALSE;
+            }
+        }
+        else if(strcmp(line->directive_command, "entry") == 0)
+        {
+            if(strcmp(line->directive_data, "") == 0)
+            {
+                printf("Warning: in line:\n%ld %s\nno entry labels given\n", line->line_number, line->line_content);
+                valid = FALSE;
+            }
+        }
+        else if(strcmp(line->directive_command, "extern") == 0)
+        {
+            if(strcmp(line->directive_data, "") == 0)
+            {
+                printf("Warning:\n%ld %s no extern labels given\n", line->line_number, line->line_content);
+                valid = FALSE;
+            }
+        }
+        else
+        {
+            printf("Error: invalid directive\n");
+            valid = FALSE;
+        }            
     }
-
     /*checks for errors in command lines*/
-    else if (!line->instruction_flag)
+    if (!line->directive_flag)
     {
         /*checking sub, mov, add, lea commands*/
         if (strcmp(line->opcode, "sub") == 0 || 
@@ -109,10 +146,9 @@ boolean validate_line(line_info* line)
             if (line->source_operand == NULL || line->target_operand == NULL)
             {
                 printf("Error: missing operand\n");
-                return FALSE;
+                valid = FALSE;
             }
         }
-
         /*checking not, clr, inc, dec, jmp, bne, red, prn, jsr commands*/
         else if (strcmp(line->opcode, "not") == 0 ||
             strcmp(line->opcode, "clr") == 0 ||
@@ -128,18 +164,17 @@ boolean validate_line(line_info* line)
             if (line->source_operand == NULL)
             {
                 printf("Error: missing operand\n");
-                return FALSE;
+                valid = FALSE;
             }
             /*checking for extra operand*/
             else if (line->target_operand != NULL && strcmp(line->target_operand, "") != 0)
             { 
                 printf("Error: extra operand\n");
-                return FALSE;
+                valid = FALSE;
             }
             line->target_operand = line->source_operand; /*moving source operand to target operand*/
             line->source_operand = NULL;
         }
-
         /*checking rts, stop commands*/
         else if (strcmp(line->opcode, "rts") == 0 ||
             strcmp(line->opcode, "stop") == 0)
@@ -149,24 +184,25 @@ boolean validate_line(line_info* line)
                 (line->target_operand != NULL && strcmp(line->target_operand, "")))
             {
                 printf("Error: extra operand\n");
-                return FALSE;
+                valid = FALSE;
             }
         }
-
         /*invalid opcode*/
         else
         {
             printf("Error: invalid opcode\n");
-            return FALSE;
+            valid = FALSE;
         }
     }
-    return TRUE;
+    return valid;
 }
 
 void extract_command_info(char* content, line_info* line)
 {
     char* token;
     
+    line->line_content = malloc_with_check(sizeof(content));
+    strcpy(line->line_content, content);
     /*if there's a label save it, else set label flag to false*/
     skip_white_spaces(&content);
     if (is_label(content)) /*check for label*/
@@ -180,19 +216,19 @@ void extract_command_info(char* content, line_info* line)
         line->label_flag = FALSE;
     }
 
-    /*if there's an instruction save it, else set instruction flag to false*/
+    /*if there's an directive save it, else set directive flag to false*/
     skip_white_spaces(&content);
-    if (is_instruction(content))
+    if (is_directive(content))
     {
-        token = get_instruction(&content);
-        line->instruction_flag = TRUE;
-        line->instruction = token;
-        line->instruction_data = content;
+        token = get_directive(&content);
+        line->directive_flag = TRUE;
+        line->directive_command = token;
+        line->directive_data = content;
         return;
     }
     else
     {
-        line->instruction_flag = FALSE;
+        line->directive_flag = FALSE;
     }
 
     /*gets the opcode*/
@@ -229,7 +265,7 @@ void extract_command_info(char* content, line_info* line)
         line->extra_chars_flag = FALSE;
 }
 
-boolean is_instruction(char* str)
+boolean is_directive(char* str)
 {
     if (*str == '.')
         return TRUE;
@@ -256,15 +292,6 @@ boolean check_comma(char** str)
     return FALSE;
 }
 
-
-
-boolean check_instruction(char* str)
-{
-    if (strcmp(str, "data") || strcmp(str, "string") ||
-        strcmp(str, "entry") || strcmp(str, "extern"))
-        return TRUE;
-    return FALSE;
-}
 
 boolean bad_label(char* str)
 {

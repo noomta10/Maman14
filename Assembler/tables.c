@@ -14,17 +14,19 @@
 
 void reset_line_info(line_info* line)
 {
-    line->label_flag = FALSE;
-    line->instruction_flag = FALSE;
-    line->data_flag = FALSE;
-    line->comma_flag = FALSE;
-    line->extra_chars_flag = FALSE;
+    line->line_number = 0;
+    line->line_content = NULL;
     line->label = NULL;
-    line->instruction = NULL;
+    line->directive_data = NULL;
+    line->directive_command = NULL;
     line->opcode = NULL;
     line->source_operand = NULL;
     line->target_operand = NULL;
-    line->instruction_data = NULL;
+    line->comma_flag = FALSE;
+    line->label_flag = FALSE;
+    line->directive_flag = FALSE;
+    line->instruction_flag = FALSE;
+    line->extra_chars_flag = FALSE;
 }
 
 void free_data_table(data_table_entry* head)
@@ -102,9 +104,15 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
 
     data_table_entry* data_table_ptr = *data_table_head;
     data_table_entry* data_table_prev = NULL;
+    
+    /*setting prev pointers to the end*/
+    SET_PREV_POINTER(ext_prev, ext_ptr)
+    SET_PREV_POINTER(ent_prev, ent_ptr)
+    SET_PREV_POINTER(symbol_table_prev, symbol_table_ptr)
+    SET_PREV_POINTER(data_table_prev, data_table_ptr)
 
     /*declaring variables*/
-    char* data_to_extract = line->instruction_data;
+    char* data_to_extract = line->directive_data;
     char* token;
     int i = 0;
     long L = 0;
@@ -113,7 +121,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
     
     /*instruction is a string*/    
     skip_white_spaces(&data_to_extract);
-    if (strcmp(line->instruction, "string") == 0)
+    if (strcmp(line->directive_command, "string") == 0)
     {
         /*goto the end of the list*/
         while(data_table_ptr != NULL)
@@ -178,7 +186,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
     }
 
     /*instruction is numbers*/
-    if (strcmp(line->instruction, "data") == 0)
+    if (strcmp(line->directive_command, "data") == 0)
     {
         /*goto the end of the list*/
         while (data_table_ptr != NULL)
@@ -236,8 +244,8 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
         return !error_flag;
     }
 
-    /*instruction is entry or extern*/
-    if (strcmp(line->instruction, "entry") == 0 || strcmp(line->instruction, "extern") == 0)
+    /*directive is entry or extern*/
+    if (strcmp(line->directive_command, "entry") == 0 || strcmp(line->directive_command, "extern") == 0)
     {
         /*adding all lables*/
         while (!end_of_string(data_to_extract))
@@ -252,7 +260,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
             skip_white_spaces(&data_to_extract);
             
             /*if instruction is entry type, add the lable to entry table*/
-            if (strcmp(line->instruction, "entry") == 0)
+            if (strcmp(line->directive_command, "entry") == 0)
             {
                 /*check if the lable already exist in entry or extern*/
                 while (ext_ptr != NULL)
@@ -366,6 +374,7 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_
     symbols_table_entry* symbol_table_ptr = *symbol_table_head;
     symbols_table_entry* symbol_table_prev = NULL;
 
+    SET_PREV_POINTER(symbol_table_prev, symbol_table_ptr)
     
     while (symbol_table_ptr != NULL)
     {

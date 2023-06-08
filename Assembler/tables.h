@@ -10,18 +10,26 @@ if(prev) \
 (prev) = (ptr);\
 (ptr) = (ptr)->next = NULL;
 
+#define SET_PREV_POINTER(prev, head_ptr) \
+while(head_ptr) \
+{ \
+	(prev) = (head_ptr); \
+	(head_ptr) = (head_ptr)->next; \
+}
 
 
 typedef struct {
+	long line_number;
+	char *line_content;
     char *label;
-    char *instruction;
+    char *directive_data;
+    char *directive_command;
     char *opcode;
     char *source_operand;
     char *target_operand;
-    char *instruction_data;
 	boolean comma_flag;
     boolean label_flag;
-    boolean data_flag;
+    boolean directive_flag;// .data, .string, .entry, .extern
     boolean instruction_flag;
     boolean extra_chars_flag;
 } line_info;

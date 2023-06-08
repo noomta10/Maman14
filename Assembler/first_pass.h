@@ -9,7 +9,7 @@
 
 
 boolean is_label(char *);
-boolean is_instruction(char *);
+boolean is_directive(char *);
 boolean check_comma(char **string);
 boolean first_pass(FILE *am_file, symbols_table_entry **symbol_table, data_table_entry **data_table,
         entry_entry **ent, extern_entry **ext, long *IC, long *DC);

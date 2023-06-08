@@ -68,15 +68,17 @@ void print_symbol_table(symbols_table_entry* symbol_table)
 
 void print_line_info(line_info* line)
 {
-    printf("is_label: %s\n", (line->label_flag) ? "TRUE" : "FALSE");
+    printf("printing line info:\n");
+    printf("line info: %ld %s\n", line->line_number, line->line_content);
+    printf("label_flag: %s\n", (line->label_flag) ? "TRUE" : "FALSE");
     printf("label: %s\n", line->label);
-    printf("is_instruction: %s\n", (line->instruction_flag) ? "TRUE" : "FALSE");
-    printf("instruction: %s\n", line->instruction);
-    printf("is_data: %s\n", (line->data_flag) ? "TRUE" : "FALSE");
-    printf("instruction_data: %s\n", line->instruction);
-    printf("instruction_data: %s\n", line->instruction_data);
+    printf("directive_flag: %s\n", (line->directive_flag) ? "TRUE" : "FALSE");
+    printf("directive_command: %s\n", line->directive_command);
+    printf("directive_data: %s\n", line->directive_data);
+    printf("instruction_flag: %s\n", (line->instruction_flag) ? "TRUE" : "FALSE");
     printf("opcode: %s\n", line->opcode);
     printf("source_operand: %s\n", line->source_operand);
     printf("target_operand: %s\n", line->target_operand);
-    printf("-------------------------\n\n");
+    printf("comma_flag: %s\n", (line->comma_flag) ? "TRUE" : "FALSE");
+    printf("extra_chars_flag: %s\n", (line->extra_chars_flag) ? "TRUE" : "FALSE");
 }
