@@ -35,6 +35,7 @@ void* realloc_with_check(char* ptr, size_t length) {
 }
 
 
+/* Unnecessary */
 char* get_next_element(char* line) {
 	int start_word_index;
 	int end_word_index;
