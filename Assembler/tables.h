@@ -17,7 +17,17 @@ while(head_ptr) \
 	(head_ptr) = (head_ptr)->next; \
 }
 
-
+//#define FREE_TABLE(head, temp) \
+///* If table is empty, return */ \
+//if (!head) \
+//	return; \
+///* Free all nodes */ \
+//while (head->next != NULL) { \
+//	free(head->name); \
+//	temp = head->next; \
+//	free(head); \
+//	head = temp; \
+}
 
 
 
@@ -41,8 +51,8 @@ typedef enum{/*unused so far*/
 typedef struct data_table_entry{/*data table for data values*/
 	struct data_table_entry *next;
 	long address; /*address of DC*/
-	data_value data;
-	data_types type;	
+	data_value data; /* Character or number */
+	data_types type; /* String or number */
 } data_table_entry;
 
 

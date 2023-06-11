@@ -124,7 +124,7 @@ boolean validate_line(line_info* line)
         }
         else
         {
-            printf("Error: invalid directive\n");
+            printf("Error: invalid directive command\n");
             valid = FALSE;
         }            
     }
