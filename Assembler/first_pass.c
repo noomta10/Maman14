@@ -56,8 +56,6 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
     if(line)
         free(line);
 
-    /*create tables and files*/
-
     return !error_flag; /*returning error flag*/
 }
 

@@ -116,7 +116,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
     char* token;
     int i = 0;
     long L = 0;
-    symbol_data_types data_type = DEFAULT;
+    data_types data_type = TYPE_STRING;
     boolean error_flag = FALSE;
     
     /*instruction is a string*/    
@@ -127,7 +127,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
         while(data_table_ptr != NULL)
             data_table_ptr = data_table_ptr->next;
             
-        token = (char*)malloc_with_check(sizeof(sizeof(data_to_extract)));
+        token = (char*)malloc_with_check(sizeof(sizeof(data_to_extract)));/*change to char*/
 
         /*check if string starts with " and skip it"*/
         if (*data_to_extract != '"')
@@ -186,7 +186,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
     }
 
     /*instruction is numbers*/
-    if (strcmp(line->directive_command, "data") == 0)
+    else if (strcmp(line->directive_command, "data") == 0)
     {
         /*goto the end of the list*/
         while (data_table_ptr != NULL)
@@ -245,7 +245,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
     }
 
     /*directive is entry or extern*/
-    if (strcmp(line->directive_command, "entry") == 0 || strcmp(line->directive_command, "extern") == 0)
+    else if (strcmp(line->directive_command, "entry") == 0 || strcmp(line->directive_command, "extern") == 0)
     {
         /*adding all lables*/
         while (!end_of_string(data_to_extract))
@@ -365,10 +365,16 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
 
         }/*end of while*/
     }
+
+    else
+    {
+        printf("Error: in line %d %s\n undefined directive command\n", line->line_number, line->line_content);
+        error_flag = TRUE;
+    }
     return !error_flag;
 }
 
-boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_head, symbol_data_types data_type_head, extern_entry** ext_head, long* DC, long L)
+boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_head, data_types data_type_head, extern_entry** ext_head, long* DC, long L)
 {
     extern_entry* ext_ptr = *ext_head;
     symbols_table_entry* symbol_table_ptr = *symbol_table_head;

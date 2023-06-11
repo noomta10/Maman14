@@ -39,8 +39,7 @@ typedef struct {
 typedef enum {
 	TYPE_STRING,
 	TYPE_NUMBER,
-	DEFAULT
-} data_types, symbol_data_types;
+} data_types;
 
 
 typedef union{
@@ -79,7 +78,7 @@ typedef struct symbols_table_entry{/*struct for the symbols table*/
 	long address;/*address of IC or DC*/
 	long L;/*if data type, length of data*/
 	char * name;
-	symbol_data_types data_type;
+	data_types data_type;
 	data_types type;
 	boolean is_data;
 } symbols_table_entry;
@@ -90,7 +89,7 @@ typedef struct symbols_table_entry{/*struct for the symbols table*/
 
 
 boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table, data_table_entry** data_table, extern_entry** ext, entry_entry** ent, long* DC);
-boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table, symbol_data_types data_type, extern_entry** ext, long* DC, long L);
+boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table, data_types data_type, extern_entry** ext, long* DC, long L);
 
 void reset_line_info(line_info *line);
 
