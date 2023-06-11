@@ -4,6 +4,8 @@
 #include <string.h>
 #include "utils.h"
 #include "assembler.h"
+#include "line_info.h"
+#include "tables.h"
 
 char* add_file_postfix(char* file_name, char* postfix) {
 	char* full_file_name = (char*)malloc_with_check(strlen(file_name) + strlen(postfix) + 1);

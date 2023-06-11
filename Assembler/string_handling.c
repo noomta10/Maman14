@@ -4,6 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "assembler.h"
+#include "line_info.h"
 #include "string_handling.h"
 #include "utils.h"
 

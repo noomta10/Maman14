@@ -1,3 +1,4 @@
+#pragma once
 
 
 #define ADD_NODE_TO_LIST(prev, ptr, head) \
@@ -17,16 +18,16 @@ while(head_ptr) \
 	(head_ptr) = (head_ptr)->next; \
 }
 
-//#define FREE_TABLE(head, temp) \
-///* If table is empty, return */ \
-//if (!head) \
-//	return; \
-///* Free all nodes */ \
-//while (head->next != NULL) { \
-//	free(head->name); \
-//	temp = head->next; \
-//	free(head); \
-//	head = temp; \
+#define FREE_TABLE(current_entry, next_entry) \
+/* If table is empty, return */ \
+if (!current_entry) \
+	return; \
+/* Free all nodes */ \
+while (current_entry->next != NULL) { \
+	free(current_entry->name); \
+	next_entry = current_entry->next; \
+	free(current_entry); \
+	current_entry = next_entry; \
 }
 
 
@@ -86,7 +87,7 @@ typedef struct symbols_table_entry{/*struct for the symbols table*/
 boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table, data_table_entry** data_table, extern_entry** ext, entry_entry** ent, long* DC);
 boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table, data_types data_type, extern_entry** ext, long* DC, long L);
 
-void reset_line_info(line_info *line);
+
 
 void free_data_table(data_table_entry*);
 void free_symbols_table(symbols_table_entry*);

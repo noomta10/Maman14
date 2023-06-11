@@ -143,6 +143,7 @@
     <ClInclude Include="string_handling.h" />
     <ClInclude Include="tables.h" />
     <ClInclude Include="utils.h" />
+    <ClInclude Include="line_info.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="makefile" />

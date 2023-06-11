@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "assembler.h" 
+#include "line_info.h"
 #include "utils.h" 
 #include "pre_assembler.h"
 #include "tables.h"

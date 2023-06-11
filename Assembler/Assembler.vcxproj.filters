@@ -59,6 +59,9 @@
     <ClInclude Include="tables.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="line_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="my_file.as" />

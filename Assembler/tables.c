@@ -5,6 +5,8 @@
 
 
 #include "assembler.h"
+#include "line_info.h"
+
 #include "tables.h"
 #include "first_pass.h"
 #include "utils.h"
@@ -47,47 +49,19 @@ void free_data_table(data_table_entry* head)
 }
 
 void free_symbols_table(symbols_table_entry* head) {
-    symbols_table_entry* temp;
-
-    /*if head is null, return*/
-    if (!head)
-        return;
-    
-    /*freeing all nodes*/
-    while (head->next != NULL) {
-        free(head->name);
-        temp = head->next;
-        free(head);
-        head = temp;
-    }
+    symbols_table_entry* next_entry;
+    FREE_TABLE(head, next_entry);
 }
 
 void free_extern_table(extern_entry* head) {
-    extern_entry* temp;
-    /*if head is null, return*/
-    if (!head)
-        return;
-
-    /*freeing all nodes*/
-    while (head->next != NULL) {
-        free(head->name);
-        temp = head->next;
-        free(head);
-        head = temp;
-    }
+    extern_entry* next_entry;
+    FREE_TABLE(head, next_entry);
 }
 
 void free_entry_table(entry_entry* head) {
-    entry_entry* temp;
-    /*if head is null, return*/
-    if (!head)
-        return;
-    while (head->next != NULL) {
-        free(head->name);
-        temp = head->next;
-        free(head);
-        head = temp;
-    }
+    entry_entry* next_entry;
+    FREE_TABLE(head, next_entry);
+
 }
 
 boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_head, data_table_entry** data_table_head, extern_entry** ext_head, entry_entry** ent_head, long* DC)
