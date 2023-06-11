@@ -10,10 +10,7 @@
 #include "first_pass.h"
 #include "utils.h"
 #include "string_handling.h"
-
-
-
-
+#include "debuging.h"
 
 
 boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_table_entry** data_table_head,
@@ -291,38 +288,56 @@ boolean check_comma(char** str)
 }
 
 
-boolean bad_label(char* str)
+boolean bad_label(char* label)
 {
-    /*check if label is a reserved word*/
-    if(strcmp(str, "mov") == 0 || strcmp(str, "cmp") == 0 ||
-       strcmp(str, "add") == 0 || strcmp(str, "sub") == 0 ||
-       strcmp(str, "not") == 0 || strcmp(str, "clr") == 0 ||
-       strcmp(str, "lea") == 0 || strcmp(str, "inc") == 0 ||
-       strcmp(str, "dec") == 0 || strcmp(str, "jmp") == 0 ||
-       strcmp(str, "bne") == 0 || strcmp(str, "red") == 0 ||
-       strcmp(str, "prn") == 0 || strcmp(str, "jsr") == 0 ||
-       strcmp(str, "rts") == 0 || strcmp(str, "stop") == 0 ||
-       strcmp(str, "data") == 0 || strcmp(str, "string") == 0 ||
-       strcmp(str, "entry") == 0 || strcmp(str, "extern") == 0 ||
-       *str == '@')
+    printf("%s", label);
+    int i = 0;
+
+    /* Check if label is a reserved word */
+    if(strcmp(label, "mov") == 0 || strcmp(label, "cmp") == 0 ||
+       strcmp(label, "add") == 0 || strcmp(label, "sub") == 0 ||
+       strcmp(label, "not") == 0 || strcmp(label, "clr") == 0 ||
+       strcmp(label, "lea") == 0 || strcmp(label, "inc") == 0 ||
+       strcmp(label, "dec") == 0 || strcmp(label, "jmp") == 0 ||
+       strcmp(label, "bne") == 0 || strcmp(label, "red") == 0 ||
+       strcmp(label, "prn") == 0 || strcmp(label, "jsr") == 0 ||
+       strcmp(label, "rts") == 0 || strcmp(label, "stop") == 0 ||
+       strcmp(label, "data") == 0 || strcmp(label, "string") == 0 ||
+       strcmp(label, "entry") == 0 || strcmp(label, "extern") == 0 ||
+       *label == '@')
     {
         printf("Error: label is a reserved word");
         return TRUE;
     }
 
-    /*check if label is too long or too short*/
-    if (strlen(str) > MAX_LABEL_LENGTH)
+    /* Check if label is too long or too short */
+    if (strlen(label) > MAX_LABEL_LENGTH)
     {
         printf("Error: label to long");
         return TRUE;
     }
-    if (strlen(str) == 0)
+    if (strlen(label) == 0)
     {
         printf("Error: label to short");
         return TRUE;
     }
 
+    /* Check if label starts with a letter */
+    if (!isalpha(label[i])) {
+        printf("Error: label must start with a letter\n");
+        return TRUE;
+    }
+
+    /* Check if label has invalid characters */
+    for (i = 1; i < strlen(label) - 1; i++)
+    {   
+        if (!iswalnum(label[i])) 
+        {
+            printf("Error: label has invalid characters\n");
+            return TRUE;
+        }
+    }
+
     return FALSE;
 }
-
 

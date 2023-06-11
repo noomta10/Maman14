@@ -301,7 +301,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
 
                 /*if there is a label before entry, print warning*/
                 if (line->label)
-                    printf("Warning: label before .entry is undefined\n");
+                    printf("Warning: ignoring label before .entry\n");
             }
             else/*type extern*/
             {
@@ -360,7 +360,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
 
                 /*if there is a label before extern, print warning*/
                 if (line->label)
-                    printf("Warning: label before .extern is undefined\n");
+                    printf("Warning: ignoring label before .extern\n");
             }
 
         }/*end of while*/
