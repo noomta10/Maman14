@@ -1,5 +1,3 @@
-#pragma once
-
 typedef struct {
     long line_number;
     char* line_content;

@@ -1,12 +1,4 @@
-#pragma once
-
 #define _CRT_SECURE_NO_WARNINGS
-
-
-
-
-
-
 
 boolean is_label(char *);
 boolean is_directive(char *);

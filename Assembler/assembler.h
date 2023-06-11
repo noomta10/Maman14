@@ -1,5 +1,3 @@
-#pragma once
-
 #define _CRT_SECURE_NO_WARNINGS
 
 #define MAX_LINE_LENGTH 81 /* Max line length plus one for \n */

@@ -1,6 +1,3 @@
-#pragma once
-
-
 #define ADD_NODE_TO_LIST(prev, ptr, head) \
 /*seting the list root if list is empty*/ \
 if (!*(head)) \

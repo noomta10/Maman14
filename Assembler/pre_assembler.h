@@ -1,5 +1,3 @@
-#pragma once
-
 typedef struct mcros_table_entry {
 	struct mcros_table_entry* next;
 	char* name;
