@@ -80,7 +80,7 @@ char* get_opcode(char** str)
 
 char* get_operand(char** str)
 {
-    int i = 0;
+    int operand_length = 0;
     char* temp = *str;
     char* token;
     while (!isspace(*temp) && *temp != '\0')
@@ -88,11 +88,11 @@ char* get_operand(char** str)
         if (*temp == ',')
             break;
         temp++;
-        i++;
+        operand_length++;
     }
-    token = (char*)malloc_with_check(sizeof(char) * (i + 1));
-    strncpy(token, *str, i);
-    token[i] = '\0';
+    token = (char*)malloc_with_check(sizeof(char) * (operand_length + 1));
+    strncpy(token, *str, operand_length);
+    token[operand_length] = '\0';
     *str = temp;
     return token;
 }
@@ -101,15 +101,15 @@ char* get_directive(char** str)
 {
     char* temp = ++ * str; /*skip '.'*/
     char* token;
-    int i = 0;
+    int directive_length = 0;
     while (!isspace(*temp) && *temp != '\0')
     {
         temp++;
-        i++;
+        directive_length++;
     }
-    token = (char*)malloc_with_check(sizeof(char) * (i + 1));
-    strncpy(token, *str, i);
-    token[i] = '\0';
+    token = (char*)malloc_with_check(sizeof(char) * (directive_length + 1));
+    strncpy(token, *str, directive_length);
+    token[directive_length] = '\0';
     *str = temp;
     return token;
 }
@@ -118,15 +118,15 @@ char* get_label(char** str)
 {
     char* temp = *str;
     char* token;
-    int i = 0;
+    int label_length = 0;
     while (!isspace(*temp) && *temp != '\0')
     {
         temp++;
-        i++;
+        label_length++;
     }
-    token = (char*)malloc_with_check(sizeof(char) * (i + 1));
-    strncpy(token, *str, i);
-    token[i] = '\0';
+    token = (char*)malloc_with_check(sizeof(char) * (label_length + 1));
+    strncpy(token, *str, label_length);
+    token[label_length] = '\0';
     *str = temp;
     return token;
 }
