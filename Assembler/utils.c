@@ -38,32 +38,3 @@ void* realloc_with_check(char* ptr, size_t length) {
 }
 
 
-/* Unnecessary */
-char* get_next_element(char* line) {
-	int start_word_index;
-	int end_word_index;
-	int word_length;
-	int i = 0;
-	char element[MAX_LINE_LENGTH];
-	char* word = NULL;
-
-	/* Skip spaces and tabs */
-	while (line[i] == ' ' || line[i] == '\t') {
-		i++;
-	}
-
-	start_word_index = i;
-
-	/* Increase the index as long as no tab or space was found */
-	while (line[i] != ' ' && line[i] != '\t') {
-		i++;
-	}
-
-	end_word_index = i - 1;
-	word_length = end_word_index - start_word_index + 1;
-	word = malloc_with_check(word_length + 1);
-	strncpy(word, line + start_word_index, word_length);
-	word[word_length] = '\0';
-
-	return word;
-}
