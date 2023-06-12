@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include "assembler.h"
 #include "line_info.h"
 #include "string_handling.h"
@@ -45,7 +46,7 @@ char* copy_next_word(char* string)
 
 char* copy_string(char* string)
 {
-    char* result = malloc_with_check(sizeof(string));
+    char* result = malloc_with_check(sizeof(string)*(strlen(string) + 1));
     strcpy(result, string);
     return result;
 }
@@ -128,15 +129,22 @@ char* get_label(char** str)
     char* temp = *str;
     char* token;
     int label_length = 0;
+
+        printf("get_label\n");
+
+    
     while (*temp != ':')
     {
         temp++;
         label_length++;
     }
+    
     token = (char*)malloc_with_check(sizeof(char) * (label_length + 1));
+    printf("token: %p\n", token);
+
     strncpy(token, *str, label_length);
     token[label_length] = '\0';
-    *str = ++temp;/* and skip : */
+    *str = ++temp; /* and skip : */
 
     return token;
 }

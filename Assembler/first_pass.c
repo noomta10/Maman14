@@ -22,6 +22,7 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
     boolean* error_flag = (boolean *)malloc_with_check(sizeof(boolean));
     *DC = *IC = 0;/*end of page 48*/
 
+    
     line = (line_info*)malloc_with_check(sizeof(line_info)); /*allocating memory for line*/
     line->line_number = 1;
 
@@ -201,7 +202,7 @@ void extract_command_info(char* content, line_info* line)
 {
     char* token;
     
-    line->line_content = malloc_with_check(sizeof(content));
+    line->line_content = (char*) malloc_with_check(sizeof(char)*(MAX_LINE_LENGTH+1));
     strcpy(line->line_content, content);
 
     /*if there's a label save it, else set label flag to false*/
