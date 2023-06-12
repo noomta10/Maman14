@@ -72,11 +72,10 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
     entry_entry* ent_ptr = *ent_head;
     entry_entry* ent_prev = NULL;
 
-    symbols_table_entry* symbol_table_ptr = *symbol_table_head;
-    symbols_table_entry* symbol_table_prev = NULL;
-
     data_table_entry* data_table_ptr = *data_table_head;
     data_table_entry* data_table_prev = NULL;
+
+    symbols_table_entry* symbol_table_ptr = *symbol_table_head;
 
     /*declaring variables*/
     char* data_to_extract = line->directive_data;
@@ -89,7 +88,6 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
     /*setting prev pointers to the end*/
     SET_PREV_POINTER(ext_prev, ext_ptr)
     SET_PREV_POINTER(ent_prev, ent_ptr)
-    SET_PREV_POINTER(symbol_table_prev, symbol_table_ptr)
     SET_PREV_POINTER(data_table_prev, data_table_ptr)
     
     /*instruction is a string*/    

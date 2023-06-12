@@ -45,7 +45,7 @@ static boolean handle_existing_mcro(mcros_table_entry* first_mcro_entry, char* f
 
 
 static void add_mcro_to_table(char* mcro_name, char* mcro_value, mcros_table_entry** first_mcro_entry) {
-	mcros_table_entry* new_mcro_entry = (char*)malloc_with_check(sizeof(mcros_table_entry));
+	mcros_table_entry* new_mcro_entry = (mcros_table_entry*)malloc_with_check(sizeof(mcros_table_entry));
 	mcros_table_entry* current_mcro_entry;
 	int total_length;
 
