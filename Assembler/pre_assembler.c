@@ -150,14 +150,15 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 void pre_assembler(FILE* source_file, char* file_name) {
 	char line[MAX_LINE_LENGTH];
 	mcros_table_entry* first_mcro_entry = NULL;
-	char* mcro_name = NULL;
+	/*char* mcro_name = NULL;*/
 	char* saved_line = NULL;
-
-	LOG_DEBUG("pre assember starting");
+	FILE* am_file;
 	char* am_file_name = add_file_postfix(file_name, ".am");
+	 
+	LOG_DEBUG("Pre-assembler start");
 
 	/* Create an empty .am file */
-	FILE* am_file = fopen(am_file_name, "w");
+	am_file = fopen(am_file_name, "w");
 	if (am_file == NULL) {
 		printf("Error: The file '%s' could not be opened\n", am_file_name);
 		return;
