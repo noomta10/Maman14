@@ -148,6 +148,7 @@
   <ItemGroup>
     <None Include="makefile" />
     <None Include="my_file.as" />
+    <None Include="test_lable.am" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data_test.as" />

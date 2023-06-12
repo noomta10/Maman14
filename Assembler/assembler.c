@@ -68,7 +68,7 @@ void process_file(char* file_name) {
 		return;
 	}
 
-
+	printf("first_pass started\n");
 	/*call first_pass*/
 	error_flag = first_pass(file_pointer, &symbol_table_head, &data_table_head, &ent_head, &ext_head, &IC, &DC);
 

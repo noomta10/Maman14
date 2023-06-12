@@ -203,13 +203,13 @@ void extract_command_info(char* content, line_info* line)
     
     line->line_content = malloc_with_check(sizeof(content));
     strcpy(line->line_content, content);
+
     /*if there's a label save it, else set label flag to false*/
     skip_white_spaces(&content);
     if (is_label(content)) /*check for label*/
     {
-        token = get_label(&content);
+        line->label = get_label(&content);
         line->label_flag = TRUE;
-        line->label = token;
     }
     else
     {
@@ -220,9 +220,8 @@ void extract_command_info(char* content, line_info* line)
     skip_white_spaces(&content);
     if (is_directive(content))
     {
-        token = get_directive(&content);
+        line->directive_command = get_directive(&content);
         line->directive_flag = TRUE;
-        line->directive_command = token;
         line->directive_data = content;
         return;
     }
@@ -275,10 +274,9 @@ boolean is_directive(char* str)
 boolean is_label(char* str)
 {
     char* temp = str;
-    while (!isspace(*temp) && *temp != '\0')
-        temp++;
-    if (*--temp == ':')
-        return TRUE;
+    while (!isspace(*str++))
+        if (*str == ':')
+            return TRUE;
     return FALSE;
 }
 
@@ -338,7 +336,7 @@ boolean bad_label(char* label)
     /* Check if label has invalid characters */
     for (i = 1; i < strlen(label) - 1; i++)
     {   
-        if (!iswalnum(label[i])) 
+        if (!isalnum(label[i])) 
         {
             printf("Error: label has invalid characters\n");
             return TRUE;

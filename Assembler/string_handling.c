@@ -36,9 +36,9 @@ char* copy_next_word(char* string)
         string_ptr++;
     }
 
-    result = (char*)malloc_with_check((sizeof(char) * word_length) + 1);
+    result = (char*)malloc_with_check(sizeof(char) * (word_length + 1));
     strncpy(result, string, word_length);
-    result[word_length + 1] = '\0';
+    result[word_length] = '\0';
 
     return result;    
 }
@@ -72,17 +72,17 @@ boolean ignore_line(char* line)
 
 char* get_opcode(char** str)
 {
-    int i = 0;
+    int opcode_length = 0;
     char* temp = *str;
     char* token;
     while (!isspace(*temp) && *temp != '\0')
     {
         temp++;
-        i++;
+        opcode_length++;
     }
-    token = (char*)malloc_with_check(sizeof(char) * (i + 1));
-    strncpy(token, *str, i);
-    token[i] = '\0';
+    token = (char*)malloc_with_check(sizeof(char) * (opcode_length +1));
+    strncpy(token, *str, opcode_length);
+    token[opcode_length] = '\0';
     *str = temp;
     return token;
 }
@@ -128,7 +128,7 @@ char* get_label(char** str)
     char* temp = *str;
     char* token;
     int label_length = 0;
-    while (!isspace(*temp) && *temp != '\0')
+    while (*temp != ':')
     {
         temp++;
         label_length++;
@@ -136,6 +136,7 @@ char* get_label(char** str)
     token = (char*)malloc_with_check(sizeof(char) * (label_length + 1));
     strncpy(token, *str, label_length);
     token[label_length] = '\0';
-    *str = temp;
+    *str = ++temp;/* and skip : */
+
     return token;
 }

@@ -33,7 +33,7 @@ void reset_line_info(line_info* line)
 void free_data_table(data_table_entry* head)
 {
     data_table_entry* temp;
-    
+    printf("free data table\n");
     /*if head is null, return*/
     if(!head)
         return;
@@ -49,16 +49,19 @@ void free_data_table(data_table_entry* head)
 
 void free_symbols_table(symbols_table_entry* head) {
     symbols_table_entry* next_entry;
+    printf("Debug: freeing symbols table\n");
     FREE_TABLE(head, next_entry);
 }
 
 void free_extern_table(extern_entry* head) {
     extern_entry* next_entry;
+    printf("Debug: freeing extern table\n");
     FREE_TABLE(head, next_entry);
 }
 
 void free_entry_table(entry_entry* head) {
     entry_entry* next_entry;
+    printf("Debug: freeing entry table\n");
     FREE_TABLE(head, next_entry);
 
 }
@@ -253,7 +256,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
             }
 
             /*add the lable to entry table*/
-            ent_ptr = malloc_with_check(sizeof(entry_entry));
+            ent_ptr = (entry_entry*)malloc_with_check(sizeof(entry_entry));
             ent_ptr->name = token;
             ent_ptr->address = 0;
             ADD_NODE_TO_LIST(ent_prev, ent_ptr, ent_head);
@@ -350,7 +353,7 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_
     {
         if (strcmp(symbol_table_ptr->name, line->label) == 0)/*checking if double declaration of label*/
         {
-            printf("Error: label already exist");
+            printf("Error: label already exist\n");
             return FALSE;
         }
         symbol_table_ptr = symbol_table_ptr->next;
@@ -359,17 +362,18 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_
     {
         if (strcmp(ext_ptr->name, line->label) == 0)/*checking if lable declared alredy as extern*/
         {
-            printf("Error: label already declared as extern");
+            printf("Error: label already declared as extern\n");
             return FALSE;
         }
         ext_ptr = ext_ptr->next;
     }
 
     /*adding the label to symbol table*/
-    symbol_table_ptr = malloc_with_check(sizeof(symbols_table_entry));
+    symbol_table_ptr = (symbols_table_entry*)malloc_with_check(sizeof(symbols_table_entry));
     symbol_table_ptr->address = *DC;
     symbol_table_ptr->L = L;
     symbol_table_ptr->name = line->label;
+
     ADD_NODE_TO_LIST(symbol_table_prev, symbol_table_ptr, symbol_table_head);
 
     
