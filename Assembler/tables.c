@@ -16,7 +16,7 @@
 
 void reset_line_info(line_info* line)
 {
-    line->line_content; // needs to be freed but receves error
+    line->line_content = NULL; /* needs to be freed but receves error */
     line->label = NULL;
     line->directive_data = NULL;
     line->directive_command = NULL;
@@ -77,12 +77,6 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
 
     data_table_entry* data_table_ptr = *data_table_head;
     data_table_entry* data_table_prev = NULL;
-    
-    /*setting prev pointers to the end*/
-    SET_PREV_POINTER(ext_prev, ext_ptr)
-    SET_PREV_POINTER(ent_prev, ent_ptr)
-    SET_PREV_POINTER(symbol_table_prev, symbol_table_ptr)
-    SET_PREV_POINTER(data_table_prev, data_table_ptr)
 
     /*declaring variables*/
     char* data_to_extract = line->directive_data;
@@ -91,6 +85,12 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
     long L = 0;
     data_types data_type = TYPE_STRING;
     boolean error_flag = FALSE;
+
+    /*setting prev pointers to the end*/
+    SET_PREV_POINTER(ext_prev, ext_ptr)
+    SET_PREV_POINTER(ent_prev, ent_ptr)
+    SET_PREV_POINTER(symbol_table_prev, symbol_table_ptr)
+    SET_PREV_POINTER(data_table_prev, data_table_ptr)
     
     /*instruction is a string*/    
     skip_white_spaces(&data_to_extract);
@@ -223,7 +223,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
         data_to_extract += strlen(token);
         if (!end_of_string(data_to_extract))
         {
-            printf("Warning: in file %s line %d %s extra characters after label.\n", line->file_name, line->line_number, line->line_content);
+            printf("Warning: in file %s line %ld %s extra characters after label.\n", line->file_name, line->line_number, line->line_content);
             error_flag = TRUE;
         }
             
@@ -334,7 +334,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
 
     else
     {
-        printf("Error: in line %d %s\n undefined directive command\n", line->line_number, line->line_content);
+        printf("Error: in line %ld %s\n undefined directive command\n", line->line_number, line->line_content);
         error_flag = TRUE;
     }
     return !error_flag;
