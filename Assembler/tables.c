@@ -16,8 +16,7 @@
 
 void reset_line_info(line_info* line)
 {
-    line->line_number = 0;
-    line->line_content = NULL;
+    line->line_content; // needs to be freed but receves error
     line->label = NULL;
     line->directive_data = NULL;
     line->directive_command = NULL;
@@ -101,13 +100,10 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
         while(data_table_ptr != NULL)
             data_table_ptr = data_table_ptr->next;
             
-        token = (char*)malloc_with_check(sizeof(sizeof(data_to_extract)));/*change to char*/
-
         /*check if string starts with " and skip it"*/
         if (*data_to_extract != '"')
         {
             printf("Error: string data must start and end with \"\n");
-            free(token);
             return FALSE;
         }
         data_to_extract++;
@@ -136,7 +132,6 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
         else
         {
             printf("Error: string data must start and end with \"\n");
-            free(token);
             return FALSE;
         }
 
@@ -218,126 +213,123 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
         return !error_flag;
     }
 
-    /*directive is entry or extern*/
+    /* directive is entry or extern */
     else if (strcmp(line->directive_command, "entry") == 0 || strcmp(line->directive_command, "extern") == 0)
     {
-        /*adding all lables*/
-        while (!end_of_string(data_to_extract))
+        /* getting next label */
+        token = copy_next_word(data_to_extract);
+        
+        /* checking for extra characters after stirng */
+        data_to_extract += strlen(token);
+        if (!end_of_string(data_to_extract))
         {
-            /*getting next label*/
-            token = (char*)malloc_with_check(sizeof(sizeof(data_to_extract)));
-            while (!isspace(*data_to_extract))
-            {
-                token[i++] = *data_to_extract++;
-            }
-            token[i] = '\0';
-            skip_white_spaces(&data_to_extract);
+            printf("Warning: in file %s line %d %s extra characters after label.\n", line->file_name, line->line_number, line->line_content);
+            error_flag = TRUE;
+        }
             
-            /*if instruction is entry type, add the lable to entry table*/
-            if (strcmp(line->directive_command, "entry") == 0)
+        /*if instruction is entry type, add the lable to entry table*/
+        if (strcmp(line->directive_command, "entry") == 0)
+        {
+            /*check if the lable already exist in entry or extern*/
+            while (ext_ptr != NULL)
             {
-                /*check if the lable already exist in entry or extern*/
-                while (ext_ptr != NULL)
+                if (strcmp(ext_ptr->name, token) == 0)
                 {
-                    if (strcmp(ext_ptr->name, token) == 0)
-                    {
-                        printf("Error: `%s` already diffined as extern\n", token);
-                        free(token);
-                        error_flag = TRUE;
-                        goto SKIP_ADDING_ENTRY_LABLE;
-                    }
-                    ext_ptr = ext_ptr->next;
+                    printf("Error: `%s` already diffined as extern\n", token);
+                    free(token);
+                    error_flag = TRUE;
+                    goto SKIP_ADDING_ENTRY_LABLE;
                 }
-                while(ent_ptr != NULL)
-                {
-                    if (strcmp(ent_ptr->name, token) == 0)
-                    {
-                        printf("Error: the lable `%s` already exist in entry\n", token);
-                        free(token);
-                        error_flag = TRUE;
-                        goto SKIP_ADDING_ENTRY_LABLE;
-                    }
-                    ent_ptr = ent_ptr->next;
-                }
-
-                /*add the lable to entry table*/
-                ent_ptr = malloc_with_check(sizeof(entry_entry));
-                ent_ptr->name = token;
-                ent_ptr->address = 0;
-                ADD_NODE_TO_LIST(ent_prev, ent_ptr, ent_head);
-
-                /*reseting for next use*/
-                SKIP_ADDING_ENTRY_LABLE:
-                symbol_table_ptr = *symbol_table_head;
-                ext_ptr = *ext_head;
-                ent_ptr = *ent_head;
-                i = 0;
-
-                /*if there is a label before entry, print warning*/
-                if (line->label)
-                    printf("Warning: ignoring label before .entry\n");
+                ext_ptr = ext_ptr->next;
             }
-            else/*type extern*/
+            while(ent_ptr != NULL)
             {
-                /*check if the lable already exist*/
-                while (ext_ptr != NULL)
+                if (strcmp(ent_ptr->name, token) == 0)
                 {
-                    if (strcmp(ext_ptr->name, token) == 0)
-                    {
-                        printf("Error: double declaration of `%s` as extern\n", token);
-                        free(token);
-                        error_flag = TRUE;
-                        goto NOT_ADD_EXTERN_LABLE;
-
-                    }
-                    ext_ptr = ext_ptr->next;
+                    printf("Error: the lable `%s` already exist in entry\n", token);
+                    free(token);
+                    error_flag = TRUE;
+                    goto SKIP_ADDING_ENTRY_LABLE;
                 }
+                ent_ptr = ent_ptr->next;
+            }
 
-                /*check if lable already defined as symbol*/
-                while(symbol_table_ptr != NULL)
+            /*add the lable to entry table*/
+            ent_ptr = malloc_with_check(sizeof(entry_entry));
+            ent_ptr->name = token;
+            ent_ptr->address = 0;
+            ADD_NODE_TO_LIST(ent_prev, ent_ptr, ent_head);
+
+            /*reseting for next use*/
+            SKIP_ADDING_ENTRY_LABLE:
+            symbol_table_ptr = *symbol_table_head;
+            ext_ptr = *ext_head;
+            ent_ptr = *ent_head;
+            i = 0;
+
+            /*if there is a label before entry, print warning*/
+            if (line->label)
+                printf("Warning: ignoring label before .entry\n");
+        }
+        else/*type extern*/
+        {
+            /*check if the lable already exist*/
+            while (ext_ptr != NULL)
+            {
+                if (strcmp(ext_ptr->name, token) == 0)
                 {
-                    if (strcmp(symbol_table_ptr->name, token) == 0)
-                    {
-                        printf("Error: the lable `%s` already exist in local file\n", token);
-                        free(token);
-                        error_flag = TRUE;
-                        goto NOT_ADD_EXTERN_LABLE;
-                    }
-                    symbol_table_ptr = symbol_table_ptr->next;
-                }
+                    printf("Error: double declaration of `%s` as extern\n", token);
+                    free(token);
+                    error_flag = TRUE;
+                    goto NOT_ADD_EXTERN_LABLE;
 
-                /*check if lable already defined as entry*/
-                while(ent_ptr != NULL)
-                {
-                    if (strcmp(ent_ptr->name, token) == 0)
-                    {
-                        printf("Error: the lable `%s` already exist in entry\n", token);
-                        free(token);
-                        error_flag = TRUE;
-                        goto NOT_ADD_EXTERN_LABLE;
-                    }
-                    ent_ptr = ent_ptr->next;
                 }
+                ext_ptr = ext_ptr->next;
+            }
+
+            /*check if lable already defined as symbol*/
+            while(symbol_table_ptr != NULL)
+            {
+                if (strcmp(symbol_table_ptr->name, token) == 0)
+                {
+                    printf("Error: the lable `%s` already exist in local file\n", token);
+                    free(token);
+                    error_flag = TRUE;
+                    goto NOT_ADD_EXTERN_LABLE;
+                }
+                symbol_table_ptr = symbol_table_ptr->next;
+            }
+
+            /*check if lable already defined as entry*/
+            while(ent_ptr != NULL)
+            {
+                if (strcmp(ent_ptr->name, token) == 0)
+                {
+                    printf("Error: the lable `%s` already exist in entry\n", token);
+                    free(token);
+                    error_flag = TRUE;
+                    goto NOT_ADD_EXTERN_LABLE;
+                }
+                ent_ptr = ent_ptr->next;
+            }
                 
-                /*add the lable to extern table*/
-                ext_ptr = malloc_with_check(sizeof(extern_entry));
-                ext_ptr->name = token;
-                ext_ptr->address = 0;
-                ADD_NODE_TO_LIST(ext_prev, ext_ptr, ext_head);
-                i = 0;
+            /*add the lable to extern table*/
+            ext_ptr = malloc_with_check(sizeof(extern_entry));
+            ext_ptr->name = token;
+            ext_ptr->address = 0;
+            ADD_NODE_TO_LIST(ext_prev, ext_ptr, ext_head);
+            i = 0;
 
-                /*reseting for next use*/
-                NOT_ADD_EXTERN_LABLE:
-                ext_ptr = *ext_head;
-                ent_ptr = *ent_head;
-                symbol_table_ptr = *symbol_table_head;
+            /*reseting for next use*/
+            NOT_ADD_EXTERN_LABLE:
+            ext_ptr = *ext_head;
+            ent_ptr = *ent_head;
+            symbol_table_ptr = *symbol_table_head;
 
-                /*if there is a label before extern, print warning*/
-                if (line->label)
-                    printf("Warning: ignoring label before .extern\n");
-            }
-
-        }/*end of while*/
+            /*if there is a label before extern, print warning*/
+            if (line->label)
+                printf("Warning: ignoring label before .extern\n");
+        }
     }
 
     else

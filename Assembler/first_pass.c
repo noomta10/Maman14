@@ -23,15 +23,20 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
     int line_number = 0;/*debugging*/
     *DC = *IC = 0;/*end of page 48*/
 
+    line = (line_info*)malloc_with_check(sizeof(line_info)); /*allocating memory for line*/
+    line->line_number = 1;
+
     /*reading .as file line by line entil the end*/
     while (fgets(line_content, MAX_LINE_LENGTH, am_file) != NULL) 
     {
-        line = (line_info*)malloc_with_check(sizeof(line_info)); /*allocating memory for line*/
-
-        /*debugging*/
-        line_number++;
-        printf("debug: line number: %d\n", line_number);
-        printf("debug: line content: %s\n", line_content);
+        if (check_line_length(am_file, line_content))
+        {
+            *error_flag = TRUE;
+            printf("Error: line %d is too long.\n", line->line_number);
+            continue;
+        }
+        line->line_content = copy_string(line_content);
+        line->line_number++;
 
         /*checking if line is empty or command line*/
         if (ignore_line(line_content))
@@ -342,3 +347,19 @@ boolean bad_label(char* label)
     return FALSE;
 }
 
+boolean check_line_length(FILE* am_file, char* line_content)
+{
+    int c;
+
+    /* checks if if full line was read */
+    while (*line_content++ != '\0')
+        if (*line_content == '\n')
+            return FALSE;
+    if ((c = getc(am_file)) == EOF || c == '\n')
+        return FALSE;
+
+    /* reads rest of line */
+    while ((c = getc(am_file)) != '\n' || c == EOF);
+
+    return TRUE;
+}

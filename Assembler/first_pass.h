@@ -10,5 +10,6 @@ boolean validate_line(line_info *line);
 void process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_entry** symbol_table, data_table_entry** data_table, entry_entry** ent, extern_entry** ext, boolean* error_in_code);
 boolean bad_label(char *label);
 boolean check_instruction(char *instruction);
+boolean check_line_length(FILE* am_file, char* line_content);
 
 

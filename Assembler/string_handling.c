@@ -23,32 +23,36 @@ void skip_white_spaces(char** str)
     *str = temp;
 }
 
-char* get_word(char** str)
+char* copy_next_word(char* string)
 {
-    int i = 0;
-    char* res = (char*)malloc_with_check((MAX_LABEL_LENGTH + 1) * sizeof(char));
-    char* temp = *str;
+    int word_length = 0;
+    char* result;
+    char* string_ptr = string;
 
-    if (str == NULL)
-        return NULL;
-
-    while (*temp != '\0' && i <= MAX_LINE_LENGTH)
+    /* get the length of the next word */
+    while (!isspace(*string_ptr))
     {
-        if (isspace(*temp))
-        {
-            temp++;
-            continue;
-        }
-
-        res[i++] = *temp++;
+        word_length++;
+        string_ptr++;
     }
 
-    res[i] = '\0';
-    return res;
+    result = (char*)malloc_with_check((sizeof(char) * word_length) + 1);
+    strncpy(result, string, word_length);
+    result[word_length + 1] = '\0';
+
+    return result;    
+}
+
+char* copy_string(char* string)
+{
+    char* result = malloc_with_check(sizeof(string));
+    strcpy(result, string);
+    return result;
 }
 
 boolean end_of_string(char* str)
 {
+    skip_white_spaces(&str);
     if (*str == '\0' || *str == '\n')
         return TRUE;
     return FALSE;

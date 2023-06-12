@@ -5,7 +5,8 @@
 void reset_str(char *string);
 void skip_white_spaces(char **string);
 
-char *get_word(char **string);
+char *copy_string(char *string);
+char *copy_next_word(char *string);
 char *get_opcode(char **string);
 char *get_operand(char **string);
 char *get_directive(char **string);

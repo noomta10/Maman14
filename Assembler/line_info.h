@@ -1,5 +1,6 @@
 typedef struct {
     long line_number;
+    char* file_name;
     char* line_content;
     char* label;
     char* directive_data;
