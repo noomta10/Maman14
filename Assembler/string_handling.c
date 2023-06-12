@@ -46,7 +46,7 @@ char* copy_next_word(char* string)
 
 char* copy_string(char* string)
 {
-    char* result = malloc_with_check(sizeof(string)*(strlen(string) + 1));
+    char* result = malloc_with_check(sizeof(string)* (strlen(string) + 1));
     strcpy(result, string);
     return result;
 }

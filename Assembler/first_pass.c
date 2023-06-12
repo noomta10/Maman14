@@ -205,9 +205,9 @@ void extract_command_info(char* content, line_info* line)
     line->line_content = (char*) malloc_with_check(sizeof(char)*(MAX_LINE_LENGTH+1));
     strcpy(line->line_content, content);
 
-    /*if there's a label save it, else set label flag to false*/
+    /* if there's a label save it, else set label flag to false */
     skip_white_spaces(&content);
-    if (is_label(content)) /*check for label*/
+    if (is_label(content)) /* check for label */
     {
         line->label = get_label(&content);
         line->label_flag = TRUE;
