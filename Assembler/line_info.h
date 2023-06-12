@@ -10,7 +10,7 @@ typedef struct {
     char* target_operand;
     boolean comma_flag;
     boolean label_flag;
-    boolean directive_flag;// .data, .string, .entry, .extern
+    boolean directive_flag;/* .data, .string, .entry, .extern */
     boolean instruction_flag;
     boolean extra_chars_flag;
 } line_info;

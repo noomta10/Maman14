@@ -61,8 +61,10 @@ boolean end_of_string(char* str)
 
 boolean ignore_line(char* line)
 {
+    int i = 0;
+
     /* Epmty line or comment line */
-    if (end_of_string(line) || *line == ';') 
+    if (*line == '\n' || *line == ';') 
     {
         return TRUE;
     }

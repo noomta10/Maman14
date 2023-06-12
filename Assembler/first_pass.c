@@ -20,7 +20,6 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
     char line_content[MAX_LINE_LENGTH];
     line_info* line = NULL;
     boolean* error_flag = (boolean *)malloc_with_check(sizeof(boolean));
-    int line_number = 0;/*debugging*/
     *DC = *IC = 0;/*end of page 48*/
 
     line = (line_info*)malloc_with_check(sizeof(line_info)); /*allocating memory for line*/
@@ -32,7 +31,7 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
         if (check_line_length(am_file, line_content))
         {
             *error_flag = TRUE;
-            printf("Error: line %d is too long.\n", line->line_number);
+            printf("Error: line %ld is too long.\n", line->line_number);
             continue;
         }
         line->line_content = copy_string(line_content);
@@ -100,7 +99,7 @@ boolean validate_line(line_info* line)
         {
             if(strcmp(line->directive_data, "") == 0)
             {
-                printf("Error: in line\n%d %s\nmissing data\n", line->line_number, line->line_content);
+                printf("Error: in line %ld %s\nmissing data\n", line->line_number, line->line_content);
                 valid = FALSE;
             }
         }
@@ -296,8 +295,10 @@ boolean check_comma(char** str)
 
 boolean bad_label(char* label)
 {
-    printf("%s", label);
     int i = 0;
+
+    /*debug*/
+    printf("%s", label);
 
     /* Check if label is a reserved word */
     if(strcmp(label, "mov") == 0 || strcmp(label, "cmp") == 0 ||

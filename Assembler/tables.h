@@ -31,7 +31,7 @@ while (current_entry->next != NULL) { \
 
 typedef enum {
 	TYPE_STRING,
-	TYPE_NUMBER,
+	TYPE_NUMBER
 } data_types;
 
 
