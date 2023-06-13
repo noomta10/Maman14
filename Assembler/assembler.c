@@ -36,6 +36,7 @@ void process_file(char* file_name) {
     data_table_entry* data_table_head = NULL;
     entry_entry* ent_head = NULL;
     extern_entry* ext_head = NULL;
+	code_table_entry* code_table_head = NULL;
 
 	/* Concatenate '.as' postfix to file name */
 	char* full_file_name = add_file_postfix(file_name, ".as");
@@ -70,7 +71,7 @@ void process_file(char* file_name) {
 
 	printf("first_pass started\n");
 	/*call first_pass*/
-	error_flag = first_pass(file_pointer, &symbol_table_head, &data_table_head, &ent_head, &ext_head, &IC, &DC);
+	error_flag = first_pass(file_pointer, &symbol_table_head, &data_table_head, &ent_head, &code_table_head, &ext_head, &IC, &DC);
 
 
 	/*printing data_tables for debugging*/

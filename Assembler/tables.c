@@ -147,7 +147,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
         if (line->label)
         {
             data_type = TYPE_STRING;
-            if (!add_symbol_to_table(line, symbol_table_head, data_type, ext_head, DC, L))
+            if (!add_symbol_to_table(line->label, symbol_table_head, ext_head, data_type, DC, L))
                 error_flag = TRUE;
         }
         *DC += L;
@@ -207,7 +207,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
 
         /*check if there is a label and add it*/
         if (line->label && !error_flag)
-            error_flag = !add_symbol_to_table(line, symbol_table_head, data_type, ext_head, DC, L);
+            error_flag = !add_symbol_to_table(line->label, symbol_table_head, ext_head, data_type, DC, L);
         DC += L;
 
         free(token);
@@ -341,14 +341,15 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
     return !error_flag;
 }
 
-boolean add_instruction_to_table(line_info* line, long* IC, code_table_entry** code_table_head, )
+boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_trable_head, extern_entry** ext_head, code_table_entry** code_table_head, long* IC)
 {
     code_table_entry* code_table_temp = NULL;
     code_table_entry* code_table_prev = NULL;
     
     code_word code_word_temp;
-    //char* opcode = line->opcode;
-    
+
+    boolean error_flag = FALSE;
+    long L = 0;    
 
     SET_PREV_POINTER(code_table_prev, *code_table_head);
 
@@ -361,15 +362,32 @@ boolean add_instruction_to_table(line_info* line, long* IC, code_table_entry** c
     code_table_temp->word_value.ARE = ABSOLUTE;
     code_table_temp->word_value.source_addressing = get_addressing_type(line->source_operand);
     code_table_temp->word_value.target_addressing = get_addressing_type(line->source_operand);
-    code_table_temp->address = *(IC++);
+    code_table_temp->address = *IC++;
     ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
     
-    if()
+    L += extra_words_for_addressing(line);
 
+    if(line->label_flag)
+        if(!add_symbol_to_table(line->label, symbol_trable_head, ext_head, INSTRUCTION, IC, L))
+            error_flag = TRUE;
 
+    *IC += L;
+
+    return !error_flag;
 }
 
-boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_head, data_types data_type_head, extern_entry** ext_head, long* DC, long L)
+int extra_words_for_addressing(line_info* line)
+{
+    if (line->source_operand == NULL && line->target_operand == NULL)
+        return 0;
+    if(line->source_operand == NULL || line->target_operand == NULL);
+        return 1;
+    if(is_register(line->source_operand) == 0 && is_register(line->target_operand) == 0)
+        return 1;
+    return 2;
+}
+
+boolean add_symbol_to_table(char* lable_name, symbols_table_entry** symbol_table_head, extern_entry** ext_head, line_type type, long* address, long L)
 {
     extern_entry* ext_ptr = *ext_head;
     symbols_table_entry* symbol_table_ptr = *symbol_table_head;
@@ -379,7 +397,7 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_
     
     while (symbol_table_ptr != NULL)
     {
-        if (strcmp(symbol_table_ptr->name, line->label) == 0)/*checking if double declaration of label*/
+        if (strcmp(symbol_table_ptr->name, lable_name) == 0)/*checking if double declaration of label*/
         {
             printf("Error: label already exist\n");
             return FALSE;
@@ -388,7 +406,7 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_
     }
     while(ext_ptr != NULL)
     {
-        if (strcmp(ext_ptr->name, line->label) == 0)/*checking if lable declared alredy as extern*/
+        if (strcmp(ext_ptr->name, lable_name) == 0)/*checking if lable declared alredy as extern*/
         {
             printf("Error: label already declared as extern\n");
             return FALSE;
@@ -398,9 +416,10 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_
 
     /*adding the label to symbol table*/
     symbol_table_ptr = (symbols_table_entry*)malloc_with_check(sizeof(symbols_table_entry));
-    symbol_table_ptr->address = *DC;
+    symbol_table_ptr->address_type = type;
+    symbol_table_ptr->address = *address;
     symbol_table_ptr->L = L;
-    symbol_table_ptr->name = line->label;
+    symbol_table_ptr->name = lable_name;
 
     ADD_NODE_TO_LIST(symbol_table_prev, symbol_table_ptr, symbol_table_head);
 
