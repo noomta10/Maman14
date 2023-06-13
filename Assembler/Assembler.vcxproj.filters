@@ -74,6 +74,7 @@
     <None Include="makefile" />
     <None Include="test_lable.am" />
     <None Include="label_check.as" />
+    <None Include="data_test.am" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data_test.as" />

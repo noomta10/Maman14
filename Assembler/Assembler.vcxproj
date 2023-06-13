@@ -148,6 +148,7 @@
     <ClInclude Include="line_info.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data_test.am" />
     <None Include="label_check.as" />
     <None Include="makefile" />
     <None Include="my_file.as" />

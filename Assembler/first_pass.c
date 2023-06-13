@@ -24,6 +24,7 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
 
     
     line = (line_info*)malloc_with_check(sizeof(line_info)); /*allocating memory for line*/
+    reset_line_info(line);
     line->line_number = 1;
 
     /*reading .as file line by line entil the end*/
@@ -233,6 +234,7 @@ void extract_command_info(char* content, line_info* line)
     else
     {
         line->directive_flag = FALSE;
+        line->instruction_flag = TRUE;
     }
 
     /*gets the opcode*/
@@ -278,10 +280,12 @@ boolean is_directive(char* str)
 
 boolean is_label(char* str)
 {
-    char* temp = str;
-    while (!isspace(*str++))
+    while (!isspace(*str) && end_of_string(str))
+    {
         if (*str == ':')
             return TRUE;
+        str++;
+    }
     return FALSE;
 }
 

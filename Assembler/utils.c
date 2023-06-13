@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "utils.h"
 #include "assembler.h"
+#include "utils.h"
 #include "line_info.h"
 #include "tables.h"
 
