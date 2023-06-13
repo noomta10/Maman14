@@ -9,7 +9,7 @@
 #include "tables.h"
 #include "debuging.h"
 #include "first_pass.h"
-
+#include "encoding.h"
 
 static void process_file(char* file_name);
 
@@ -91,5 +91,7 @@ void process_file(char* file_name) {
 	free_symbols_table(symbol_table_head);
 	/* Close file */
 	fclose(file_pointer);
-	
+
+	/* Check encoding */
+	encode_base64(0b111111101010);
 }
