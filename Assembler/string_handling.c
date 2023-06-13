@@ -8,6 +8,7 @@
 #include "line_info.h"
 #include "string_handling.h"
 #include "utils.h"
+#include "tables.h"
 
 
 void reset_str(char* str) /*clears string*/
@@ -148,3 +149,4 @@ char* get_label(char** str)
 
     return token;
 }
+

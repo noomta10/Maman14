@@ -341,6 +341,34 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
     return !error_flag;
 }
 
+boolean add_instruction_to_table(line_info* line, long* IC, code_table_entry** code_table_head, )
+{
+    code_table_entry* code_table_temp = NULL;
+    code_table_entry* code_table_prev = NULL;
+    
+    code_word code_word_temp;
+    //char* opcode = line->opcode;
+    
+
+    SET_PREV_POINTER(code_table_prev, *code_table_head);
+
+
+    code_table_temp = (code_table_entry*)malloc_with_check(sizeof(code_table_entry));
+
+    
+    /*adding the word to the code table*/
+    code_table_temp->word_value.opcode = get_opcode_bits(line->opcode);
+    code_table_temp->word_value.ARE = ABSOLUTE;
+    code_table_temp->word_value.source_addressing = get_addressing_type(line->source_operand);
+    code_table_temp->word_value.target_addressing = get_addressing_type(line->source_operand);
+    code_table_temp->address = *(IC++);
+    ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+    
+    if()
+
+
+}
+
 boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_head, data_types data_type_head, extern_entry** ext_head, long* DC, long L)
 {
     extern_entry* ext_ptr = *ext_head;

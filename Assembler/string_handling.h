@@ -15,3 +15,5 @@ char *get_label(char **string);
 boolean end_of_string(char *string);
 boolean ignore_line(char* line);
 
+int get_opcode_bits(char* opcode);
+
