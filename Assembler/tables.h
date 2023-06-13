@@ -28,11 +28,65 @@ while (current_entry->next != NULL) { \
 }
 
 
+typedef struct {
+	unsigned int ARE: 2;
+	unsigned int target_addressing: 3;
+	unsigned int opcode: 4;
+	unsigned int source_addressing: 3;
+} code_word;
+
+typedef enum {
+	MOV_OPCODE = 0,
+	CMP_OPCODE = 1,
+	ADD_OPCODE = 2,
+	SUB_OPCODE = 3,
+	NOT_OPCODE = 4,
+	CLR_OPCODE = 5,
+	LEA_OPCODE = 6,
+	INC_OPCODE = 7,
+	DEC_OPCODE = 8,
+	JMP_OPCODE = 9,
+	BNE_OPCODE = 10,
+	RED_OPCODE = 11,
+	PRN_OPCODE = 12,
+	JSR_OPCODE = 13,
+	RTS_OPCODE = 14,	
+	STOP_OPCODE = 15,
+} opcode_type;
+
+typedef enum {
+	IMMEDIATE_ADDRESSING = 1,
+	DIRECT_ADDRESSING = 3,
+	REGISTER_ADDRESSING = 5
+} addressing_type;
+
+typedef enum {
+	ABSOLUTE = 0,
+	EXTERNAL = 1,
+	RELOCATABLE = 2
+} ARE_type;
+
+typedef enum {
+	R0 = 0,
+	R1 = 1,
+	R2 = 2,
+	R3 = 3,
+	R4 = 4,
+	R5 = 5,
+	R6 = 6,
+	R7 = 7
+} register_type;
 
 typedef enum {
 	TYPE_STRING,
 	TYPE_NUMBER
 } data_types;
+
+typedef struct{
+	code_table_entry* next;
+	code_word word_value;
+	long address;
+} code_table_entry; 
 
 
 typedef union{
@@ -82,6 +136,7 @@ typedef struct symbols_table_entry{/*struct for the symbols table*/
 
 
 boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table, data_table_entry** data_table, extern_entry** ext, entry_entry** ent, long* DC);
+boolean add_instruction_to_table(line_info* line, long* IC, );
 boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table, data_types data_type, extern_entry** ext, long* DC, long L);
 
 

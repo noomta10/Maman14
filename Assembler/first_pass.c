@@ -78,8 +78,11 @@ void process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_
             *error_flag = TRUE;
     }
 
-
-    /*continue here */
+    if (line->instruction_flag)
+    {
+        if(!add_instruction_to_table(line_info* line, long* IC, ))
+    }
+    
 }
 
 
@@ -362,4 +365,52 @@ boolean check_line_length(FILE* am_file, char* line_content)
     while ((c = getc(am_file)) != '\n' || c == EOF);
 
     return TRUE;
+}
+
+
+opcode_type get_opcode_bits(char* opcode)
+{
+    if (strcmp(opcode, "mov") == 0)
+        return MOV_OPCODE;
+    if (strcmp(opcode, "cmp") == 0)
+        return CMP_OPCODE;
+    if (strcmp(opcode, "add") == 0)
+        return ADD_OPCODE;
+    if (strcmp(opcode, "sub") == 0)
+        return SUB_OPCODE;
+    if (strcmp(opcode, "not") == 0)   
+        return NOT_OPCODE;
+    if (strcmp(opcode, "clr") == 0)
+        return CLR_OPCODE;
+    if (strcmp(opcode, "lea") == 0)
+        return LEA_OPCODE;
+    if (strcmp(opcode, "inc") == 0)
+        return INC_OPCODE;
+    if (strcmp(opcode, "dec") == 0)
+        return DEC_OPCODE;
+    if (strcmp(opcode, "jmp") == 0) 
+        return JMP_OPCODE;
+    if (strcmp(opcode, "bne") == 0)
+        return BNE_OPCODE;
+    if (strcmp(opcode, "red") == 0)
+        return RED_OPCODE;
+    if (strcmp(opcode, "prn") == 0)
+        return PRN_OPCODE;
+    if (strcmp(opcode, "jsr") == 0)
+        return JSR_OPCODE;
+    if (strcmp(opcode, "rts") == 0)
+        return RTS_OPCODE;
+    if (strcmp(opcode, "stop") == 0)
+        return STOP_OPCODE;
+}
+
+addressing_type get_addressing_type(char* operand)
+{
+    if (operand == NULL)
+        return IMMEDIATE_ADDRESSING;
+    if (isdigit(*operand) || *operand == '-' || *operand == '+')
+        return IMMEDIATE_ADDRESSING;
+    if (is_label(operand))
+        return DIRECT_ADDRESSING;
+    return REGISTER_ADDRESSING;
 }
