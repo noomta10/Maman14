@@ -6,9 +6,10 @@
 #include <stdlib.h>
 #include "assembler.h"
 #include "line_info.h"
-#include "string_handling.h"
 #include "utils.h"
 #include "tables.h"
+#include "string_handling.h"
+
 
 
 void reset_str(char* str) /*clears string*/
@@ -150,3 +151,39 @@ char* get_label(char** str)
     return token;
 }
 
+opcode_type get_opcode_bits(char* opcode)
+{
+    if (strcmp(opcode, "mov") == 0)
+        return MOV_OPCODE;
+    if (strcmp(opcode, "cmp") == 0)
+        return CMP_OPCODE;
+    if (strcmp(opcode, "add") == 0)
+        return ADD_OPCODE;
+    if (strcmp(opcode, "sub") == 0)
+        return SUB_OPCODE;
+    if (strcmp(opcode, "not") == 0)   
+        return NOT_OPCODE;
+    if (strcmp(opcode, "clr") == 0)
+        return CLR_OPCODE;
+    if (strcmp(opcode, "lea") == 0)
+        return LEA_OPCODE;
+    if (strcmp(opcode, "inc") == 0)
+        return INC_OPCODE;
+    if (strcmp(opcode, "dec") == 0)
+        return DEC_OPCODE;
+    if (strcmp(opcode, "jmp") == 0) 
+        return JMP_OPCODE;
+    if (strcmp(opcode, "bne") == 0)
+        return BNE_OPCODE;
+    if (strcmp(opcode, "red") == 0)
+        return RED_OPCODE;
+    if (strcmp(opcode, "prn") == 0)
+        return PRN_OPCODE;
+    if (strcmp(opcode, "jsr") == 0)
+        return JSR_OPCODE;
+    if (strcmp(opcode, "rts") == 0)
+        return RTS_OPCODE;
+    if (strcmp(opcode, "stop") == 0)
+        return STOP_OPCODE;
+    return 0; 
+}

@@ -343,17 +343,15 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
 
 boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_trable_head, extern_entry** ext_head, code_table_entry** code_table_head, long* IC)
 {
-    code_table_entry* code_table_temp = NULL;
+    code_table_entry* code_table_temp = *code_table_head;
     code_table_entry* code_table_prev = NULL;
     
-    code_word code_word_temp;
 
     boolean error_flag = FALSE;
     long L = 0;    
 
-    SET_PREV_POINTER(code_table_prev, *code_table_head);
-
-
+    SET_PREV_POINTER(code_table_prev, code_table_temp);
+   
     code_table_temp = (code_table_entry*)malloc_with_check(sizeof(code_table_entry));
 
     
@@ -380,7 +378,7 @@ int extra_words_for_addressing(line_info* line)
 {
     if (line->source_operand == NULL && line->target_operand == NULL)
         return 0;
-    if(line->source_operand == NULL || line->target_operand == NULL);
+    if(line->source_operand == NULL || line->target_operand == NULL)
         return 1;
     if(is_register(line->source_operand) == 0 && is_register(line->target_operand) == 0)
         return 1;

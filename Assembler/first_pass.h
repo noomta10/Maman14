@@ -12,5 +12,6 @@ void process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_
 boolean bad_label(char* label);
 boolean check_instruction(char *instruction);
 boolean check_line_length(FILE* am_file, char* line_content);
+addressing_type get_addressing_type(char* operand);
 
 

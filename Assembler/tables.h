@@ -51,7 +51,7 @@ typedef enum {
 	PRN_OPCODE = 12,
 	JSR_OPCODE = 13,
 	RTS_OPCODE = 14,	
-	STOP_OPCODE = 15,
+	STOP_OPCODE = 15
 } opcode_type;
 
 typedef enum {
@@ -87,7 +87,7 @@ typedef enum {
 	TYPE_NUMBER
 } data_types;
 
-typedef struct{
+typedef struct code_table_entry{/*code table for code values*/
 	struct code_table_entry* next;
 	code_word word_value;
 	long address;
@@ -145,3 +145,5 @@ void free_data_table(data_table_entry*);
 void free_symbols_table(symbols_table_entry*);
 void free_extern_table(extern_entry*);
 void free_entry_table(entry_entry*);
+
+int extra_words_for_addressing(line_info* line);
