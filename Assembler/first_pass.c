@@ -100,7 +100,7 @@ boolean validate_line(line_info* line)
         {
             if(strcmp(line->directive_data, "") == 0)
             {
-                printf("Error: in line %ld %s\nmissing data\n", line->line_number, line->line_content);
+                printf("Error: in line: %ld %s\nmissing data\n", line->line_number, line->line_content);
                 valid = FALSE;
             }
         }
@@ -108,7 +108,7 @@ boolean validate_line(line_info* line)
         {
             if(strcmp(line->directive_data, "") == 0)
             {
-                printf("Error: in line\n%ld %s\nmissing data\n", line->line_number, line->line_content);
+                printf("Error: in line: %ld %s\nmissing data\n", line->line_number, line->line_content);
                 valid = FALSE;
             }
         }
@@ -124,13 +124,13 @@ boolean validate_line(line_info* line)
         {
             if(strcmp(line->directive_data, "") == 0)
             {
-                printf("Warning:\n%ld %s no extern labels given\n", line->line_number, line->line_content);
+                printf("Warning: in line: %ld %s\n no extern labels given\n", line->line_number, line->line_content);
                 valid = FALSE;
             }
         }
         else
         {
-            printf("Error: invalid directive command\n");
+            printf("Error: line: %ld %s\ninvalid directive command\n", line->line_number, line->line_content);
             valid = FALSE;
         }            
     }
@@ -297,7 +297,7 @@ boolean bad_label(char* label)
     int i = 0;
 
     /*debug*/
-    printf("%s", label);
+    printf("Debug: %s\n", label);
 
     /* Check if label is a reserved word */
     if(strcmp(label, "mov") == 0 || strcmp(label, "cmp") == 0 ||
@@ -312,19 +312,19 @@ boolean bad_label(char* label)
        strcmp(label, "entry") == 0 || strcmp(label, "extern") == 0 ||
        *label == '@')
     {
-        printf("Error: label is a reserved word");
+        printf("Error: label is a reserved word\n");
         return TRUE;
     }
 
     /* Check if label is too long or too short */
     if (strlen(label) > MAX_LABEL_LENGTH)
     {
-        printf("Error: label to long");
+        printf("Error: label to long\n");
         return TRUE;
     }
     if (strlen(label) == 0)
     {
-        printf("Error: label to short");
+        printf("Error: label to short\n");
         return TRUE;
     }
 
@@ -335,11 +335,11 @@ boolean bad_label(char* label)
     }
 
     /* Check if label has invalid characters */
-    for (i = 1; i < strlen(label) - 1; i++)
+    for (i = 1; i < strlen(label); i++)
     {   
         if (!isalnum(label[i])) 
         {
-            printf("Error: label has invalid characters\n");
+            printf("Error: label %s has invalid characters\n", label);
             return TRUE;
         }
     }

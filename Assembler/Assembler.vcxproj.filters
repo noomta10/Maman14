@@ -67,6 +67,7 @@
     <None Include="my_file.as" />
     <None Include="makefile" />
     <None Include="test_lable.am" />
+    <None Include="label_check.as" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data_test.as" />
