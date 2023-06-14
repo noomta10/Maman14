@@ -135,6 +135,7 @@
     <ClCompile Include="string_handling.c" />
     <ClCompile Include="tables.c" />
     <ClCompile Include="utils.c" />
+    <ClCompile Include="write_files.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="assembler.h" />
@@ -146,6 +147,7 @@
     <ClInclude Include="tables.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="line_info.h" />
+    <ClInclude Include="write_files.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data_test.am" />
