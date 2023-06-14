@@ -23,6 +23,12 @@ void write_entry_file(char* file_name, entry_entry* entry_table_head) {
 
 	entry_file_name = add_file_postfix(file_name, ".ent");
 	entry_file = fopen(entry_file_name, "w");
+
+	if (!entry_file) {
+		printf("Error: couldn't open file %s\n", entry_file_name);
+		return;
+	}
+
 	current_entry_entry = entry_table_head;
 	
 	while (current_entry_entry->next)
@@ -52,6 +58,12 @@ void write_extern_file(char* file_name, extern_entry* extern_table_head) {
 
 	extern_file_name = add_file_postfix(file_name, ".ext");
 	extern_file = fopen(extern_file_name, "w");
+
+	if (!extern_file) {
+		printf("Error: couldn't open file %s\n", extern_file_name);
+		return;
+	}
+
 	current_extern_entry = extern_table_head;
 
 	while (current_extern_entry->next)
