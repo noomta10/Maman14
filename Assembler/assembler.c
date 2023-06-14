@@ -94,14 +94,11 @@ void process_file(char* file_name) {
 	free_entry_table(ent_head);
 	free_extern_table(ext_head);
 	free_symbols_table(symbol_table_head);
+	//free_code_table(code_table_head);
+	
 	/* Close file */
 	fclose(file_pointer);
 
 	/* Check encoding */
 	encode_base64('c');
-	print_decimal_to_binary(0);
-	print_decimal_to_binary(1);
-	print_decimal_to_binary(test);
-	print_decimal_to_binary(test2);
-
 }

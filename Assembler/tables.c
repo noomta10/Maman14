@@ -66,6 +66,17 @@ void free_entry_table(entry_entry* head) {
 
 }
 
+void free_code_table(code_table_entry* head){
+    code_table_entry* next_entry;
+    printf("Debug: freeing code table\n");
+    while (head != NULL)
+    {
+        next_entry = head->next;
+        free(head);
+        head = next_entry;
+    }
+}
+
 boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_head, data_table_entry** data_table_head, extern_entry** ext_head, entry_entry** ent_head, long* DC)
 {
     /*declaring pointers*/
@@ -346,25 +357,105 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
     code_table_entry* code_table_temp = *code_table_head;
     code_table_entry* code_table_prev = NULL;
     
-
     boolean error_flag = FALSE;
-    long L = 1;    
+    long L = 0;    
 
     SET_PREV_POINTER(code_table_prev, code_table_temp);
    
-    code_table_temp = (code_table_entry*)malloc_with_check(sizeof(code_table_entry));
-
-    
-    /*adding the word to the code table*/
-    code_table_temp->word.opcode = get_opcode_bits(line->opcode);
-    code_table_temp->word.ARE = ABSOLUTE;
-    code_table_temp->word.source_addressing = get_addressing_type(line->source_operand);
-    code_table_temp->word.target_addressing = get_addressing_type(line->source_operand);
-    code_table_temp->address = *IC;
+    /*adding opcode word*/
+    code_table_temp = get_opcode_word(line, IC);
     ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
-    
-    L += extra_words_for_addressing(line);
 
+
+    /*adding extra words if needed*/
+    /*if there is no operands*/
+    if(line->source_operand == NULL && line->target_operand == NULL)
+    {
+        L++;
+    }
+    else if(line->source_operand == NULL || line->target_operand == NULL)
+    {
+        if(line->source_operand == NULL)
+        {
+            if(is_register(line->target_operand))
+            {
+                code_table_temp = get_register_word(line->target_operand, line->source_operand, IC);
+                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+                L++;
+            }
+            else
+            {
+                code_table_temp = get_extra_word(line->target_operand, IC);
+                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+                L++;
+            }
+        }
+        else /* line->taget_operation == NULL */
+        {
+            if(is_register(line->source_operand))
+            {
+                code_table_temp = get_register_word(line->target_operand, line->source_operand, IC);
+                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+                L++;
+            }
+            else
+            {
+                code_table_temp = get_extra_word(line->source_operand, IC);
+                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+                L++;
+            }
+        }
+    }
+    /* if both operands needs to be coded */
+    else
+    {
+        /* if one are more operands are registers */
+        if(is_register(line->source_operand) || is_register(line->target_operand))
+        {
+            /* if source operand is not a register add the extra code word before register code word*/
+            if(!is_register(line->source_operand))
+            {
+                code_table_temp = get_extra_word(line->source_operand, IC);
+                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+                L++;
+
+                code_table_temp = get_register_word(line->target_operand, line->source_operand, IC);
+                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+                L++;
+            }
+            /* if target operand is not a register add the extra code word after register code word*/
+            else if(!is_register(line->target_operand))
+            {
+                code_table_temp = get_register_word(line->target_operand, line->source_operand, IC);
+                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+                L++;
+
+                code_table_temp = get_extra_word(line->source_operand, IC);
+                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+                L++;
+            }
+            /* if both operands are registers */
+            else
+            {
+                code_table_temp = get_register_word(line->target_operand, line->source_operand, IC);
+                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+                L++;
+            }
+        }
+        /* operands are not registers */
+        else 
+        {
+            code_table_temp = get_extra_word(line->source_operand, IC);
+            ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+            L++;
+
+            code_table_temp = get_extra_word(line->target_operand, IC);
+            ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+            L++;
+        }
+    }
+
+    /*adding label to symbol table*/
     if(line->label_flag)
         if(!add_symbol_to_table(line->label, symbol_trable_head, ext_head, INSTRUCTION, IC, L))
             error_flag = TRUE;
@@ -372,6 +463,49 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
     *IC += L;
 
     return !error_flag;
+}
+
+code_table_entry* get_opcode_word(line_info* line, long* IC)
+{
+    /* creating a code word with opcode info*/
+    code_table_entry* code_table_temp = (code_table_entry*)malloc_with_check(sizeof(code_table_entry));
+    code_table_temp->type = TYPE_CODE_WORD;
+    code_table_temp->value.code_word_value.opcode = get_opcode_bits(line->opcode);
+    code_table_temp->value.code_word_value.ARE = ABSOLUTE;
+    code_table_temp->value.code_word_value.source_addressing = get_addressing_type(line->source_operand);
+    code_table_temp->value.code_word_value.target_addressing = get_addressing_type(line->source_operand);
+    code_table_temp->address = *IC;
+    return code_table_temp;
+}
+
+code_table_entry* get_register_word(char* source_register, char* target_register, long* IC)
+{
+    /* creating a code word with register info*/
+    code_table_entry* code_table_temp = (code_table_entry*)malloc_with_check(sizeof(code_table_entry));
+    code_table_temp->type = TYPE_REGISTER_WORD;
+    code_table_temp->value.register_word_value.ARE = ABSOLUTE;
+    code_table_temp->value.register_word_value.source_register = get_register_number(source_register);
+    code_table_temp->value.register_word_value.target_register = get_register_number(target_register);
+    code_table_temp->address = *IC;
+    return code_table_temp;
+}
+
+code_table_entry* get_extra_word(char* operand, long* IC)
+{
+    /* creating a code word with extra info*/
+    code_table_entry* code_table_temp = (code_table_entry*)malloc_with_check(sizeof(code_table_entry));
+    code_table_temp->type = TYPE_EXTRA_CODE_WORD;
+    if(isdigit(*operand))
+    {
+        code_table_temp->value.extra_code_word_value.ARE = ABSOLUTE;
+        code_table_temp->value.extra_code_word_value.data = atoi(operand);
+    }
+    else
+    {
+        code_table_temp->value.extra_code_word_value.ARE = UNINITIALIZED_VALUE;
+        code_table_temp->value.extra_code_word_value.data = UNINITIALIZED_VALUE;
+    }
+    return code_table_temp;
 }
 
 int extra_words_for_addressing(line_info* line)

@@ -1,3 +1,6 @@
+#define UNINITIALIZED_VALUE 0
+
+
 #define ADD_NODE_TO_LIST(prev, ptr, head) \
 /*seting the list root if list is empty*/ \
 if (!*(head)) \
@@ -35,6 +38,29 @@ typedef struct {
 	unsigned int source_addressing: 3;
 } code_word;
 
+typedef struct {
+	unsigned int ARE: 2;
+	unsigned int data: 10;
+} extra_code_word;
+
+typedef struct {
+	unsigned int ARE: 2;
+	unsigned int target_register: 5;
+	unsigned int source_register: 5;
+} register_word;
+
+typedef union {
+	code_word code_word_value;
+	extra_code_word extra_code_word_value;
+	register_word register_word_value;
+} word_value;
+
+typedef enum {
+	TYPE_CODE_WORD,
+	TYPE_EXTRA_CODE_WORD,
+	TYPE_REGISTER_WORD
+} word_type;
+
 typedef enum {
 	MOV_OPCODE = 0,
 	CMP_OPCODE = 1,
@@ -68,6 +94,7 @@ typedef enum {
 } ARE_type;
 
 typedef enum {
+	NO_REGISTER = 0,
 	R0 = 0,
 	R1 = 1,
 	R2 = 2,
@@ -90,7 +117,8 @@ typedef enum {
 
 typedef struct code_table_entry{/*code table for code values*/
 	struct code_table_entry* next;
-	code_word word;
+	word_type type;
+	word_value value;
 	long address;/* IC */
 } code_table_entry; 
 
@@ -99,8 +127,6 @@ typedef union{
 	char character;
 	long number;
 } data_value;
-
-
 
 typedef struct data_table_entry{/*data table for data values*/
 	struct data_table_entry *next;
@@ -132,6 +158,13 @@ typedef struct symbols_table_entry{/*struct for the symbols table*/
 	boolean is_data;
 } symbols_table_entry;
 
+typedef struct uninitialized_symbols_table_entry{/*struct for the symbols table*/
+	struct uninitialized_symbols_table_entry *next;/*pointer to the next entry*/
+	long address;/*address of IC or DC*/
+	char* name;
+	extra_code_word* extra_code_word_value;
+} uninitialized_symbols_table_entry;
+
 
 
 
@@ -146,5 +179,10 @@ void free_data_table(data_table_entry*);
 void free_symbols_table(symbols_table_entry*);
 void free_extern_table(extern_entry*);
 void free_entry_table(entry_entry*);
+void free_code_table(code_table_entry* head);
 
 int extra_words_for_addressing(line_info* line);
+
+code_table_entry* get_opcode_word(line_info* line, long* IC);
+code_table_entry* get_register_word(char* source_register, char* target_register, long* IC);
+code_table_entry* get_extra_word(char* operand, long* IC);

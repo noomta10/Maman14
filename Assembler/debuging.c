@@ -37,15 +37,32 @@ void print_code_word(code_table_entry* code_table)
     printf("printing code_table_entry:\n");
     while (code_table != NULL)
     {
-        printf("address: %ld\n", code_table->address);
-        printf("ARE: %d\n", code_table->word.ARE);
-        printf("opcode: %d\n", code_table->word.opcode);
-        printf("source_addressing: %d\n", code_table->word.source_addressing);
-        printf("source_addressing: %d\n", code_table->word.source_addressing);        
-        printf("\n");
+        if (code_table->type == TYPE_CODE_WORD)
+        {
+            printf("code word address: %ld\n", code_table->address);
+            printf("ARE: %d\n", code_table->value.code_word_value.ARE);
+            printf("opcode: %d\n", code_table->value.code_word_value.opcode);
+            printf("source_operand_addressing: %d\n", code_table->value.code_word_value.source_addressing);
+            printf("target_operand_addressing: %d\n", code_table->value.code_word_value.target_addressing);
+            printf("\n" );
+        }
+        if (code_table->type == TYPE_REGISTER_WORD)
+        {
+            printf("register word address: %ld\n", code_table->address);
+            printf("ARE: %d\n", code_table->value.register_word_value.ARE);
+            printf("source_register: %d\n", code_table->value.register_word_value.source_register);
+            printf("target_register: %d\n", code_table->value.register_word_value.target_register);
+            printf("\n");
+        }
+        if (code_table->type == TYPE_EXTRA_CODE_WORD)
+        {
+            printf("extra code word address: %ld\n", code_table->address);
+            printf("ARE: %d\n", code_table->value.extra_code_word_value.ARE);
+            printf("data: %d\n", code_table->value.extra_code_word_value.data);
+            printf("\n");
+        }
         code_table = code_table->next;
     }
-    printf("-------------------------\n\n");
 }
 
 void print_extern_table(extern_entry* ext)
