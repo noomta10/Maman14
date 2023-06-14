@@ -6,6 +6,7 @@
 #include "tables.h"
 #include "first_pass.h"
 #include "debuging.h"
+#include "encoding.h"
 
 
 
@@ -29,6 +30,22 @@ void print_data_table(data_table_entry* data_table)
     }
     printf("-------------------------\n\n");
 
+}
+
+void print_code_word(code_table_entry* code_table)
+{
+    printf("printing code_table_entry:\n");
+    while (code_table != NULL)
+    {
+        printf("address: %ld\n", code_table->address);
+        printf("ARE: %d\n", code_table->word.ARE);
+        printf("opcode: %d\n", code_table->word.opcode);
+        printf("source_addressing: %d\n", code_table->word.source_addressing);
+        printf("source_addressing: %d\n", code_table->word.source_addressing);        
+        printf("\n");
+        code_table = code_table->next;
+    }
+    printf("-------------------------\n\n");
 }
 
 void print_extern_table(extern_entry* ext)
@@ -84,3 +101,4 @@ void print_line_info(line_info* line)
     printf("comma_flag: %s\n", (line->comma_flag) ? "TRUE" : "FALSE");
     printf("extra_chars_flag: %s\n", (line->extra_chars_flag) ? "TRUE" : "FALSE");
 }
+

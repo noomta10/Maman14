@@ -43,6 +43,9 @@ void process_file(char* file_name) {
 	/* Concatenate '.am' postfix to file name */
 	char* full_am_name = add_file_postfix(file_name, ".am");
 
+	unsigned int test = 0;
+	unsigned int test2 = -3;
+
 	LOG_DEBUG("process_file start");
 
 
@@ -82,6 +85,7 @@ void process_file(char* file_name) {
     print_symbol_table(symbol_table_head);
     print_entry_table(ent_head);
     print_extern_table(ext_head);
+	print_code_word(code_table_head);
 
 
 
@@ -95,4 +99,9 @@ void process_file(char* file_name) {
 
 	/* Check encoding */
 	encode_base64('c');
+	print_decimal_to_binary(0);
+	print_decimal_to_binary(1);
+	print_decimal_to_binary(test);
+	print_decimal_to_binary(test2);
+
 }

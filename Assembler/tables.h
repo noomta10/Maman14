@@ -90,7 +90,7 @@ typedef enum {
 
 typedef struct code_table_entry{/*code table for code values*/
 	struct code_table_entry* next;
-	code_word word_value;
+	code_word word;
 	long address;/* IC */
 } code_table_entry; 
 

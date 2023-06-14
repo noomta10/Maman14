@@ -348,7 +348,7 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
     
 
     boolean error_flag = FALSE;
-    long L = 0;    
+    long L = 1;    
 
     SET_PREV_POINTER(code_table_prev, code_table_temp);
    
@@ -356,11 +356,11 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
 
     
     /*adding the word to the code table*/
-    code_table_temp->word_value.opcode = get_opcode_bits(line->opcode);
-    code_table_temp->word_value.ARE = ABSOLUTE;
-    code_table_temp->word_value.source_addressing = get_addressing_type(line->source_operand);
-    code_table_temp->word_value.target_addressing = get_addressing_type(line->source_operand);
-    code_table_temp->address = *IC++;
+    code_table_temp->word.opcode = get_opcode_bits(line->opcode);
+    code_table_temp->word.ARE = ABSOLUTE;
+    code_table_temp->word.source_addressing = get_addressing_type(line->source_operand);
+    code_table_temp->word.target_addressing = get_addressing_type(line->source_operand);
+    code_table_temp->address = *IC;
     ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
     
     L += extra_words_for_addressing(line);
