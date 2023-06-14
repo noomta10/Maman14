@@ -1,1 +1,1 @@
-int encode_base64();
+int encode_base64(unsigned int number);

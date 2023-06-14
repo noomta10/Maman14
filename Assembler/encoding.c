@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-
+/* For debugging */
 void print_decimal_to_binary(int num) {
     if (num == 0) {
         printf("0"); /* Special case for zero */
