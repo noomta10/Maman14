@@ -55,6 +55,7 @@ typedef enum {
 } opcode_type;
 
 typedef enum {
+	NO_OPERAND = 0,
 	IMMEDIATE_ADDRESSING = 1,
 	DIRECT_ADDRESSING = 3,
 	REGISTER_ADDRESSING = 5
@@ -90,7 +91,7 @@ typedef enum {
 typedef struct code_table_entry{/*code table for code values*/
 	struct code_table_entry* next;
 	code_word word_value;
-	long address;
+	long address;/* IC */
 } code_table_entry; 
 
 

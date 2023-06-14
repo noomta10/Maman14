@@ -30,7 +30,7 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
     /*reading .as file line by line entil the end*/
     while (fgets(line_content, MAX_LINE_LENGTH, am_file) != NULL) 
     {
-        if (check_line_length(am_file, line_content))
+        if (line_too_long(am_file, line_content))
         {
             *error_flag = TRUE;
             printf("Error: line %ld is too long.\n", line->line_number);
@@ -280,7 +280,7 @@ boolean is_directive(char* str)
 
 boolean is_label(char* str)
 {
-    while (!isspace(*str) && end_of_string(str))
+    while (!isspace(*str) && !end_of_string(str))
     {
         if (*str == ':')
             return TRUE;
@@ -355,15 +355,17 @@ boolean bad_label(char* label)
     return FALSE;
 }
 
-boolean check_line_length(FILE* am_file, char* line_content)
+boolean line_too_long(FILE* am_file, char* line_content)
 {
     int c;
 
     /* checks if if full line was read */
     while (*line_content++ != '\0')
+    {
         if (*line_content == '\n')
             return FALSE;
-    if ((c = getc(am_file)) == EOF || c == '\n')
+    }
+    if ((c = getc(am_file)) == EOF)
         return FALSE;
 
     /* reads rest of line */
@@ -378,7 +380,7 @@ boolean check_line_length(FILE* am_file, char* line_content)
 addressing_type get_addressing_type(char* operand)
 {
     if (operand == NULL)
-        return IMMEDIATE_ADDRESSING;
+        return NO_OPERAND;
     if (isdigit(*operand) || *operand == '-' || *operand == '+')
         return IMMEDIATE_ADDRESSING;
     if (is_label(operand))

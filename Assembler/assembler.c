@@ -94,5 +94,5 @@ void process_file(char* file_name) {
 	fclose(file_pointer);
 
 	/* Check encoding */
-	/*encode_base64(0b111111101010);*/
+	encode_base64('c');
 }
