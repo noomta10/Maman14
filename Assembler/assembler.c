@@ -10,6 +10,7 @@
 #include "debuging.h"
 #include "first_pass.h"
 #include "encoding.h"
+#include "info_check.h"
 #include "second_pass.h"
 
 static void process_file(char* file_name);
@@ -45,8 +46,6 @@ void process_file(char* file_name) {
 	/* Concatenate '.am' postfix to file name */
 	char* full_am_name = add_file_postfix(file_name, ".am");
 
-	unsigned int test = 0;
-	unsigned int test2 = -3;
 
 	LOG_DEBUG("process_file start");
 
@@ -97,7 +96,7 @@ void process_file(char* file_name) {
 	free_entry_table(ent_head);
 	free_extern_table(ext_head);
 	free_symbols_table(symbol_table_head);
-	//free_code_table(code_table_head);
+	/*free_code_table(code_table_head);*/
 	
 	/* Close file */
 	fclose(file_pointer);

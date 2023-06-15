@@ -11,6 +11,7 @@
 #include "first_pass.h"
 #include "utils.h"
 #include "string_handling.h"
+#include "info_check.h"
 
 
 
@@ -461,14 +462,14 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
         if(!add_symbol_to_table(line->label, symbol_trable_head, ext_head, INSTRUCTION, IC, L))
             error_flag = TRUE;
 
-    //*IC += L;
+    /*IC += L;*/
 
     return !error_flag;
 }
 
 code_table_entry* get_opcode_word(line_info* line, long* IC)
 {
-    /* creating a code word with opcode info*/
+    /* creating a code word with opcode info */
     code_table_entry* code_table_temp = (code_table_entry*)malloc_with_check(sizeof(code_table_entry));
     code_table_temp->type = TYPE_CODE_WORD;
     code_table_temp->value.code_word_value.opcode = get_opcode_bits(line->opcode);
@@ -513,7 +514,7 @@ code_table_entry* get_extra_word(uninitialized_symbols_table_entry** uninitializ
         code_table_temp->value.extra_code_word_value.data = UNINITIALIZED_VALUE;
 
         uninitialized_symbol_ptr = (uninitialized_symbols_table_entry*)malloc_with_check(sizeof(uninitialized_symbols_table_entry));
-        uninitialized_symbol_ptr->address = *IC;// TODO: mabey ic--
+        uninitialized_symbol_ptr->address = *IC;/* TODO: mabey ic--*/
         uninitialized_symbol_ptr->name = operand;
         uninitialized_symbol_ptr->extra_code_word_value = &code_table_temp->value.extra_code_word_value;
         ADD_NODE_TO_LIST(uninitialized_symbol_prev, uninitialized_symbol_ptr, uninitialized_symbol_head);
