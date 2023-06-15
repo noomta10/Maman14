@@ -460,7 +460,7 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
         if(!add_symbol_to_table(line->label, symbol_trable_head, ext_head, INSTRUCTION, IC, L))
             error_flag = TRUE;
 
-    *IC += L;
+    //*IC += L;
 
     return !error_flag;
 }
@@ -474,7 +474,7 @@ code_table_entry* get_opcode_word(line_info* line, long* IC)
     code_table_temp->value.code_word_value.ARE = ABSOLUTE;
     code_table_temp->value.code_word_value.source_addressing = get_addressing_type(line->source_operand);
     code_table_temp->value.code_word_value.target_addressing = get_addressing_type(line->source_operand);
-    code_table_temp->address = *IC;
+    code_table_temp->address = (*IC)++;
     return code_table_temp;
 }
 
@@ -486,7 +486,7 @@ code_table_entry* get_register_word(char* source_register, char* target_register
     code_table_temp->value.register_word_value.ARE = ABSOLUTE;
     code_table_temp->value.register_word_value.source_register = get_register_number(source_register);
     code_table_temp->value.register_word_value.target_register = get_register_number(target_register);
-    code_table_temp->address = *IC;
+    code_table_temp->address = (*IC)++;
     return code_table_temp;
 }
 
@@ -505,6 +505,7 @@ code_table_entry* get_extra_word(char* operand, long* IC)
         code_table_temp->value.extra_code_word_value.ARE = UNINITIALIZED_VALUE;
         code_table_temp->value.extra_code_word_value.data = UNINITIALIZED_VALUE;
     }
+    code_table_temp->address = (*IC)++;
     return code_table_temp;
 }
 
