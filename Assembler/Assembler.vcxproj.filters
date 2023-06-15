@@ -42,6 +42,9 @@
     <ClCompile Include="write_files.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="info_check.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debuging.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="write_files.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="info_check.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -130,6 +130,7 @@
     <ClCompile Include="assembler.c" />
     <ClCompile Include="debuging.c" />
     <ClCompile Include="encoding.c" />
+    <ClCompile Include="info_check.c" />
     <ClCompile Include="first_pass.c" />
     <ClCompile Include="pre_assembler.c" />
     <ClCompile Include="string_handling.c" />
@@ -141,6 +142,7 @@
     <ClInclude Include="assembler.h" />
     <ClInclude Include="debuging.h" />
     <ClInclude Include="encoding.h" />
+    <ClInclude Include="info_check.h" />
     <ClInclude Include="first_pass.h" />
     <ClInclude Include="pre_assembler.h" />
     <ClInclude Include="string_handling.h" />

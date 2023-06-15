@@ -16,7 +16,7 @@
 
 void reset_line_info(line_info* line)
 {
-    line->line_content = NULL; /* needs to be freed but receves error */
+    line->line_content = NULL; /* TODO: needs to be freed but receves error */
     line->label = NULL;
     line->directive_data = NULL;
     line->directive_command = NULL;
