@@ -133,6 +133,7 @@
     <ClCompile Include="info_check.c" />
     <ClCompile Include="first_pass.c" />
     <ClCompile Include="pre_assembler.c" />
+    <ClCompile Include="second_pass.c" />
     <ClCompile Include="string_handling.c" />
     <ClCompile Include="tables.c" />
     <ClCompile Include="utils.c" />
@@ -145,6 +146,7 @@
     <ClInclude Include="info_check.h" />
     <ClInclude Include="first_pass.h" />
     <ClInclude Include="pre_assembler.h" />
+    <ClInclude Include="second_pass.h" />
     <ClInclude Include="string_handling.h" />
     <ClInclude Include="tables.h" />
     <ClInclude Include="utils.h" />
@@ -158,6 +160,7 @@
     <None Include="makefile" />
     <None Include="my_file.as" />
     <None Include="test_lable.am" />
+    <None Include="workbook_example.as" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data_test.as" />
