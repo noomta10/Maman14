@@ -17,5 +17,6 @@ boolean ignore_line(char* line);
 
 opcode_type get_opcode_bits(char* opcode);
 register_type get_register_number(char* register_name);
+boolean is_number(char* string);
 
 

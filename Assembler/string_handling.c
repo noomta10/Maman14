@@ -208,3 +208,18 @@ register_type get_register_number(char* register_name)
         return R6;
     return R7;
 }
+
+boolean is_number(char* string)
+{
+    int i = 0;
+    if (string == NULL)
+        return FALSE;
+    if (string[0] == '-' || string[0] == '+')
+        i++;
+    for (; i < strlen(string); i++)
+    {
+        if (!isdigit(string[i]))
+            return FALSE;
+    }
+    return TRUE;
+}

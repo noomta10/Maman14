@@ -15,7 +15,7 @@
 
 
 boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_table_entry** data_table_head,
-                   entry_entry** ent_head, extern_entry** ext_head, code_table_entry** code_table_head, long* IC, long* DC) /*processes file*/
+                   entry_entry** ent_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbols_table_entry, long* IC, long* DC) /*processes file*/
 {
     char line_content[MAX_LINE_LENGTH];
     line_info* line = NULL;
@@ -48,7 +48,7 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
 
         /*processing line*/
         extract_command_info(line_content, line);
-        process_line_first_pass(line, IC, DC, symbol_table_head, data_table_head, ent_head, ext_head, code_table_head, error_flag); /*processing line*/
+        process_line_first_pass(line, IC, DC, symbol_table_head, data_table_head, ent_head, ext_head, code_table_head, uninitialized_symbols_table_entry, error_flag); /*processing line*/
 
         /*reseting variables*/
         reset_line_info(line);
@@ -64,7 +64,7 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
 }
 
 void process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_entry** symbol_table_head, data_table_entry** data_table,
-    entry_entry** ent, extern_entry** ext, code_table_entry** code_table_head, boolean* error_flag)
+    entry_entry** ent, extern_entry** ext, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head, boolean* error_flag)
 {
     /*validating line*/
     if (!validate_line(line)) 
@@ -81,7 +81,7 @@ void process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_
 
     if (line->instruction_flag)
     {
-        if (!add_instruction_to_table(line, symbol_table_head, ext, code_table_head, IC))
+        if (!add_instruction_to_table(line, symbol_table_head, ext, code_table_head, uninitialized_symbol_head, IC))
             *error_flag = TRUE;
     }
     
@@ -381,7 +381,7 @@ addressing_type get_addressing_type(char* operand)
 {
     if (operand == NULL)
         return NO_OPERAND;
-    if (isdigit(*operand) || *operand == '-' || *operand == '+')
+    if (is_number(operand))
         return IMMEDIATE_ADDRESSING;
     if (is_label(operand))
         return DIRECT_ADDRESSING;

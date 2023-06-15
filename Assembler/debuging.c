@@ -12,7 +12,7 @@
 
 void print_data_table(data_table_entry* data_table)
 {
-    printf("printing data_table_entry:\n");
+    printf("printing data_table_entry:\n\n");
     while (data_table != NULL)
     {
         if (data_table->type == TYPE_STRING)
@@ -34,7 +34,7 @@ void print_data_table(data_table_entry* data_table)
 
 void print_code_word(code_table_entry* code_table)
 {
-    printf("printing code_table_entry:\n");
+    printf("printing code_table_entry:\n\n");
     while (code_table != NULL)
     {
         if (code_table->type == TYPE_CODE_WORD)
@@ -63,11 +63,12 @@ void print_code_word(code_table_entry* code_table)
         }
         code_table = code_table->next;
     }
+    printf("-------------------------\n\n");
 }
 
 void print_extern_table(extern_entry* ext)
 {
-    printf("printing extern labels:\n");
+    printf("printing extern labels:\n\n");
     while (ext != NULL)
     {
         printf("name: %s    address: %ld\n", ext->name, ext->address);
@@ -78,7 +79,7 @@ void print_extern_table(extern_entry* ext)
 
 void print_entry_table(entry_entry* ent)
 {
-    printf("printing entry table:\n");
+    printf("printing entry table:\n\n");
     while (ent != NULL)
     {
         printf("name: %s    address: %ld\n", ent->name, ent->address);
@@ -89,7 +90,7 @@ void print_entry_table(entry_entry* ent)
 
 void print_symbol_table(symbols_table_entry* symbol_table)
 {
-    printf("printing symbol table:\n");
+    printf("printing symbol table:\n\n");
     while (symbol_table != NULL)
     {
         printf("name: %s\n", symbol_table->name);
@@ -104,7 +105,7 @@ void print_symbol_table(symbols_table_entry* symbol_table)
 
 void print_line_info(line_info* line)
 {
-    printf("printing line info:\n");
+    printf("printing line info:\n\n");
     printf("line info: %ld %s\n", line->line_number, line->line_content);
     printf("label_flag: %s\n", (line->label_flag) ? "TRUE" : "FALSE");
     printf("label: %s\n", line->label);
@@ -117,5 +118,20 @@ void print_line_info(line_info* line)
     printf("target_operand: %s\n", line->target_operand);
     printf("comma_flag: %s\n", (line->comma_flag) ? "TRUE" : "FALSE");
     printf("extra_chars_flag: %s\n", (line->extra_chars_flag) ? "TRUE" : "FALSE");
+}
+
+void print_uninitialized_symbols_table(uninitialized_symbols_table_entry* uninitialized_symbols_table)
+{
+    printf("printing uninitialized symbols table:\n\n");
+    while (uninitialized_symbols_table != NULL)
+    {
+        printf("name: %s\n", uninitialized_symbols_table->name);
+        printf("address: %ld\n", uninitialized_symbols_table->address);
+        printf("ARE: %d\n", uninitialized_symbols_table->extra_code_word_value->ARE);
+        printf("data: %d\n", uninitialized_symbols_table->extra_code_word_value->data);
+        printf("\n");
+        uninitialized_symbols_table = uninitialized_symbols_table->next;
+    }
+    printf("-------------------------\n\n");
 }
 

@@ -39,7 +39,7 @@ void* realloc_with_check(char* ptr, size_t length) {
 
 
 boolean is_register(char* operand) {
-	if (operand[0] == 'r' && operand[1] >= '0' && operand[1] <= '7' && operand[2] == '\0')
+	if (operand[0] == '@' && operand[1] == 'r' && operand[2] >= '0' && operand[2] <= '7' && operand[3] == '\0')
 		return TRUE;
 	return FALSE;
 }

@@ -171,7 +171,7 @@ typedef struct uninitialized_symbols_table_entry{/*struct for the symbols table*
 
 
 boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table, data_table_entry** data_table, extern_entry** ext, entry_entry** ent, long* DC);
-boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_trable_head, extern_entry** ext_head, code_table_entry** code_table_head, long* IC);
+boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_trable_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head, long* IC);
 boolean add_symbol_to_table(char* lable_name, symbols_table_entry** symbol_table_head, extern_entry** ext_head, line_type type, long* address, long L);
 
 
@@ -185,4 +185,4 @@ int extra_words_for_addressing(line_info* line);
 
 code_table_entry* get_opcode_word(line_info* line, long* IC);
 code_table_entry* get_register_word(char* source_register, char* target_register, long* IC);
-code_table_entry* get_extra_word(char* operand, long* IC);
+code_table_entry* get_extra_word(uninitialized_symbols_table_entry** uninitialized_symbol_head, char* operand, long* IC);

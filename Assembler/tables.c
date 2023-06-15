@@ -352,7 +352,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
     return !error_flag;
 }
 
-boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_trable_head, extern_entry** ext_head, code_table_entry** code_table_head, long* IC)
+boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_trable_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head, long* IC)
 {
     code_table_entry* code_table_temp = *code_table_head;
     code_table_entry* code_table_prev = NULL;
@@ -373,6 +373,7 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
     {
         L++;
     }
+    /* if theres one operater*/
     else if(line->source_operand == NULL || line->target_operand == NULL)
     {
         if(line->source_operand == NULL)
@@ -385,7 +386,7 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
             }
             else
             {
-                code_table_temp = get_extra_word(line->target_operand, IC);
+                code_table_temp = get_extra_word(uninitialized_symbol_head, line->target_operand, IC);
                 ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
                 L++;
             }
@@ -400,7 +401,7 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
             }
             else
             {
-                code_table_temp = get_extra_word(line->source_operand, IC);
+                code_table_temp = get_extra_word(uninitialized_symbol_head, line->source_operand, IC);
                 ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
                 L++;
             }
@@ -412,10 +413,17 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
         /* if one are more operands are registers */
         if(is_register(line->source_operand) || is_register(line->target_operand))
         {
+            /* if both operands are registers */
+            if (is_register(line->source_operand) && is_register(line->target_operand))
+            {
+                code_table_temp = get_register_word(line->target_operand, line->source_operand, IC);
+                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+                L++;
+            }
             /* if source operand is not a register add the extra code word before register code word*/
             if(!is_register(line->source_operand))
             {
-                code_table_temp = get_extra_word(line->source_operand, IC);
+                code_table_temp = get_extra_word(uninitialized_symbol_head, line->source_operand, IC);
                 ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
                 L++;
 
@@ -430,14 +438,7 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
                 ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
                 L++;
 
-                code_table_temp = get_extra_word(line->source_operand, IC);
-                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
-                L++;
-            }
-            /* if both operands are registers */
-            else
-            {
-                code_table_temp = get_register_word(line->target_operand, line->source_operand, IC);
+                code_table_temp = get_extra_word(uninitialized_symbol_head, line->source_operand, IC);
                 ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
                 L++;
             }
@@ -445,11 +446,11 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
         /* operands are not registers */
         else 
         {
-            code_table_temp = get_extra_word(line->source_operand, IC);
+            code_table_temp = get_extra_word(uninitialized_symbol_head, line->source_operand, IC);
             ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
             L++;
 
-            code_table_temp = get_extra_word(line->target_operand, IC);
+            code_table_temp = get_extra_word(uninitialized_symbol_head, line->target_operand, IC);
             ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
             L++;
         }
@@ -490,12 +491,18 @@ code_table_entry* get_register_word(char* source_register, char* target_register
     return code_table_temp;
 }
 
-code_table_entry* get_extra_word(char* operand, long* IC)
+code_table_entry* get_extra_word(uninitialized_symbols_table_entry** uninitialized_symbol_head, char* operand, long* IC)
 {
     /* creating a code word with extra info*/
+
+    uninitialized_symbols_table_entry* uninitialized_symbol_prev = NULL;
+    uninitialized_symbols_table_entry* uninitialized_symbol_ptr = *uninitialized_symbol_head;
+
+    SET_PREV_POINTER(uninitialized_symbol_prev, uninitialized_symbol_ptr);
+
     code_table_entry* code_table_temp = (code_table_entry*)malloc_with_check(sizeof(code_table_entry));
     code_table_temp->type = TYPE_EXTRA_CODE_WORD;
-    if(isdigit(*operand))
+    if(is_number(operand))
     {
         code_table_temp->value.extra_code_word_value.ARE = ABSOLUTE;
         code_table_temp->value.extra_code_word_value.data = atoi(operand);
@@ -504,6 +511,13 @@ code_table_entry* get_extra_word(char* operand, long* IC)
     {
         code_table_temp->value.extra_code_word_value.ARE = UNINITIALIZED_VALUE;
         code_table_temp->value.extra_code_word_value.data = UNINITIALIZED_VALUE;
+
+        uninitialized_symbol_ptr = (uninitialized_symbols_table_entry*)malloc_with_check(sizeof(uninitialized_symbols_table_entry));
+        uninitialized_symbol_ptr->address = *IC;// TODO: mabey ic--
+        uninitialized_symbol_ptr->name = operand;
+        uninitialized_symbol_ptr->extra_code_word_value = &code_table_temp->value.extra_code_word_value;
+        ADD_NODE_TO_LIST(uninitialized_symbol_prev, uninitialized_symbol_ptr, uninitialized_symbol_head);
+        
     }
     code_table_temp->address = (*IC)++;
     return code_table_temp;
