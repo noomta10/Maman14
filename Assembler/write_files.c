@@ -31,9 +31,9 @@ void write_entry_file(char* file_name, entry_entry* entry_table_head) {
 
 	current_entry_entry = entry_table_head;
 	
-	while (current_entry_entry->next)
+	while (current_entry_entry)
 	{
-		fprintf(entry_file, "%s %d", current_entry_entry->name, current_entry_entry->address);
+		fprintf(entry_file, "%s %5d\n", current_entry_entry->name, current_entry_entry->address);
 		current_entry_entry = current_entry_entry->next;
 	}
 
@@ -66,9 +66,9 @@ void write_extern_file(char* file_name, extern_entry* extern_table_head) {
 
 	current_extern_entry = extern_table_head;
 
-	while (current_extern_entry->next)
+	while (current_extern_entry)
 	{
-		fprintf(extern_file, "%s %10d", current_extern_entry->name, current_extern_entry->address);
+		fprintf(extern_file, "%s %5d\n", current_extern_entry->name, current_extern_entry->address);
 		current_extern_entry = current_extern_entry->next;
 	}
 

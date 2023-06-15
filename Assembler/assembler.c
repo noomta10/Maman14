@@ -89,7 +89,10 @@ void process_file(char* file_name) {
 	print_code_word(code_table_head);
 	print_uninitialized_symbols_table(uninitialized_symbol_head);
 
-	second_pass(uninitialized_symbol_head);
+	/* Second pass */
+	second_pass(uninitialized_symbol_head, symbol_table_head, ext_head, ent_head, file_name);
+	LOG_DEBUG("After second pass:\n");
+	print_uninitialized_symbols_table(uninitialized_symbol_head);
 
 	/* Free memory */
 	free_data_table(data_table_head);
