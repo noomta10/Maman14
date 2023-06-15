@@ -10,6 +10,7 @@
 #include "debuging.h"
 #include "first_pass.h"
 #include "encoding.h"
+#include "second_pass.h"
 
 static void process_file(char* file_name);
 
@@ -89,7 +90,7 @@ void process_file(char* file_name) {
 	print_code_word(code_table_head);
 	print_uninitialized_symbols_table(uninitialized_symbol_head);
 
-
+	second_pass(uninitialized_symbol_head);
 
 	/* Free memory */
 	free_data_table(data_table_head);
