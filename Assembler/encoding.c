@@ -27,22 +27,25 @@ static const char base64_chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqr
 
 /* Function to encode a 6-bit number to base64 */
 char encode_six_bit_number(unsigned int bits) {
-    printf("DEBUG bits: %d\n", bits);
     return base64_chars[bits];
 }
 
-int encode_base64(unsigned int number) {
+char* encode_base64(unsigned int number) {
+    char final_base64[3];
     /* Extract the two 6 - bit groups */
-    unsigned int group1 = (number >> 6) & 0b111111; // 000000111111 & 111111 = 111111 = '/'
-    unsigned int group2 = number & 0b111111; // 111111101010 & 111111 = 101010 = 'q'
+    unsigned int group1 = (number >> 6) & 0b111111; // <first part of the number> & 111111 
+    unsigned int group2 = number & 0b111111; // <second part of the number> & 111111 
 
     /* Encode each group using base64 */
     char encoded_char1 = encode_six_bit_number(group1);
     char encoded_char2 = encode_six_bit_number(group2);
 
+    final_base64[0] = encoded_char1;
+    final_base64[1] = encoded_char2;
+    final_base64[2] = '\0';
+
     /* Print the base64 encoded characters */
     printf("\nBinary number to encode:\n");
-    print_decimal_to_binary(number);
-    printf("Base64 encoded characters: %c%c\n", encoded_char1, encoded_char2);
-    return 0;
+    printf("Base64 encoded characters: %s\n",final_base64);
+    return final_base64;
 }

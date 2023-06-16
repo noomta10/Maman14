@@ -2,6 +2,7 @@
     "files.associations": {
         "debuging.h": "c",
         "utils.h": "c",
-        "tables.h": "c"
+        "tables.h": "c",
+        "info_check.h": "c"
     }
 }
