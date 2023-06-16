@@ -23,7 +23,15 @@ void second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_e
 			if (strcmp(current_uninitialized_symbols_entry->name, current_symbol_entry->name) == 0) 
 			{
 				current_uninitialized_symbols_entry->extra_code_word_value->data = current_symbol_entry->address;
-				current_uninitialized_symbols_entry->extra_code_word_value->ARE = RELOCATABLE;
+				
+				/* Check if it is an external symbol and set ARE accordingly */
+				if (is_external(current_uninitialized_symbols_entry->name, head_extern_entry)) {
+					current_uninitialized_symbols_entry->extra_code_word_value->ARE = EXTERNAL;
+
+				}
+				else {
+					current_uninitialized_symbols_entry->extra_code_word_value->ARE = RELOCATABLE;
+				}
 				break;
 			}
 
@@ -41,3 +49,16 @@ void second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_e
 }
 
 
+/* Check if a symbol is in the externals table */
+boolean is_external(char* current_symbol, extern_entry* head_extern_entry) {
+	extern_entry* current_extern_entry = head_extern_entry;
+
+	while (current_extern_entry) {
+		if (strcmp(current_symbol, current_extern_entry->name) == 0) {
+			return TRUE;
+		}
+		current_extern_entry = current_extern_entry->next;
+	}
+
+	return FALSE;
+}

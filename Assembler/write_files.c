@@ -114,6 +114,7 @@ void write_object_file(char* file_name, long IC, long DC, code_table_entry* code
 	free(object_file_name);
 }
 
+
 /* Convert the bits in the code_word_entry structure to a number */
 static unsigned int get_bits_word(code_table_entry* current_code_entry){
 	unsigned int final_bits_word = 0;
