@@ -371,14 +371,16 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
 
     /*adding extra words if needed*/
     /*if there is no operands*/
-    if(line->source_operand == NULL && line->target_operand == NULL)
+    if((line->source_operand == NULL || strcmp(line->source_operand, "") == 0) &&
+        (line->target_operand == NULL || strcmp(line->target_operand, "") == 0))
     {
         L++;
     }
     /* if theres one operater*/
-    else if(line->source_operand == NULL || line->target_operand == NULL)
+    else if(line->source_operand == NULL || line->target_operand == NULL || 
+        strcmp(line->source_operand, "") == 0 || strcmp(line->target_operand, "") == 0)
     {
-        if(line->source_operand == NULL)
+        if(line->source_operand == NULL || strcmp(line->source_operand, "") == 0)
         {
             if(is_register(line->target_operand))
             {
