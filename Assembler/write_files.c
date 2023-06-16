@@ -16,8 +16,7 @@ void write_entry_file(char* file_name, entry_entry* entry_table_head) {
 	entry_entry* current_entry_entry;
 
 	/* If there are no entries in the table, do not create entry file */
-	if (!entry_table_head) 
-	{
+	if (!entry_table_head) {
 		LOG_DEBUG("No entries in file");
 		return;
 	}
@@ -32,8 +31,7 @@ void write_entry_file(char* file_name, entry_entry* entry_table_head) {
 
 	current_entry_entry = entry_table_head;
 	
-	while (current_entry_entry)
-	{
+	while (current_entry_entry) {
 		fprintf(entry_file, "%s %5d\n", current_entry_entry->name, current_entry_entry->address);
 		current_entry_entry = current_entry_entry->next;
 	}
@@ -51,8 +49,7 @@ void write_extern_file(char* file_name, extern_entry* extern_table_head) {
 	extern_entry* current_extern_entry;
 
 	/* If there are no entries in the table, do not create entry file */
-	if (!extern_table_head)
-	{
+	if (!extern_table_head) {
 		LOG_DEBUG("No externs in file");
 		return;
 	}
@@ -67,8 +64,7 @@ void write_extern_file(char* file_name, extern_entry* extern_table_head) {
 
 	current_extern_entry = extern_table_head;
 
-	while (current_extern_entry)
-	{
+	while (current_extern_entry) {
 		fprintf(extern_file, "%s %5d\n", current_extern_entry->name, current_extern_entry->address);
 		current_extern_entry = current_extern_entry->next;
 	}
@@ -79,15 +75,18 @@ void write_extern_file(char* file_name, extern_entry* extern_table_head) {
 }
 
 
+/* Write object file */
 void write_object_file(char* file_name, long IC, long DC, code_table_entry* code_entry_head, data_table_entry* data_entry_head) {
 	FILE* object_file;
 	data_table_entry* current_data_entry;
 	code_table_entry* current_code_entry;
+	unsigned int final_bits_word;
+
+
 	char* object_file_name = add_file_postfix(file_name, ".ob");
 	object_file = fopen(object_file_name, "w");
 
-	if (!object_file)
-	{
+	if (!object_file) {
 		printf("Error: couldn't open file %s\n", object_file_name);
 		return;
 	}
@@ -97,8 +96,7 @@ void write_object_file(char* file_name, long IC, long DC, code_table_entry* code
 	current_data_entry = data_entry_head;
 
 	/* Print all encoded data words to the object file */
-	while (current_data_entry)
-	{
+	while (current_data_entry) {
 		fprintf(object_file, "%s\n", encode_base64(current_data_entry->data.character));
 		current_data_entry = current_data_entry->next;
 	}
@@ -106,20 +104,36 @@ void write_object_file(char* file_name, long IC, long DC, code_table_entry* code
 	current_code_entry = code_entry_head;
 
 	/* Print all encoded code words to the object file */
-	while (current_code_entry)
-	{
-		unsigned int x;
-		x = 0;
-		x = x | current_code_entry->value.code_word_value.ARE;
-		x = x | current_code_entry->value.code_word_value.source_addressing<<2;
-		x = x | current_code_entry->value.code_word_value.opcode<<5;
-		x = x | current_code_entry->value.code_word_value.target_addressing<<9;
-
-		fprintf(object_file, "%s\n", encode_base64(x));
+	while (current_code_entry) {
+		final_bits_word = get_bits_word(current_code_entry);
+		fprintf(object_file, "%s\n", encode_base64(final_bits_word));
 		current_code_entry = current_code_entry->next;
 	}
 
 	/* Close file and free memory */
 	fclose(object_file);
 	free(object_file_name);
+}
+
+/* Convert the bits in the code_word_entry structure to a number */
+static unsigned int get_bits_word(code_table_entry* current_code_entry){
+	unsigned int final_bits_word = 0;
+	
+	if (current_code_entry->type == TYPE_CODE_WORD) {
+		final_bits_word = final_bits_word | current_code_entry->value.code_word_value.ARE;
+		final_bits_word = final_bits_word | current_code_entry->value.code_word_value.source_addressing << 2;
+		final_bits_word = final_bits_word | current_code_entry->value.code_word_value.opcode << 5;
+		final_bits_word = final_bits_word | current_code_entry->value.code_word_value.target_addressing << 9;
+	}
+	else if (current_code_entry->type == TYPE_EXTRA_CODE_WORD) {
+		final_bits_word = final_bits_word | current_code_entry->value.extra_code_word_value.ARE;
+		final_bits_word = final_bits_word | current_code_entry->value.extra_code_word_value.data << 2;
+	}
+	else if (current_code_entry->type == TYPE_REGISTER_WORD) {
+		final_bits_word = final_bits_word | current_code_entry->value.register_word_value.ARE;
+		final_bits_word = final_bits_word | current_code_entry->value.register_word_value.target_register << 2;
+		final_bits_word = final_bits_word | current_code_entry->value.register_word_value.source_register << 7;
+	}
+
+	return final_bits_word;
 }
