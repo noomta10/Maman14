@@ -1,3 +1,4 @@
+mov @r2 ,@r1
 MAIN: mov @r3 ,LENGTH
 LOOP: jmp L1
 mcro m1 

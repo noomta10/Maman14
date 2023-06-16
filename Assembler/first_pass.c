@@ -275,7 +275,7 @@ void extract_command_info(char* content, line_info* line)
 
 addressing_type get_addressing_type(char* operand)
 {
-    if (operand == NULL)
+    if (operand == NULL || strcmp(operand, "") == 0)
         return NO_OPERAND;
     else if (is_number(operand))
         return IMMEDIATE_ADDRESSING;
