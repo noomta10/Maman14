@@ -135,3 +135,33 @@ void print_uninitialized_symbols_table(uninitialized_symbols_table_entry* uninit
     printf("-------------------------\n\n");
 }
 
+void print_code_table_in_binary( code_table_entry* code_table)
+{
+    printf("printing code_table_entry in binary:\n\n");
+    while (code_table != NULL)
+    {
+        if (code_table->type == TYPE_CODE_WORD)
+        {
+            print_decimal_to_binary(code_table->value.code_word_value.source_addressing, 3);
+            print_decimal_to_binary(code_table->value.code_word_value.opcode, 4);
+            print_decimal_to_binary(code_table->value.code_word_value.target_addressing, 3);
+            print_decimal_to_binary(code_table->value.code_word_value.ARE, 2);
+            printf("\n");
+        }
+        if (code_table->type == TYPE_REGISTER_WORD)
+        {
+            print_decimal_to_binary(code_table->value.register_word_value.target_register, 5);
+            print_decimal_to_binary(code_table->value.register_word_value.source_register, 5);
+            print_decimal_to_binary(code_table->value.register_word_value.ARE, 2);
+            printf("\n");
+        }
+        if (code_table->type == TYPE_EXTRA_CODE_WORD)
+        {
+            print_decimal_to_binary(code_table->value.extra_code_word_value.data, 10);
+            print_decimal_to_binary(code_table->value.extra_code_word_value.ARE, 2);
+            printf("\n");
+        }
+        code_table = code_table->next;
+    }
+    printf("-------------------------\n\n");
+}

@@ -5,20 +5,20 @@
 #include <stdint.h>
 
 /* For debugging */
-void print_decimal_to_binary(int num) {
-    if (num == 0) {
-        printf("0"); /* Special case for zero */
-        return;
-    }
+void print_decimal_to_binary(int num, int number_of_bits_to_print) {
+    //if (num == 0) {
+    //    printf("0"); /* Special case for zero */
+    //    return;
+    //}
 
-    int bits = sizeof(num) * 8; /* Number of bits in an integer */
-    printf("%d\n", bits);
+    //int bits = sizeof(num) * 8; /* Number of bits in an integer */
+    /*printf("%d\n", bits);*/
     /* Iterate over each bit from left to right */
-    for (int i = bits - 1; i >= 0; i--) {
+    for (int i = number_of_bits_to_print - 1; i >= 0; i--) {
         int bit = (num >> i) & 1; /* Extract the i-th bit */
         printf("%d", bit);
     }
-    printf("\n");
+    //printf("\n");
 }
 
 
