@@ -1,4 +1,1 @@
-MAIN: mov @r3 ,LENGTH
-sub @r1, @r4
-bne END
-abcdefg
+DATA: .string "abcdefg"

@@ -80,6 +80,7 @@ void write_extern_file(char* file_name, extern_entry* extern_table_head) {
 
 void write_object_file(char* file_name, long IC, long DC, code_table_entry* code_entry_head, data_table_entry* data_entry_head) {
 	FILE* object_file;
+	data_table_entry* current_data_entry;
 	char* object_file_name = add_file_postfix(file_name, ".ob");
 	object_file = fopen(object_file_name, "w");
 
@@ -88,7 +89,15 @@ void write_object_file(char* file_name, long IC, long DC, code_table_entry* code
 		return;
 	}
 
+	/* Print first line */
 	fprintf(object_file, "%d %d\n", IC, DC);
+
+	current_data_entry = data_entry_head;
+	while (current_data_entry)
+	{
+		fprintf(object_file, "%c\n", current_data_entry->data);
+		current_data_entry = current_data_entry->next;
+	}
 
 
 	fclose(object_file);
