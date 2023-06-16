@@ -382,7 +382,7 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
         {
             if(is_register(line->target_operand))
             {
-                code_table_temp = get_register_word(line->target_operand, line->source_operand, IC);
+                code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
                 ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
                 L++;
             }
@@ -397,7 +397,7 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
         {
             if(is_register(line->source_operand))
             {
-                code_table_temp = get_register_word(line->target_operand, line->source_operand, IC);
+                code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
                 ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
                 L++;
             }
@@ -418,31 +418,32 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
             /* if both operands are registers */
             if (is_register(line->source_operand) && is_register(line->target_operand))
             {
-                code_table_temp = get_register_word(line->target_operand, line->source_operand, IC);
+                code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
                 ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
                 L++;
             }
-            /* if source operand is not a register add the extra code word before register code word*/
-            if(!is_register(line->source_operand))
+            /* if source operand a register add the extra code word after register code word*/
+            else if(is_register(line->source_operand))
             {
-                code_table_temp = get_extra_word(uninitialized_symbol_head, line->source_operand, IC);
+                code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
                 ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
                 L++;
 
-                code_table_temp = get_register_word(line->target_operand, line->source_operand, IC);
+                code_table_temp = get_extra_word(uninitialized_symbol_head, line->target_operand, IC);
                 ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
                 L++;
             }
-            /* if target operand is not a register add the extra code word after register code word*/
-            else if(!is_register(line->target_operand))
+            /* if target operand a register add the extra code word before register code word*/
+            else if(is_register(line->target_operand))
             {
-                code_table_temp = get_register_word(line->target_operand, line->source_operand, IC);
+                code_table_temp = get_extra_word(uninitialized_symbol_head, line->target_operand, IC);
                 ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
                 L++;
 
-                code_table_temp = get_extra_word(uninitialized_symbol_head, line->source_operand, IC);
+                code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
                 ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
                 L++;
+
             }
         }
         /* operands are not registers */
