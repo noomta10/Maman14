@@ -103,12 +103,21 @@ void write_object_file(char* file_name, long IC, long DC, code_table_entry* code
 		current_data_entry = current_data_entry->next;
 	}
 
-	///* Print all encoded code words to the object file */
-	//while (current_code_entry)
-	//{
-	//	fprintf(object_file, "%s\n", encode_base64(current_code_entry->value.code_word_value));
-	//	current_code_entry = current_code_entry->next;
-	//}
+	current_code_entry = code_entry_head;
+
+	/* Print all encoded code words to the object file */
+	while (current_code_entry)
+	{
+		unsigned int x;
+		x = 0;
+		x = x | current_code_entry->value.code_word_value.ARE;
+		x = x | current_code_entry->value.code_word_value.source_addressing<<2;
+		x = x | current_code_entry->value.code_word_value.opcode<<5;
+		x = x | current_code_entry->value.code_word_value.target_addressing<<9;
+
+		fprintf(object_file, "%s\n", encode_base64(x));
+		current_code_entry = current_code_entry->next;
+	}
 
 	/* Close file and free memory */
 	fclose(object_file);
