@@ -7,7 +7,8 @@
 #include "debuging.h"
 #include "write_files.h"
 
-void second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_entry, symbols_table_entry* head_symbols_entry, extern_entry* head_extern_entry, entry_entry* head_entry_entry, char* file_name) {
+void second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_entry, symbols_table_entry* head_symbols_entry, extern_entry* head_extern_entry,
+	entry_entry* head_entry_entry,char* file_name, long IC, long DC, code_table_entry* code_entry_head, data_table_entry* data_entry_head) {
 	uninitialized_symbols_table_entry* current_uninitialized_symbols_entry = head_uninitialized_symbols_entry;
 	symbols_table_entry* current_symbol_entry;
 
@@ -35,6 +36,8 @@ void second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_e
 	/* Write files */
 	write_extern_file(file_name, head_extern_entry);
 	write_entry_file(file_name, head_entry_entry);
+	write_object_file(file_name, IC, DC, code_entry_head, data_entry_head);
+
 }
 
 

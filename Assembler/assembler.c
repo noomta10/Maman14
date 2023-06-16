@@ -90,9 +90,12 @@ void process_file(char* file_name) {
 	print_uninitialized_symbols_table(uninitialized_symbol_head);
 
 	/* Second pass */
-	second_pass(uninitialized_symbol_head, symbol_table_head, ext_head, ent_head, file_name);
+	second_pass(uninitialized_symbol_head, symbol_table_head, ext_head, ent_head, file_name, IC, DC, code_table_head, data_table_head);
 	LOG_DEBUG("After second pass:\n");
 	print_uninitialized_symbols_table(uninitialized_symbol_head);
+
+	printf("IC: %ld\n", IC);
+	printf("DC: %ld\n", DC);
 
 	/* Free memory */
 	free_data_table(data_table_head);

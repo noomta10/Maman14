@@ -76,3 +76,21 @@ void write_extern_file(char* file_name, extern_entry* extern_table_head) {
 	fclose(extern_file);
 	free(extern_file_name);
 }
+
+
+void write_object_file(char* file_name, long IC, long DC, code_table_entry* code_entry_head, data_table_entry* data_entry_head) {
+	FILE* object_file;
+	char* object_file_name = add_file_postfix(file_name, ".ob");
+	object_file = fopen(object_file_name, "w");
+
+	if (!object_file) {
+		printf("Error: couldn't open file %s\n", object_file_name);
+		return;
+	}
+
+	fprintf(object_file, "%d %d\n", IC, DC);
+
+
+	fclose(object_file);
+	free(object_file_name);
+}
