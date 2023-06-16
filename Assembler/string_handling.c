@@ -193,19 +193,19 @@ register_type get_register_number(char* register_name)
 {
     if (register_name == NULL)
         return NO_REGISTER;
-    if (strcmp(register_name, "r0") == 0)
+    if (strcmp(register_name, "@r0") == 0)
         return R0;
-    if (strcmp(register_name, "r1") == 0)
+    if (strcmp(register_name, "@r1") == 0)
         return R1;
-    if (strcmp(register_name, "r2") == 0)
+    if (strcmp(register_name, "@r2") == 0)
         return R2;
-    if (strcmp(register_name, "r3") == 0)
+    if (strcmp(register_name, "@r3") == 0)
         return R3;
-    if (strcmp(register_name, "r4") == 0)
+    if (strcmp(register_name, "@r4") == 0)
         return R4;
-    if (strcmp(register_name, "r5") == 0)
+    if (strcmp(register_name, "@r5") == 0)
         return R5;
-    if (strcmp(register_name, "r6") == 0)
+    if (strcmp(register_name, "@r6") == 0)
         return R6;
     return R7;
 }
