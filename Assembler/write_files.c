@@ -7,6 +7,7 @@
 #include "tables.h"
 #include "debuging.h"
 #include "write_files.h"
+#include "encoding.h"
 
 /* Write entry file */
 void write_entry_file(char* file_name, entry_entry* entry_table_head) {
@@ -95,7 +96,7 @@ void write_object_file(char* file_name, long IC, long DC, code_table_entry* code
 	current_data_entry = data_entry_head;
 	while (current_data_entry)
 	{
-		fprintf(object_file, "%c\n", current_data_entry->data);
+		fprintf(object_file, "%s\n", encode_base64(current_data_entry->data.character));
 		current_data_entry = current_data_entry->next;
 	}
 
