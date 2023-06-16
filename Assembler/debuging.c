@@ -142,23 +142,23 @@ void print_code_table_in_binary( code_table_entry* code_table)
     {
         if (code_table->type == TYPE_CODE_WORD)
         {
-            print_decimal_to_binary(code_table->value.code_word_value.target_addressing);
-            print_decimal_to_binary(code_table->value.code_word_value.opcode);
-            print_decimal_to_binary(code_table->value.code_word_value.source_addressing);
-            print_decimal_to_binary(code_table->value.code_word_value.ARE);
+            print_decimal_to_binary(code_table->value.code_word_value.source_addressing, 3);
+            print_decimal_to_binary(code_table->value.code_word_value.opcode, 4);
+            print_decimal_to_binary(code_table->value.code_word_value.target_addressing, 3);
+            print_decimal_to_binary(code_table->value.code_word_value.ARE, 2);
             printf("\n");
         }
         if (code_table->type == TYPE_REGISTER_WORD)
         {
-            print_decimal_to_binary(code_table->value.register_word_value.target_register);
-            print_decimal_to_binary(code_table->value.register_word_value.source_register);
-            print_decimal_to_binary(code_table->value.register_word_value.ARE);
+            print_decimal_to_binary(code_table->value.register_word_value.target_register, 5);
+            print_decimal_to_binary(code_table->value.register_word_value.source_register, 5);
+            print_decimal_to_binary(code_table->value.register_word_value.ARE, 2);
             printf("\n");
         }
         if (code_table->type == TYPE_EXTRA_CODE_WORD)
         {
-            print_decimal_to_binary(code_table->value.extra_code_word_value.data);
-            print_decimal_to_binary(code_table->value.extra_code_word_value.ARE);
+            print_decimal_to_binary(code_table->value.extra_code_word_value.data, 10);
+            print_decimal_to_binary(code_table->value.extra_code_word_value.ARE, 2);
             printf("\n");
         }
         code_table = code_table->next;

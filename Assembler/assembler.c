@@ -94,6 +94,8 @@ void process_file(char* file_name) {
 	LOG_DEBUG("After second pass:\n");
 	print_uninitialized_symbols_table(uninitialized_symbol_head);
 
+	print_code_table_in_binary(code_table_head);
+
 	printf("IC: %ld\n", IC);
 	printf("DC: %ld\n", DC);
 
