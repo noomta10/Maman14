@@ -44,8 +44,5 @@ char* encode_base64(unsigned int number) {
     final_base64[1] = encoded_char2;
     final_base64[2] = '\0';
 
-    /* Print the base64 encoded characters */
-    printf("\nBinary number to encode:\n");
-    printf("Base64 encoded characters: %s\n",final_base64);
     return final_base64;
 }
