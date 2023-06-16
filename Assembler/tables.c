@@ -220,7 +220,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
         /*check if there is a label and add it*/
         if (line->label && !error_flag)
             error_flag = !add_symbol_to_table(line->label, symbol_table_head, ext_head, data_type, *DC, L);
-        DC += L;
+        *DC += L;
 
         free(token);
         return !error_flag;
