@@ -34,7 +34,7 @@ char* copy_next_word(char* string)
     char* string_ptr = string;
 
     /* get the length of the next word */
-    while (!isspace(*string_ptr))
+    while (!isspace(*string_ptr) && !end_of_string(string_ptr))
     {
         word_length++;
         string_ptr++;
