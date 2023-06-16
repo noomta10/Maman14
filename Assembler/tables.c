@@ -567,7 +567,6 @@ boolean add_symbol_to_table(char* lable_name, symbols_table_entry** symbol_table
     symbol_table_ptr->address = *address;
     symbol_table_ptr->L = L;
     symbol_table_ptr->name = lable_name;
-
     ADD_NODE_TO_LIST(symbol_table_prev, symbol_table_ptr, symbol_table_head);
 
     

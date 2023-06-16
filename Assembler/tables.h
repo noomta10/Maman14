@@ -154,8 +154,6 @@ typedef struct symbols_table_entry{/*struct for the symbols table*/
 	long L;/*if data type, length of data*/
 	char * name;
 	line_type address_type;
-	data_types data_type;
-	boolean is_data;
 } symbols_table_entry;
 
 typedef struct uninitialized_symbols_table_entry{/*struct for the symbols table*/
