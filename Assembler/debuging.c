@@ -96,7 +96,7 @@ void print_symbol_table(symbols_table_entry* symbol_table)
         printf("name: %s\n", symbol_table->name);
         printf("address: %ld\n", symbol_table->address);
         printf("length (L): %ld\n", symbol_table->L);
-        printf("is_data: %s\n", (symbol_table->is_data) ? "TRUE" : "FALSE");
+        printf("line is: `%s`\n", (symbol_table->address_type == DIRECTIVE) ? "DIRECTIVE" : "INSTRUCTION");
         symbol_table = symbol_table->next;
         printf("\n");
     }

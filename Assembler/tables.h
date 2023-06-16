@@ -154,8 +154,6 @@ typedef struct symbols_table_entry{/*struct for the symbols table*/
 	long L;/*if data type, length of data*/
 	char * name;
 	line_type address_type;
-	data_types data_type;
-	boolean is_data;
 } symbols_table_entry;
 
 typedef struct uninitialized_symbols_table_entry{/*struct for the symbols table*/
@@ -172,7 +170,7 @@ typedef struct uninitialized_symbols_table_entry{/*struct for the symbols table*
 
 boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table, data_table_entry** data_table, extern_entry** ext, entry_entry** ent, long* DC);
 boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_trable_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head, long* IC);
-boolean add_symbol_to_table(char* lable_name, symbols_table_entry** symbol_table_head, extern_entry** ext_head, line_type type, long* address, long L);
+boolean add_symbol_to_table(char* lable_name, symbols_table_entry** symbol_table_head, extern_entry** ext_head, line_type type, long address, long L);
 
 
 void free_data_table(data_table_entry*);
