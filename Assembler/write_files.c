@@ -82,7 +82,6 @@ void write_object_file(char* file_name, long IC, long DC, code_table_entry* code
 	code_table_entry* current_code_entry;
 	unsigned int final_bits_word;
 
-
 	char* object_file_name = add_file_postfix(file_name, ".ob");
 	object_file = fopen(object_file_name, "w");
 
@@ -93,14 +92,6 @@ void write_object_file(char* file_name, long IC, long DC, code_table_entry* code
 
 	/* Print first line */
 	fprintf(object_file, "%d %d\n", IC, DC);
-	current_data_entry = data_entry_head;
-
-	/* Print all encoded data words to the object file */
-	while (current_data_entry) {
-		fprintf(object_file, "%s\n", encode_base64(current_data_entry->data.character));
-		current_data_entry = current_data_entry->next;
-	}
-
 	current_code_entry = code_entry_head;
 
 	/* Print all encoded code words to the object file */
@@ -108,6 +99,14 @@ void write_object_file(char* file_name, long IC, long DC, code_table_entry* code
 		final_bits_word = get_bits_word(current_code_entry);
 		fprintf(object_file, "%s\n", encode_base64(final_bits_word));
 		current_code_entry = current_code_entry->next;
+	}
+
+	current_data_entry = data_entry_head;
+
+	/* Print all encoded data words to the object file */
+	while (current_data_entry) {
+		fprintf(object_file, "%s\n", encode_base64(current_data_entry->data.character));
+		current_data_entry = current_data_entry->next;
 	}
 
 	/* Close file and free memory */
