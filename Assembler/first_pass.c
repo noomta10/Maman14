@@ -277,9 +277,10 @@ addressing_type get_addressing_type(char* operand)
 {
     if (operand == NULL)
         return NO_OPERAND;
-    if (is_number(operand))
+    else if (is_number(operand))
         return IMMEDIATE_ADDRESSING;
-    if (is_label(operand))
+    else if (is_register(operand))
+        return REGISTER_ADDRESSING;
+    else
         return DIRECT_ADDRESSING;
-    return REGISTER_ADDRESSING;
 }

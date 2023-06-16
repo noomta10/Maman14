@@ -447,7 +447,7 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
             }
         }
         /* operands are not registers */
-        else 
+        else if(!is_register(line->source_operand) && !is_register(line->target_operand))
         {
             code_table_temp = get_extra_word(uninitialized_symbol_head, line->source_operand, IC);
             ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
@@ -477,7 +477,7 @@ code_table_entry* get_opcode_word(line_info* line, long* IC)
     code_table_temp->value.code_word_value.opcode = get_opcode_bits(line->opcode);
     code_table_temp->value.code_word_value.ARE = ABSOLUTE;
     code_table_temp->value.code_word_value.source_addressing = get_addressing_type(line->source_operand);
-    code_table_temp->value.code_word_value.target_addressing = get_addressing_type(line->source_operand);
+    code_table_temp->value.code_word_value.target_addressing = get_addressing_type(line->target_operand);
     code_table_temp->address = (*IC)++;
     return code_table_temp;
 }
