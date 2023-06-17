@@ -12,7 +12,7 @@ void second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_e
 	uninitialized_symbols_table_entry* current_uninitialized_symbols_entry = head_uninitialized_symbols_entry;
 	symbols_table_entry* current_symbol_entry;
 
-	/* As long as there are uninitialized_symbols in the table, add them to the code image */
+	/* As long as there are uninitialized symbols in the table, add them to the code image */
 	while (current_uninitialized_symbols_entry) {
 		/* Reset symbols table */
 		current_symbol_entry = head_symbols_entry;
@@ -22,7 +22,14 @@ void second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_e
 		{
 			if (strcmp(current_uninitialized_symbols_entry->name, current_symbol_entry->name) == 0) 
 			{
-				current_uninitialized_symbols_entry->extra_code_word_value->data = current_symbol_entry->address;
+
+				/* Check if it is a data symbol and set data accordingly */
+				if (current_symbol_entry->address_type == DIRECTIVE) {
+					current_uninitialized_symbols_entry->extra_code_word_value->data = current_symbol_entry->address + 100 + IC;
+				}
+				else {
+					current_uninitialized_symbols_entry->extra_code_word_value->data = current_symbol_entry->address + 100;
+				}
 				
 				/* Check if it is an external symbol and set ARE accordingly */
 				if (is_external(current_uninitialized_symbols_entry->name, head_extern_entry)) {
