@@ -118,12 +118,11 @@ void write_object_file(char* file_name, long IC, long DC, code_table_entry* code
 /* Convert the bits in the code_word_entry structure to a number */
 static unsigned int get_bits_word(code_table_entry* current_code_entry){
 	unsigned int final_bits_word = 0;
-	
 	if (current_code_entry->type == TYPE_CODE_WORD) {
 		final_bits_word = final_bits_word | current_code_entry->value.code_word_value.ARE;
-		final_bits_word = final_bits_word | current_code_entry->value.code_word_value.source_addressing << 2;
+		final_bits_word = final_bits_word | current_code_entry->value.code_word_value.target_addressing << 2;
 		final_bits_word = final_bits_word | current_code_entry->value.code_word_value.opcode << 5;
-		final_bits_word = final_bits_word | current_code_entry->value.code_word_value.target_addressing << 9;
+		final_bits_word = final_bits_word | current_code_entry->value.code_word_value.source_addressing << 9;
 	}
 	else if (current_code_entry->type == TYPE_EXTRA_CODE_WORD) {
 		final_bits_word = final_bits_word | current_code_entry->value.extra_code_word_value.ARE;
