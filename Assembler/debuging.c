@@ -137,9 +137,11 @@ void print_uninitialized_symbols_table(uninitialized_symbols_table_entry* uninit
 
 void print_code_table_in_binary( code_table_entry* code_table)
 {
+    int i = 0;
     printf("printing code_table_entry in binary:\n\n");
     while (code_table != NULL)
     {
+        printf("%d:  ", i++);
         if (code_table->type == TYPE_CODE_WORD)
         {
             print_decimal_to_binary(code_table->value.code_word_value.source_addressing, 3);

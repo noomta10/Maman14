@@ -20,10 +20,8 @@ void second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_e
 		/* Find current uninitialized symbol address in symbols table */
 		while (current_symbol_entry)
 		{
-			if (strcmp(current_uninitialized_symbols_entry->name, current_symbol_entry->name) == 0) 
-			{
-
-				/* Check if it is a data symbol and set data accordingly */
+			if (strcmp(current_uninitialized_symbols_entry->name, current_symbol_entry->name) == 0) {
+				/* Check if it is a directive or instruction symbol and set data accordingly */
 				if (current_symbol_entry->address_type == DIRECTIVE) {
 					current_uninitialized_symbols_entry->extra_code_word_value->data = current_symbol_entry->address + 100 + IC;
 				}
