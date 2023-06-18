@@ -64,6 +64,7 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
     return !error_flag; /*returning error flag*/
 }
 
+
 void process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_entry** symbol_table_head, data_table_entry** data_table,
     entry_entry** ent, extern_entry** ext, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head, boolean* error_flag)
 {

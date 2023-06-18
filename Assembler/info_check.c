@@ -14,13 +14,13 @@
 #include "debuging.h"
 
 
-
 boolean is_directive(char* str)
 {
     if (*str == '.')
         return TRUE;
     return FALSE;
 }
+
 
 boolean is_label(char* str)
 {
@@ -32,6 +32,7 @@ boolean is_label(char* str)
     }
     return FALSE;
 }
+
 
 boolean line_too_long(FILE* am_file, char* line_content)
 {

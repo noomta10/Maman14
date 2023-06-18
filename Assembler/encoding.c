@@ -4,6 +4,11 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+
+/* Base64 character mapping table */
+static const char base64_chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+
 /* For debugging */
 void print_decimal_to_binary(int num, int number_of_bits_to_print) {
     //if (num == 0) {
@@ -22,13 +27,11 @@ void print_decimal_to_binary(int num, int number_of_bits_to_print) {
 }
 
 
-/* Base64 character mapping table */
-static const char base64_chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
 /* Function to encode a 6-bit number to base64 */
 char encode_six_bit_number(unsigned int bits) {
     return base64_chars[bits];
 }
+
 
 char* encode_base64(unsigned int number) {
     char final_base64[3];
