@@ -92,7 +92,6 @@ void process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_
 
 boolean validate_line(line_info* line)
 {
-    boolean valid = TRUE;
     /*label checking*/
     if (line->label_flag)
     {
@@ -103,106 +102,17 @@ boolean validate_line(line_info* line)
     /*checks for errors in directive lines*/
     if (line->directive_flag) 
     {
-        if(strcmp(line->directive_command, "data") == 0)
-        {
-            if(strcmp(line->directive_data, "") == 0)
-            {
-                printf("Error: in line: %ld %s\nmissing data\n", line->line_number, line->line_content);
-                valid = FALSE;
-            }
-        }
-        else if(strcmp(line->directive_command, "string") == 0)
-        {
-            if(strcmp(line->directive_data, "") == 0)
-            {
-                printf("Error: in line: %ld %s\nmissing data\n", line->line_number, line->line_content);
-                valid = FALSE;
-            }
-        }
-        else if(strcmp(line->directive_command, "entry") == 0)
-        {
-            if(strcmp(line->directive_data, "") == 0)
-            {
-                printf("Warning: in line:\n%ld %s\nno entry labels given\n", line->line_number, line->line_content);
-                valid = FALSE;
-            }
-        }
-        else if(strcmp(line->directive_command, "extern") == 0)
-        {
-            if(strcmp(line->directive_data, "") == 0)
-            {
-                printf("Warning: in line: %ld %s\n no extern labels given\n", line->line_number, line->line_content);
-                valid = FALSE;
-            }
-        }
-        else
-        {
-            printf("Error: line: %ld %s\ninvalid directive command\n", line->line_number, line->line_content);
-            valid = FALSE;
-        }            
+        if (!valid_directive_line(line))
+            return FALSE;
     }
-    /*checks for errors in command lines*/
-    if (!line->directive_flag)
+
+    /*checks for errors in directive lines*/
+    if (line->instruction_flag)
     {
-        /*checking sub, mov, add, lea commands*/
-        if (strcmp(line->opcode, "sub") == 0 || 
-            strcmp(line->opcode, "mov") == 0 ||
-            strcmp(line->opcode, "add") == 0 ||
-            strcmp(line->opcode, "lea") == 0)
-        {
-            /*checking for missing operand*/
-            if (line->source_operand == NULL || line->target_operand == NULL)
-            {
-                printf("Error: missing operand\n");
-                valid = FALSE;
-            }
-        }
-        /*checking not, clr, inc, dec, jmp, bne, red, prn, jsr commands*/
-        else if (strcmp(line->opcode, "not") == 0 ||
-            strcmp(line->opcode, "clr") == 0 ||
-            strcmp(line->opcode, "inc") == 0 ||
-            strcmp(line->opcode, "dec") == 0 ||
-            strcmp(line->opcode, "jmp") == 0 ||
-            strcmp(line->opcode, "bne") == 0 ||
-            strcmp(line->opcode, "red") == 0 ||
-            strcmp(line->opcode, "prn") == 0 ||
-            strcmp(line->opcode, "jsr") == 0)
-        {
-             /*checking for missing operand*/
-            if (line->source_operand == NULL)
-            {
-                printf("Error: missing operand\n");
-                valid = FALSE;
-            }
-            /*checking for extra operand*/
-            else if (line->target_operand != NULL && strcmp(line->target_operand, "") != 0)
-            { 
-                printf("Error: extra operand\n");
-                valid = FALSE;
-            }
-            line->target_operand = line->source_operand; /*moving source operand to target operand*/
-            line->source_operand = NULL;
-        }
-        /*checking rts, stop commands*/
-        else if (strcmp(line->opcode, "rts") == 0 ||
-            strcmp(line->opcode, "stop") == 0)
-        {
-             /*checking for extra operand*/
-            if ((line->source_operand != NULL && strcmp(line->source_operand, "")) ||
-                (line->target_operand != NULL && strcmp(line->target_operand, "")))
-            {
-                printf("Error: extra operand\n");
-                valid = FALSE;
-            }
-        }
-        /*invalid opcode*/
-        else
-        {
-            printf("Error: invalid opcode\n");
-            valid = FALSE;
-        }
+        if (!valid_instruction_line(line))
+            return FALSE;
     }
-    return valid;
+    return TRUE;
 }
 
 void extract_command_info(char* content, line_info* line)
@@ -285,3 +195,6 @@ addressing_type get_addressing_type(char* operand)
     else
         return DIRECT_ADDRESSING;
 }
+
+
+

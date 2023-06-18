@@ -12,6 +12,7 @@
 #include "utils.h"
 #include "string_handling.h"
 #include "debuging.h"
+#include "info_check.h"
 
 
 boolean is_directive(char* str)
@@ -20,7 +21,6 @@ boolean is_directive(char* str)
         return TRUE;
     return FALSE;
 }
-
 
 boolean is_label(char* str)
 {
@@ -32,7 +32,6 @@ boolean is_label(char* str)
     }
     return FALSE;
 }
-
 
 boolean line_too_long(FILE* am_file, char* line_content)
 {
@@ -143,3 +142,249 @@ boolean ignore_line(char* line)
 
     return FALSE;
 }
+
+boolean valid_instruction_line(line_info* line)
+{
+             
+    /* check if theres more or less operands then nedded */
+    if(!check_extra_or_missing_operands(line))
+        return FALSE;
+
+    /* check if operands are valid */
+    if(!check_operands(line))
+        return FALSE;
+    return TRUE;
+}
+
+boolean valid_directive_line(line_info* line)
+{
+    if(strcmp(line->directive_command, "data") == 0)
+    {
+        if (!valid_data_command(line))
+            return FALSE;
+    }
+    else if(strcmp(line->directive_command, "string") == 0)
+    {
+        if(!valid_string_command(line))
+            return FALSE;
+    }
+    else if(strcmp(line->directive_command, "entry") == 0)
+    {
+        if (!valid_entry_command(line))
+            return FALSE;
+    }
+    else if(strcmp(line->directive_command, "extern") == 0)
+    {
+        if (!valid_extern_command(line))
+            return FALSE;
+    }
+    else
+    {
+        printf("Error: line: %ld %s\ninvalid directive command\n", line->line_number, line->line_content);
+        return FALSE;
+    }   
+
+}
+
+boolean valid_data_command(line_info* line)
+{
+    if(strcmp(line->directive_data, "") == 0)
+    {
+        printf("Error: in line: %ld %s\nmissing data\n", line->line_number, line->line_content);
+        return FALSE;
+    }
+    return TRUE;
+}
+
+boolean valid_string_command(line_info* line)
+{
+    char* directive_data = line->directive_data;
+    int i = 0;
+    /* check if string is empty */
+    if(strcmp(directive_data, "") == 0)
+    {
+        printf("Error: in line: %ld %s\nmissing data\n", line->line_number, line->line_content);
+        return FALSE;
+    }
+    /* check if string starts with quotes */
+    if(directive_data[0] != '"')
+    {
+        printf("Error: in line: %ld %s\nstring must start with quotes\n", line->line_number, line->line_content);
+        return FALSE;
+    }
+    /* check if string ends with quotes */
+    while(isspace(directive_data[i]))
+        i;
+    if(directive_data[i] != '"')
+    {
+        printf("Error: in line: %ld %s\nstring must end with quotes\n", line->line_number, line->line_content);
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+boolean valid_entry_command(line_info* line)
+{
+    if(strcmp(line->directive_data, "") == 0)
+    {
+        printf("Warning: in line:\n%ld %s\nno entry labels given\n", line->line_number, line->line_content);
+        return FALSE;
+    }
+    return TRUE;
+}
+
+boolean valid_extern_command(line_info* line)
+{
+    if(strcmp(line->directive_data, "") == 0)
+    {
+        printf("Warning: in line: %ld %s\n no extern labels given\n", line->line_number, line->line_content);
+        return FALSE;
+    }
+    return TRUE;
+}
+
+boolean check_extra_or_missing_operands(line_info* line)
+{
+ /*checking sub, mov, add, lea commands*/
+    if (strcmp(line->opcode, "sub") == 0 || 
+        strcmp(line->opcode, "mov") == 0 ||
+        strcmp(line->opcode, "add") == 0 ||
+        strcmp(line->opcode, "lea") == 0)
+    {
+        /*checking for missing operand*/
+        if (line->source_operand == NULL || line->target_operand == NULL)
+        {
+            printf("Error: missing operand\n");
+            return FALSE;
+        }
+    }
+    /*checking not, clr, inc, dec, jmp, bne, red, prn, jsr commands*/
+    else if (strcmp(line->opcode, "not") == 0 ||
+        strcmp(line->opcode, "clr") == 0 ||
+        strcmp(line->opcode, "inc") == 0 ||
+        strcmp(line->opcode, "dec") == 0 ||
+        strcmp(line->opcode, "jmp") == 0 ||
+        strcmp(line->opcode, "bne") == 0 ||
+        strcmp(line->opcode, "red") == 0 ||
+        strcmp(line->opcode, "prn") == 0 ||
+        strcmp(line->opcode, "jsr") == 0)
+    {
+            /*checking for missing operand*/
+        if (line->source_operand == NULL)
+        {
+            printf("Error: missing operand\n");
+            return FALSE;
+        }
+        /*checking for extra operand*/
+        else if (line->target_operand != NULL && strcmp(line->target_operand, "") != 0)
+        { 
+            printf("Error: extra operand\n");
+            return FALSE;
+        }
+        line->target_operand = line->source_operand; /*moving source operand to target operand*/
+        line->source_operand = NULL;
+    }
+    /*checking rts, stop commands*/
+    else if (strcmp(line->opcode, "rts") == 0 ||
+        strcmp(line->opcode, "stop") == 0)
+    {
+            /*checking for extra operand*/
+        if ((line->source_operand != NULL && strcmp(line->source_operand, "")) ||
+            (line->target_operand != NULL && strcmp(line->target_operand, "")))
+        {
+            printf("Error: extra operand\n");
+            return FALSE;
+        }
+    }
+    /*invalid opcode*/
+    else
+    {
+        printf("Error: invalid opcode\n");
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+boolean check_operands(line_info* line)
+{
+    /* checking if source operand is valid */
+    if(!valid_source_operand(line))
+        return FALSE;
+    
+    /* checking target operand */
+    if(!valid_target_operand(line))
+        return FALSE;
+    return TRUE;
+}
+
+boolean valid_source_operand(line_info* line)
+{
+    if (strcmp(line->opcode, "mov") == 0 ||
+            strcmp(line->opcode, "cmp") == 0 ||
+            strcmp(line->opcode, "add") == 0 ||
+            strcmp(line->opcode, "sub") == 0 )
+    {
+        return get_addressing_type(line->source_operand) == IMMEDIATE_ADDRESSING ||
+            get_addressing_type(line->source_operand) == DIRECT_ADDRESSING ||
+            get_addressing_type(line->source_operand) == REGISTER_ADDRESSING;
+    }
+    else if(strcmp(line->opcode, "lea") == 0)
+    {
+        return get_addressing_type(line->source_operand) == DIRECT_ADDRESSING;
+    }
+    else if(strcmp(line->opcode, "not") == 0 ||
+        strcmp(line->opcode, "clr") == 0 ||
+        strcmp(line->opcode, "inc") == 0 ||
+        strcmp(line->opcode, "dec") == 0 ||
+        strcmp(line->opcode, "jmp") == 0 ||
+        strcmp(line->opcode, "bne") == 0 ||
+        strcmp(line->opcode, "red") == 0 ||
+        strcmp(line->opcode, "prn") == 0 ||
+        strcmp(line->opcode, "jsr") == 0 ||
+        strcmp(line->opcode, "rts") == 0 ||
+        strcmp(line->opcode, "stop") == 0)
+    {
+        return get_addressing_type(line->source_operand) == NO_OPERAND;
+    }
+
+    return FALSE;
+}
+
+boolean valid_target_operand(line_info* line)
+{
+    if (strcmp(line->opcode, "cmp") == 0 ||
+        strcmp(line->opcode, "prn") == 0)
+    {
+        return get_addressing_type(line->target_operand) == IMMEDIATE_ADDRESSING ||
+            get_addressing_type(line->target_operand) == DIRECT_ADDRESSING ||
+            get_addressing_type(line->target_operand) == REGISTER_ADDRESSING;
+    }
+    else if(strcmp(line->opcode, "mov") == 0 ||
+        strcmp(line->opcode, "add") == 0 ||
+        strcmp(line->opcode, "sub") == 0 ||
+        strcmp(line->opcode, "not") == 0 ||
+        strcmp(line->opcode, "clr") == 0 ||
+        strcmp(line->opcode, "lea") == 0 ||
+        strcmp(line->opcode, "inc") == 0 ||
+        strcmp(line->opcode, "dec") == 0 ||
+        strcmp(line->opcode, "jmp") == 0 ||
+        strcmp(line->opcode, "bne") == 0 ||
+        strcmp(line->opcode, "red") == 0 ||
+        strcmp(line->opcode, "jsr") == 0)
+    {
+        return get_addressing_type(line->target_operand) == DIRECT_ADDRESSING ||
+            get_addressing_type(line->target_operand) == REGISTER_ADDRESSING;
+    }
+    else if(strcmp(line->opcode, "rts") == 0 ||
+        strcmp(line->opcode, "stop") == 0)
+    {
+        return get_addressing_type(line->target_operand) == NO_OPERAND;
+    }
+    return FALSE;
+}
+
+
+
+
