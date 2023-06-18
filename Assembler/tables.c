@@ -330,6 +330,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
             ext_ptr = malloc_with_check(sizeof(extern_entry));
             ext_ptr->name = token;
             ext_ptr->address = 0;
+            ext_ptr->line_number = line->line_number;
             ADD_NODE_TO_LIST(ext_prev, ext_ptr, ext_head);
             i = 0;
 

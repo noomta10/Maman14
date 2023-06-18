@@ -139,6 +139,7 @@ typedef struct data_table_entry{/*data table for data values*/
 typedef struct extern_entry{/*data table for extern flags */
 	struct extern_entry *next;
 	long address;
+	long line_number;
 	char *name;
 } extern_entry;
 

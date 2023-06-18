@@ -118,3 +118,28 @@ boolean check_comma(char** str)
     return FALSE;
 }
 
+boolean is_number(char* string)
+{
+    int i = 0;
+    if (string == NULL)
+        return FALSE;
+    if (string[0] == '-' || string[0] == '+')
+        i++;
+    for (; i < strlen(string); i++)
+    {
+        if (!isdigit(string[i]))
+            return FALSE;
+    }
+    return TRUE;
+}
+
+boolean ignore_line(char* line)
+{
+    /* Epmty line or comment line */
+    if (end_of_string(line) || *line == ';')
+    {
+        return TRUE;
+    }
+
+    return FALSE;
+}

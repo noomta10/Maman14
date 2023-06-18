@@ -71,7 +71,9 @@ void print_extern_table(extern_entry* ext)
     printf("printing extern labels:\n\n");
     while (ext != NULL)
     {
-        printf("name: %s    address: %ld\n", ext->name, ext->address);
+        printf("name: %s\naddress: %ld\n", ext->name, ext->address);
+        printf("line number: %ld\n", ext->line_number);
+        printf("\n");
         ext = ext->next;
     }
     printf("-------------------------\n\n");
