@@ -65,7 +65,7 @@ void write_extern_file(char* file_name, extern_entry* extern_table_head) {
 	current_extern_entry = extern_table_head;
 
 	while (current_extern_entry) {
-		fprintf(extern_file, "%s %5d\n", current_extern_entry->name, current_extern_entry->address);
+		fprintf(extern_file, "%s %5d\n", current_extern_entry->name, current_extern_entry->line_number);
 		current_extern_entry = current_extern_entry->next;
 	}
 
