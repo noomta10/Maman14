@@ -20,6 +20,14 @@ void second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_e
 		/* Find current uninitialized symbol address in symbols table */
 		while (current_symbol_entry)
 		{
+			/* Check if it is an external symbol and set ARE accordingly */
+			if (is_external(current_uninitialized_symbols_entry->name, head_extern_entry)) {
+				current_uninitialized_symbols_entry->extra_code_word_value->ARE = EXTERNAL;
+			}
+			else {
+				current_uninitialized_symbols_entry->extra_code_word_value->ARE = RELOCATABLE;
+			}
+
 			if (strcmp(current_uninitialized_symbols_entry->name, current_symbol_entry->name) == 0) {
 				/* Check if it is a directive or instruction symbol and set data accordingly */
 				if (current_symbol_entry->address_type == DIRECTIVE) {
@@ -27,15 +35,6 @@ void second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_e
 				}
 				else {
 					current_uninitialized_symbols_entry->extra_code_word_value->data = current_symbol_entry->address + 100;
-				}
-				
-				/* Check if it is an external symbol and set ARE accordingly */
-				if (is_external(current_uninitialized_symbols_entry->name, head_extern_entry)) {
-					current_uninitialized_symbols_entry->extra_code_word_value->ARE = EXTERNAL;
-
-				}
-				else {
-					current_uninitialized_symbols_entry->extra_code_word_value->ARE = RELOCATABLE;
 				}
 				break;
 			}
