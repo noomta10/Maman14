@@ -78,7 +78,7 @@ void free_code_table(code_table_entry* head){
     }
 }
 
-boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_head, data_table_entry** data_table_head, extern_entry** ext_head, entry_entry** ent_head, long* DC)
+boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_head, data_table_entry** data_table_head, extern_entry** ext_head, entry_entry** ent_head, long* DC, long* IC)
 {
     /*declaring pointers*/
     extern_entry* ext_ptr = *ext_head;
@@ -330,7 +330,7 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
             ext_ptr = malloc_with_check(sizeof(extern_entry));
             ext_ptr->name = token;
             ext_ptr->address = 0;
-            ext_ptr->line_number = line->line_number;
+            //ext_ptr->line_number = *IC + *DC + 100; TODO: delete?
             ADD_NODE_TO_LIST(ext_prev, ext_ptr, ext_head);
             i = 0;
 

@@ -77,7 +77,7 @@ void process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_
 
     /*if the line contans data, add it to the memory*/
     if (line->directive_flag) {
-        if (!add_data_to_table(line, symbol_table_head, data_table, ext, ent, DC))
+        if (!add_data_to_table(line, symbol_table_head, data_table, ext, ent, DC, IC))
             *error_flag = TRUE;
     }
 
