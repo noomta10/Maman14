@@ -108,64 +108,8 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
     /*instruction is a string*/    
     skip_white_spaces(&data_to_extract);
     if (strcmp(line->directive_command, "string") == 0)
-    {
-        /*goto the end of the list*/
-        while(data_table_ptr != NULL)
-            data_table_ptr = data_table_ptr->next;
-            
-        /*check if string starts with " and skip it"*/
-        if (*data_to_extract != '"')
-        {
-            printf("Error: string data must start and end with \"\n");
-            return FALSE;
-        }
-        data_to_extract++;
+        return add_string_to_table(line, data_table_head, symbol_table_head, ext_head, DC);
 
-        /*copying the string to data_table until " reached"*/
-        while (*data_to_extract != '"' && !end_of_string(data_to_extract))
-        {
-            data_table_ptr = (data_table_entry*)malloc_with_check(sizeof(data_table_entry));
-            data_table_ptr->type = TYPE_STRING;
-            data_table_ptr->data.character = *data_to_extract++;
-            ADD_NODE_TO_LIST(data_table_prev, data_table_ptr, data_table_head);
-
-            L++;
-        }
-
-        /*adding \0 to the end of the string */
-        data_table_ptr = (data_table_entry*)malloc_with_check(sizeof(data_table_entry));
-        data_table_ptr->data.character = '\0';
-        data_table_ptr->type = TYPE_STRING;
-        ADD_NODE_TO_LIST(data_table_prev, data_table_ptr, data_table_head);
-        L++;
-
-        /*check if string ends with " and skip it, else print error*/
-        if(*data_to_extract == '"')
-            data_to_extract++;
-        else
-        {
-            printf("Error: string data must start and end with \"\n");
-            return FALSE;
-        }
-
-        /*check if there are extra characters after the string*/
-        if (!end_of_string(data_to_extract))
-        {
-            printf("Error: extra character after string \"\n");
-            error_flag = TRUE;
-        }
-
-        /*check if there is a label and add it*/
-        if (line->label)
-        {
-            data_type = TYPE_STRING;
-            if (!add_symbol_to_table(line->label, symbol_table_head, ext_head, data_type, *DC, L))
-                error_flag = TRUE;
-        }
-        *DC += L;
-
-        return !error_flag;
-    }
 
     /*instruction is numbers*/
     else if (strcmp(line->directive_command, "data") == 0)
@@ -353,6 +297,62 @@ boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_he
     }
     return !error_flag;
 }
+
+boolean add_string_to_table(line_info* line, data_table_entry** data_table_head, symbols_table_entry** symbol_table_head, extern_entry* ext_head, long* DC)
+{
+    long L = 0;
+    char* string_to_add = line->directive_data;
+    data_types data_type = TYPE_STRING;
+    data_table_entry* data_table_ptr = *data_table_head;
+    data_table_entry* data_table_prev = NULL;
+    SET_PREV_POINTER(data_table_prev, data_table_ptr)
+
+    /*skip the " */
+    skip_white_spaces(&string_to_add);
+    string_to_add++;
+    /*copying the string to data_table until " reached"*/
+    while (*string_to_add != '"' && !end_of_string(string_to_add))
+    {
+        data_table_ptr = (data_table_entry*)malloc_with_check(sizeof(data_table_entry));
+        data_table_ptr->type = TYPE_STRING;
+        data_table_ptr->data.character = *string_to_add++;
+        ADD_NODE_TO_LIST(data_table_prev, data_table_ptr, data_table_head);
+
+        L++;
+    }
+
+    /*adding \0 to the end of the string */
+    data_table_ptr = (data_table_entry*)malloc_with_check(sizeof(data_table_entry));
+    data_table_ptr->data.character = '\0';
+    data_table_ptr->type = TYPE_STRING;
+    ADD_NODE_TO_LIST(data_table_prev, data_table_ptr, data_table_head);
+    L++;
+
+
+    /*check if there is a label and add it*/
+    if (line->label_flag)
+    {
+        data_type = TYPE_STRING;
+        if (!add_symbol_to_table(line->label, symbol_table_head, ext_head, TYPE_STRING, *DC, L))
+            return FALSE;
+    }
+
+    *DC += L;
+    return TRUE;        
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_trable_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head, long* IC)
 {
@@ -578,4 +578,22 @@ boolean add_symbol_to_table(char* lable_name, symbols_table_entry** symbol_table
     
     return TRUE;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

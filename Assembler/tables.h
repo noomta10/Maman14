@@ -45,8 +45,8 @@ typedef struct {
 
 typedef struct {
 	unsigned int ARE: 2;
+	unsigned int source_register : 5;
 	unsigned int target_register: 5;
-	unsigned int source_register: 5;
 } register_word;
 
 typedef union {
@@ -172,6 +172,7 @@ typedef struct uninitialized_symbols_table_entry{/*struct for the symbols table*
 boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table, data_table_entry** data_table, extern_entry** ext, entry_entry** ent, long* DC, long* IC);
 boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_trable_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head, long* IC);
 boolean add_symbol_to_table(char* lable_name, symbols_table_entry** symbol_table_head, extern_entry** ext_head, line_type type, long address, long L);
+boolean add_string_to_table(line_info* line, data_table_entry** data_table_head, symbols_table_entry** symbol_table_head, extern_entry* ext_head, long* DC);
 
 
 void free_data_table(data_table_entry*);

@@ -154,8 +154,8 @@ void print_code_table_in_binary( code_table_entry* code_table)
         }
         if (code_table->type == TYPE_REGISTER_WORD)
         {
-            print_decimal_to_binary(code_table->value.register_word_value.target_register, 5);
             print_decimal_to_binary(code_table->value.register_word_value.source_register, 5);
+            print_decimal_to_binary(code_table->value.register_word_value.target_register, 5);
             print_decimal_to_binary(code_table->value.register_word_value.ARE, 2);
             printf("\n");
         }

@@ -161,6 +161,7 @@
     <None Include="my_file.as" />
     <None Include="test_lable.am" />
     <None Include="workbook_example.as" />
+    <None Include="workbook_example.ob" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data_test.as" />
