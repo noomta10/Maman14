@@ -34,6 +34,7 @@ void print_data_table(data_table_entry* data_table)
 
 void print_code_word(code_table_entry* code_table)
 {
+    set_code_table_to_ic_initial_address(&code_table);
     printf("printing code_table_entry:\n\n");
     while (code_table != NULL)
     {
@@ -139,6 +140,7 @@ void print_uninitialized_symbols_table(uninitialized_symbols_table_entry* uninit
 
 void print_code_table_in_binary( code_table_entry* code_table)
 {
+    set_code_table_to_ic_initial_address(&code_table);
     int i = 0;
     printf("printing code_table_entry in binary:\n\n");
     while (code_table != NULL)

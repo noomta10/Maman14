@@ -174,12 +174,13 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
 boolean add_symbol_to_table(char* lable_name, symbols_table_entry** symbol_table_head, extern_entry** ext_head, line_type type, long address, long L);
 boolean add_string_to_table(line_info* line, data_table_entry** data_table_head, symbols_table_entry** symbol_table_head, extern_entry* ext_head, long* DC);
 
-
+void add_100_to_code_table(code_table_entry** code_table_head, long* IC);
 void free_data_table(data_table_entry*);
 void free_symbols_table(symbols_table_entry*);
 void free_extern_table(extern_entry*);
 void free_entry_table(entry_entry*);
 void free_code_table(code_table_entry* head);
+void set_code_table_to_ic_initial_address(code_table_entry** code_table_head);
 
 int extra_words_for_addressing(line_info* line);
 

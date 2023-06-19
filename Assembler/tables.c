@@ -363,6 +363,9 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
     long L = 0;    
     long copy_IC = *IC;
 
+    if(*code_table_head == NULL)
+        add_100_to_code_table(code_table_head, IC);
+
     SET_PREV_POINTER(code_table_prev, code_table_temp);
    
     /*adding opcode word*/
@@ -577,6 +580,37 @@ boolean add_symbol_to_table(char* lable_name, symbols_table_entry** symbol_table
 
     
     return TRUE;
+}
+
+void add_100_to_code_table(code_table_entry** code_table_head, long* IC)
+{
+    code_table_entry* code_table_ptr = *code_table_head;
+    code_table_entry* code_table_prev = NULL;
+
+
+    while (*IC < IC_START_ADDRESS)
+    {
+        code_table_ptr = (code_table_entry*)malloc_with_check(sizeof(code_table_entry));
+        code_table_ptr->type = TYPE_CODE_WORD;
+        code_table_ptr->value.code_word_value.opcode = UNINITIALIZED_VALUE;
+        code_table_ptr->value.code_word_value.ARE = ABSOLUTE;
+        code_table_ptr->value.code_word_value.source_addressing = UNINITIALIZED_VALUE;
+        code_table_ptr->value.code_word_value.target_addressing = UNINITIALIZED_VALUE;
+        code_table_ptr->address = (*IC)++;
+        ADD_NODE_TO_LIST(code_table_prev, code_table_ptr, code_table_head);
+    }
+}
+
+void set_code_table_to_ic_initial_address(code_table_entry** code_table_head)
+{
+    code_table_entry* code_table_ptr = *code_table_head;
+    if (code_table_head == NULL)
+        return;
+    while (code_table_ptr->address <= IC_START_ADDRESS)
+    {
+        code_table_ptr = code_table_ptr->next;
+    }
+    *code_table_head = code_table_ptr;
 }
 
 
