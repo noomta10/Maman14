@@ -75,7 +75,7 @@ void second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_e
 	}
 
 	/* Write files */
-	write_extern_file(file_name, head_extern_entry);
+	write_extern_file(file_name, head_extern_entry, head_uninitialized_symbols_entry);
 	write_entry_file(file_name, head_entry_entry);
 	write_object_file(file_name, IC, DC, code_entry_head, data_entry_head);
 
