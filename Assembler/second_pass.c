@@ -19,10 +19,10 @@ void add_entry_table_address(entry_entry* head_entry_entry, symbols_table_entry*
 		while (current_symbol_entry) {
 			if (strcmp(current_entry_entry->name, current_symbol_entry->name) == 0) {
 				if (current_symbol_entry->address_type == DIRECTIVE) {
-					current_entry_entry->address = current_symbol_entry->address + 100 + IC;
+					current_entry_entry->address = current_symbol_entry->address + IC;
 				}
 				else {
-					current_entry_entry->address = current_symbol_entry->address + 100;
+					current_entry_entry->address = current_symbol_entry->address;
 				}
 				break;
 			}
@@ -60,10 +60,10 @@ void second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_e
 			if (strcmp(current_uninitialized_symbols_entry->name, current_symbol_entry->name) == 0) {
 				/* Check if it is a directive or instruction symbol and set data accordingly */
 				if (current_symbol_entry->address_type == DIRECTIVE) {
-					current_uninitialized_symbols_entry->extra_code_word_value->data = current_symbol_entry->address + 100 + IC;
+					current_uninitialized_symbols_entry->extra_code_word_value->data = current_symbol_entry->address + IC;
 				}
 				else {
-					current_uninitialized_symbols_entry->extra_code_word_value->data = current_symbol_entry->address + 100;
+					current_uninitialized_symbols_entry->extra_code_word_value->data = current_symbol_entry->address;
 				}
 				break;
 			}
@@ -74,6 +74,7 @@ void second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_e
 		current_uninitialized_symbols_entry = current_uninitialized_symbols_entry->next;
 	}
 
+	set_code_table_to_ic_initial_address(&code_entry_head);
 	/* Write files */
 	write_extern_file(file_name, head_extern_entry, head_uninitialized_symbols_entry);
 	write_entry_file(file_name, head_entry_entry);

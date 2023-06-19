@@ -71,7 +71,7 @@ void write_extern_file(char* file_name, extern_entry* extern_table_head, uniniti
 
 		while (current_uninitialized_entry) {
 			if (strcmp(current_extern_entry->name, current_uninitialized_entry->name) == 0) {
-				fprintf(extern_file, "%s %5d\n", current_extern_entry->name, current_uninitialized_entry->address + 100);
+				fprintf(extern_file, "%s %5d\n", current_extern_entry->name, current_uninitialized_entry->address);
 				current_uninitialized_entry = current_uninitialized_entry->next;
 				continue;
 			}
