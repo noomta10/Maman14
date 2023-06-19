@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
+#include <string.h>
 #include "assembler.h"
 #include "utils.h"
 #include "line_info.h"
@@ -43,10 +44,11 @@ void write_entry_file(char* file_name, entry_entry* entry_table_head) {
 
 
 /* Write extern file */
-void write_extern_file(char* file_name, extern_entry* extern_table_head) {
+void write_extern_file(char* file_name, extern_entry* extern_table_head, uninitialized_symbols_table_entry* uninitialized_entry_head) {
 	char* extern_file_name;
 	FILE* extern_file;
 	extern_entry* current_extern_entry;
+	uninitialized_symbols_table_entry* current_uninitialized_entry = uninitialized_entry_head;
 
 	/* If there are no entries in the table, do not create entry file */
 	if (!extern_table_head) {
@@ -65,7 +67,16 @@ void write_extern_file(char* file_name, extern_entry* extern_table_head) {
 	current_extern_entry = extern_table_head;
 
 	while (current_extern_entry) {
-		fprintf(extern_file, "%s %5d\n", current_extern_entry->name, current_extern_entry->line_number);
+		current_uninitialized_entry = uninitialized_entry_head;
+
+		while (current_uninitialized_entry) {
+			if (strcmp(current_extern_entry->name, current_uninitialized_entry->name) == 0) {
+				fprintf(extern_file, "%s %5d\n", current_extern_entry->name, current_uninitialized_entry->address + 100);
+				current_uninitialized_entry = current_uninitialized_entry->next;
+				continue;
+			}
+			current_uninitialized_entry = current_uninitialized_entry->next;
+		}
 		current_extern_entry = current_extern_entry->next;
 	}
 
