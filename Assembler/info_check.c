@@ -199,7 +199,8 @@ boolean valid_data_command(line_info* line)
 boolean valid_string_command(line_info* line)
 {
     char* directive_data = line->directive_data;
-    int i = 0;
+    /* set i to the end of the line and skip the null character */
+    int i = strlen(directive_data) - 2;
     /* check if string is empty */
     if(strcmp(directive_data, "") == 0)
     {
@@ -207,14 +208,15 @@ boolean valid_string_command(line_info* line)
         return FALSE;
     }
     /* check if string starts with quotes */
-    if(directive_data[0] != '"')
+    skip_white_spaces(&directive_data);
+    if(*directive_data != '"')
     {
         printf("Error: in line: %ld %s\nstring must start with quotes\n", line->line_number, line->line_content);
         return FALSE;
     }
     /* check if string ends with quotes */
     while(isspace(directive_data[i]))
-        i;
+        i--;
     if(directive_data[i] != '"')
     {
         printf("Error: in line: %ld %s\nstring must end with quotes\n", line->line_number, line->line_content);
