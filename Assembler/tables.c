@@ -356,7 +356,7 @@ boolean add_string_to_table(line_info* line, data_table_entry** data_table_head,
 
 boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_trable_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head, long* IC)
 {
-    code_table_entry* code_table_temp = *code_table_head;
+    code_table_entry* code_table_temp = NULL;
     code_table_entry* code_table_prev = NULL;
     
     boolean error_flag = FALSE;
@@ -366,6 +366,7 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
     if(*code_table_head == NULL)
         add_100_to_code_table(code_table_head, IC);
 
+    code_table_temp = *code_table_head;
     SET_PREV_POINTER(code_table_prev, code_table_temp);
    
     /*adding opcode word*/
@@ -606,7 +607,7 @@ void set_code_table_to_ic_initial_address(code_table_entry** code_table_head)
     code_table_entry* code_table_ptr = *code_table_head;
     if (code_table_head == NULL)
         return;
-    while (code_table_ptr->address <= IC_START_ADDRESS)
+    while (code_table_ptr->address != IC_START_ADDRESS)
     {
         code_table_ptr = code_table_ptr->next;
     }
