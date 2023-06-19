@@ -45,6 +45,9 @@
     <ClCompile Include="info_check.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="second_pass.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debuging.h">
@@ -80,6 +83,9 @@
     <ClInclude Include="info_check.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="second_pass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="my_file.as" />
@@ -88,6 +94,8 @@
     <None Include="label_check.as" />
     <None Include="data_test.am" />
     <None Include="instruction_lines.as" />
+    <None Include="workbook_example.as" />
+    <None Include="workbook_example.ob" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data_test.as" />

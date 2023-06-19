@@ -182,7 +182,7 @@ opcode_type get_opcode_bits(char* opcode)
 
 register_type get_register_number(char* register_name)
 {
-    if (register_name == NULL)
+    if (register_name == NULL || strcmp(register_name, "") == 0 || !is_register(register_name))
         return NO_REGISTER;
     if (strcmp(register_name, "@r0") == 0)
         return R0;
