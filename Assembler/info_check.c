@@ -387,6 +387,37 @@ boolean valid_target_operand(line_info* line)
     return FALSE;
 }
 
+boolean exists_in_symbol_table(char* symbol, symbols_table_entry* symbol_table)
+{
+    while (symbol_table != NULL)
+    {
+        if (strcmp(symbol_table->name, symbol) == 0)
+            return TRUE;
+        symbol_table = symbol_table->next;
+    }
+    return FALSE;
+}
 
+boolean exists_in_extern_table(char* symbol, extern_entry* external_table)
+{
+    while (external_table != NULL)
+    {
+        if (strcmp(external_table->name, symbol) == 0)
+            return TRUE;
+        external_table = external_table->next;
+    }
+    return FALSE;
+}
+
+boolean exists_in_entry_table(char* symbol, entry_entry* entry_table)
+{
+    while (entry_table != NULL)
+    {
+        if (strcmp(entry_table->name, symbol) == 0)
+            return TRUE;
+        entry_table = entry_table->next;
+    }
+    return FALSE;
+}
 
 
