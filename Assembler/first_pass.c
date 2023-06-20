@@ -63,6 +63,8 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
 
     add_final_ic_to_dc_count(*symbol_table_head, *data_table_head, *IC, DC);
 
+    program_too_big(*IC, *DC);
+
     return !error_flag; /*returning error flag*/
 }
 
