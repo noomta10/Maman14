@@ -12,7 +12,7 @@ boolean line_too_long(FILE* am_file, char* line_content);
 
 boolean bad_label(char* label);
 boolean check_comma(char** string);
-
+boolean program_too_big(long IC, long DC);
 boolean valid_directive_line(line_info* line);
 boolean valid_instruction_line(line_info* line);
 boolean valid_data_command(line_info* line);

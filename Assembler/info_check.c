@@ -326,14 +326,12 @@ boolean valid_source_operand(line_info* line)
     if (strcmp(line->opcode, "mov") == 0 ||
             strcmp(line->opcode, "cmp") == 0 ||
             strcmp(line->opcode, "add") == 0 ||
-            strcmp(line->opcode, "sub") == 0 )
-    {
+            strcmp(line->opcode, "sub") == 0 ) {
         return get_addressing_type(line->source_operand) == IMMEDIATE_ADDRESSING ||
             get_addressing_type(line->source_operand) == DIRECT_ADDRESSING ||
             get_addressing_type(line->source_operand) == REGISTER_ADDRESSING;
     }
-    else if(strcmp(line->opcode, "lea") == 0)
-    {
+    else if(strcmp(line->opcode, "lea") == 0) {
         return get_addressing_type(line->source_operand) == DIRECT_ADDRESSING;
     }
     else if(strcmp(line->opcode, "not") == 0 ||
@@ -346,19 +344,16 @@ boolean valid_source_operand(line_info* line)
         strcmp(line->opcode, "prn") == 0 ||
         strcmp(line->opcode, "jsr") == 0 ||
         strcmp(line->opcode, "rts") == 0 ||
-        strcmp(line->opcode, "stop") == 0)
-    {
+        strcmp(line->opcode, "stop") == 0) {
         return get_addressing_type(line->source_operand) == NO_OPERAND;
     }
 
     return FALSE;
 }
 
-boolean valid_target_operand(line_info* line)
-{
+boolean valid_target_operand(line_info* line) {
     if (strcmp(line->opcode, "cmp") == 0 ||
-        strcmp(line->opcode, "prn") == 0)
-    {
+        strcmp(line->opcode, "prn") == 0) {
         return get_addressing_type(line->target_operand) == IMMEDIATE_ADDRESSING ||
             get_addressing_type(line->target_operand) == DIRECT_ADDRESSING ||
             get_addressing_type(line->target_operand) == REGISTER_ADDRESSING;
@@ -374,23 +369,19 @@ boolean valid_target_operand(line_info* line)
         strcmp(line->opcode, "jmp") == 0 ||
         strcmp(line->opcode, "bne") == 0 ||
         strcmp(line->opcode, "red") == 0 ||
-        strcmp(line->opcode, "jsr") == 0)
-    {
+        strcmp(line->opcode, "jsr") == 0) {
         return get_addressing_type(line->target_operand) == DIRECT_ADDRESSING ||
             get_addressing_type(line->target_operand) == REGISTER_ADDRESSING;
     }
     else if(strcmp(line->opcode, "rts") == 0 ||
-        strcmp(line->opcode, "stop") == 0)
-    {
+        strcmp(line->opcode, "stop") == 0) {
         return get_addressing_type(line->target_operand) == NO_OPERAND;
     }
     return FALSE;
 }
 
-boolean exists_in_symbol_table(char* symbol, symbols_table_entry* symbol_table)
-{
-    while (symbol_table != NULL)
-    {
+boolean exists_in_symbol_table(char* symbol, symbols_table_entry* symbol_table) {
+    while (symbol_table != NULL) {
         if (strcmp(symbol_table->name, symbol) == 0)
             return TRUE;
         symbol_table = symbol_table->next;
@@ -398,10 +389,8 @@ boolean exists_in_symbol_table(char* symbol, symbols_table_entry* symbol_table)
     return FALSE;
 }
 
-boolean exists_in_extern_table(char* symbol, extern_entry* external_table)
-{
-    while (external_table != NULL)
-    {
+boolean exists_in_extern_table(char* symbol, extern_entry* external_table) {
+    while (external_table != NULL) {
         if (strcmp(external_table->name, symbol) == 0)
             return TRUE;
         external_table = external_table->next;
@@ -409,10 +398,8 @@ boolean exists_in_extern_table(char* symbol, extern_entry* external_table)
     return FALSE;
 }
 
-boolean exists_in_entry_table(char* symbol, entry_entry* entry_table)
-{
-    while (entry_table != NULL)
-    {
+boolean exists_in_entry_table(char* symbol, entry_entry* entry_table) {
+    while (entry_table != NULL) {
         if (strcmp(entry_table->name, symbol) == 0)
             return TRUE;
         entry_table = entry_table->next;
@@ -420,4 +407,10 @@ boolean exists_in_entry_table(char* symbol, entry_entry* entry_table)
     return FALSE;
 }
 
-
+boolean program_too_big(long IC, long DC){
+    if (IC + DC >= MAX_PROGRAM_LENGTH) {
+        printf("Error: the program you porvided is too big for imaginary computer.\n");
+        return TRUE;
+    }
+    return FALSE;
+}
