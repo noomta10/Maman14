@@ -7,7 +7,7 @@
 #include "debuging.h"
 #include "write_files.h"
 
-void add_entry_table_address(entry_entry* head_entry_entry, symbols_table_entry* head_symbol_table, long IC) {
+static void add_entry_table_address(entry_entry* head_entry_entry, symbols_table_entry* head_symbol_table, long IC) {
 	entry_entry* current_entry_entry = head_entry_entry;
 	symbols_table_entry* current_symbol_entry;
 	
@@ -34,10 +34,61 @@ void add_entry_table_address(entry_entry* head_entry_entry, symbols_table_entry*
 }
 
 
-void second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_entry, symbols_table_entry* head_symbols_entry, extern_entry* head_extern_entry,
+/* Check if a symbol is in the externals table */
+static boolean is_external(char* current_symbol, extern_entry* head_extern_entry) {
+	extern_entry* current_extern_entry = head_extern_entry;
+
+	while (current_extern_entry) {
+		if (strcmp(current_symbol, current_extern_entry->name) == 0) {
+			return TRUE;
+		}
+		current_extern_entry = current_extern_entry->next;
+	}
+
+	return FALSE;
+}
+
+
+/* Check if all entries are defined in the current file */
+static boolean check_entry_defined_in_file(entry_entry* head_entry_entry, symbols_table_entry* head_symbols_entry) {
+	symbols_table_entry* current_symbols_entry;
+	entry_entry* current_entry_entry = head_entry_entry;
+	boolean entry_has_definition;
+
+	while (current_entry_entry) {
+		current_symbols_entry = head_symbols_entry;
+		entry_has_definition = FALSE;
+
+		while (current_symbols_entry) {
+			
+			if (strcmp(current_entry_entry->name, current_symbols_entry->name) == 0) {
+				entry_has_definition = TRUE;
+				current_entry_entry = current_entry_entry->next;
+				break;
+			}
+			current_symbols_entry = current_symbols_entry->next;
+		}
+
+		if (!entry_has_definition) {
+			printf("Error: entry symbol %s is not defined in file\n", current_entry_entry->name);
+			return FALSE;
+		}
+
+		current_entry_entry = current_entry_entry->next;
+	}
+
+	return TRUE;
+}
+
+
+boolean second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_entry, symbols_table_entry* head_symbols_entry, extern_entry* head_extern_entry,
 	entry_entry* head_entry_entry,char* file_name, long IC, long DC, code_table_entry* code_entry_head, data_table_entry* data_entry_head) {
 	uninitialized_symbols_table_entry* current_uninitialized_symbols_entry = head_uninitialized_symbols_entry;
 	symbols_table_entry* current_symbol_entry;
+
+	if (!check_entry_defined_in_file(head_entry_entry, head_symbols_entry)) {
+		return FALSE;
+	}
 
 	add_entry_table_address(head_entry_entry, head_symbols_entry, IC);
 
@@ -83,18 +134,5 @@ void second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_e
 }
 
 
-/* Check if a symbol is in the externals table */
-boolean is_external(char* current_symbol, extern_entry* head_extern_entry) {
-	extern_entry* current_extern_entry = head_extern_entry;
-
-	while (current_extern_entry) {
-		if (strcmp(current_symbol, current_extern_entry->name) == 0) {
-			return TRUE;
-		}
-		current_extern_entry = current_extern_entry->next;
-	}
-
-	return FALSE;
-}
 
 
