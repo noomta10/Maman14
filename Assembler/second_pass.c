@@ -81,12 +81,59 @@ static boolean check_entry_defined_in_file(entry_entry* head_entry_entry, symbol
 }
 
 
+/* Check if all symbols that were used as operands are defined  */
+static boolean check_defined_symbol_operand(symbols_table_entry* head_symbols_entry, extern_entry* head_extern_entry, uninitialized_symbols_table_entry* head_uninitialized_entry) {
+	uninitialized_symbols_table_entry* current_uninitialized_entry = head_uninitialized_entry;
+	symbols_table_entry* current_symbols_entry;
+	extern_entry* current_extern_entry;
+	boolean symbol_operand_defined;
+
+	while (current_uninitialized_entry) {
+		/* Reset fields */
+		current_symbols_entry = head_symbols_entry;
+		current_extern_entry = head_extern_entry;
+		symbol_operand_defined = FALSE;
+
+		/* Check if operand is extern symbol */
+		while (current_extern_entry) {
+			if (strcmp(current_extern_entry->name, current_uninitialized_entry->name) == 0) {
+				symbol_operand_defined = TRUE;
+				break;
+			}
+			current_extern_entry = current_extern_entry->next;
+		}
+
+		/* Check if operand is defined in current file */
+		while (current_symbols_entry) {
+			if (strcmp(current_symbols_entry->name, current_uninitialized_entry->name) == 0) {
+				symbol_operand_defined = TRUE;
+				break;
+			}
+			current_symbols_entry = current_symbols_entry->next;
+		}
+
+		if (!symbol_operand_defined) {
+			printf("Error: operand symbol %s is not a known symbol\n", current_uninitialized_entry->name);
+			return FALSE;
+		}
+		
+		current_uninitialized_entry = current_uninitialized_entry->next;
+	}
+
+	return TRUE;
+}
+
+
 boolean second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_entry, symbols_table_entry* head_symbols_entry, extern_entry* head_extern_entry,
 	entry_entry* head_entry_entry,char* file_name, long IC, long DC, code_table_entry* code_entry_head, data_table_entry* data_entry_head) {
 	uninitialized_symbols_table_entry* current_uninitialized_symbols_entry = head_uninitialized_symbols_entry;
 	symbols_table_entry* current_symbol_entry;
 
 	if (!check_entry_defined_in_file(head_entry_entry, head_symbols_entry)) {
+		return FALSE;
+	}
+
+	if (!check_defined_symbol_operand(head_symbols_entry, head_extern_entry, head_uninitialized_symbols_entry)) {
 		return FALSE;
 	}
 
