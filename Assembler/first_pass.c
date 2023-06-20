@@ -57,9 +57,11 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
     }
 
 
-    /*if line was read, free it*/
+    /*if a line was read, free it*/
     if(line)
         free(line);
+
+    add_final_ic_to_dc_count(*symbol_table_head, *data_table_head, *IC, DC);
 
     return !error_flag; /*returning error flag*/
 }
@@ -195,6 +197,7 @@ addressing_type get_addressing_type(char* operand)
     else
         return DIRECT_ADDRESSING;
 }
+
 
 
 

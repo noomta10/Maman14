@@ -119,6 +119,7 @@ boolean add_string_to_table(line_info* line, data_table_entry** data_table_head,
         data_table_ptr = (data_table_entry*)malloc_with_check(sizeof(data_table_entry));
         data_table_ptr->type = TYPE_STRING;
         data_table_ptr->data.character = *string_to_add++;
+        data_table_ptr->address = *DC + L;
         ADD_NODE_TO_LIST(data_table_prev, data_table_ptr, data_table_head);
 
         L++;
@@ -127,6 +128,7 @@ boolean add_string_to_table(line_info* line, data_table_entry** data_table_head,
     /*adding \0 to the end of the string */
     data_table_ptr = (data_table_entry*)malloc_with_check(sizeof(data_table_entry));
     data_table_ptr->data.character = '\0';
+    data_table_ptr->address = *DC + L;
     data_table_ptr->type = TYPE_STRING;
     ADD_NODE_TO_LIST(data_table_prev, data_table_ptr, data_table_head);
     L++;
@@ -179,6 +181,7 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
         data_table_ptr = (data_table_entry*)malloc_with_check(sizeof(data_table_entry));
         data_table_ptr->type = TYPE_NUMBER;
         data_table_ptr->data.number = atoi(token);
+        data_table_ptr->address = *DC + L;
         ADD_NODE_TO_LIST(data_table_prev, data_table_ptr, data_table_head);
         L++;
 
@@ -555,7 +558,22 @@ void set_code_table_to_ic_initial_address(code_table_entry** code_table_head)
     *code_table_head = code_table_ptr;
 }
 
-
+void add_final_ic_to_dc_count(symbols_table_entry* symbol_table, data_table_entry* data_table, long IC, long* DC)
+{
+    /* add IC count to all symbols that have DC count */
+    while (symbol_table)
+    {
+        if (symbol_table->address_type == DIRECTIVE)
+            symbol_table->address += IC;
+        symbol_table = symbol_table->next;
+    }
+    /* add IC count to all data addresses */
+    while (data_table)
+    {
+        data_table->address += IC;
+        data_table = data_table->next;
+    }
+}
 
 
 

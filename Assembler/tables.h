@@ -191,3 +191,5 @@ code_table_entry* get_opcode_word(line_info* line, long* IC);
 code_table_entry* get_register_word(char* source_register, char* target_register, long* IC);
 code_table_entry* get_extra_word(uninitialized_symbols_table_entry** uninitialized_symbol_head, char* operand, long* IC);
 void print_code_table_in_binary(code_table_entry* code_table);
+
+void add_final_ic_to_dc_count(symbols_table_entry* symbol_table, data_table_entry* data_table, long IC, long* DC);
