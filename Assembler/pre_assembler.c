@@ -96,6 +96,7 @@ static void add_mcro_to_table(char* mcro_name, char* mcro_value, mcros_table_ent
 	current_mcro_entry = new_mcro_entry;
 }
 
+
 static boolean check_reserved_word(char* mcro_name) {
 	if (strcmp(mcro_name, "mov") == 0|| strcmp(mcro_name, "cmp") == 0 ||
 		strcmp(mcro_name, "add") == 0 || strcmp(mcro_name, "sub") == 0 ||
@@ -111,6 +112,7 @@ static boolean check_reserved_word(char* mcro_name) {
 	}
 	return TRUE;
 }
+
 
 static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** first_mcro_entry, FILE* source_file, char* saved_line, char* file_name, char* am_file_name) {
 	char* first_word;
