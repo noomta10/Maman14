@@ -49,7 +49,7 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
 
         /*processing line*/
         extract_command_info(line_content, line);
-        process_line_first_pass(line, IC, DC, symbol_table_head, data_table_head, ent_head, ext_head, code_table_head, uninitialized_symbols_table_entry, error_flag); /*processing line*/
+        process_line_first_pass(line, IC, DC, symbol_table_head, data_table_head, ent_head, ext_head, code_table_head, uninitialized_symbols_table_entry); /*processing line*/
 
         /*reseting variables*/
         reset_line_info(line);
@@ -69,28 +69,26 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
 }
 
 
-void process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_entry** symbol_table_head, data_table_entry** data_table,
-    entry_entry** ent, extern_entry** ext, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head, boolean* error_flag)
+boolean process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_entry** symbol_table_head, data_table_entry** data_table,
+    entry_entry** ent, extern_entry** ext, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head)
 {
     /*validating line*/
-    if (!validate_line(line)) 
-    {
+    if (!validate_line(line)) {
         printf("debug: invalid line\n");
-        *error_flag = TRUE;
+        return FALSE;
     }
 
     /*if the line contans data, add it to the memory*/
     if (line->directive_flag) {
         if (!add_data_to_table(line, symbol_table_head, data_table, ext, ent, DC, IC))
-            *error_flag = TRUE;
+            return FALSE;
     }
-
-    if (line->instruction_flag)
-    {
+    /* if the line is instruction, add it to memory */
+    if (line->instruction_flag){
         if (!add_instruction_to_table(line, symbol_table_head, ext, code_table_head, uninitialized_symbol_head, IC))
-            *error_flag = TRUE;
+            return FALSE;
     }
-    
+    return TRUE;    
 }
 
 
