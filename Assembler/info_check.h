@@ -23,7 +23,7 @@ boolean check_extra_or_missing_operands(line_info* line);
 boolean check_operands(line_info* line);
 boolean valid_source_operand(line_info* line);
 boolean valid_target_operand(line_info* line);
-
+boolean is_register(char* operand);
 boolean exists_in_symbol_table(char* symbol, symbols_table_entry* symbol_table);
 boolean exists_in_extern_table(char* symbol, extern_entry* external_table);
 boolean exists_in_entry_table(char* symbol, entry_entry* entry_table);
