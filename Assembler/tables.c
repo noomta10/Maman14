@@ -295,20 +295,14 @@ boolean add_extern_to_table(line_info* line, symbols_table_entry* symbols_table_
 }
 
 
-
-
-
-
-
-
-
-
-
 boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_trable_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head, long* IC)
 {
     code_table_entry* code_table_temp = NULL;
     code_table_entry* code_table_prev = NULL;
-    
+
+    addressing_type source_addressing_type = 0;
+    addressing_type target_addressing_type = 0;
+
     boolean error_flag = FALSE;
     long L = 0;    
     long copy_IC = *IC;
@@ -323,109 +317,71 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
    
     /*adding opcode word*/
     code_table_temp = get_opcode_word(line, IC);
+    source_addressing_type = code_table_temp->value.code_word_value.source_addressing;
+    target_addressing_type = code_table_temp->value.code_word_value.target_addressing;
     ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
-
+    L++;
 
     /*adding extra words if needed*/
-    /*if there is no operands*/
-    if((line->source_operand == NULL || strcmp(line->source_operand, "") == 0) &&
-        (line->target_operand == NULL || strcmp(line->target_operand, "") == 0))
-    {
+    /* if there's only one operand and it is a register */
+    if(source_addressing_type == NO_OPERAND && source_addressing_type == REGISTER_ADDRESSING){
+        code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
+        ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
         L++;
     }
-    /* if theres one operater*/
-    else if(line->source_operand == NULL || line->target_operand == NULL || 
-        strcmp(line->source_operand, "") == 0 || strcmp(line->target_operand, "") == 0)
-    {
-        if(line->source_operand == NULL || strcmp(line->source_operand, "") == 0)
-        {
-            if(is_register(line->target_operand))
-            {
-                code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
-                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
-                L++;
-            }
-            else
-            {
-                code_table_temp = get_extra_word(uninitialized_symbol_head, line->target_operand, IC);
-                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
-                L++;
-            }
-        }
-        else /* line->taget_operation == NULL */
-        {
-            if(is_register(line->source_operand))
-            {
-                code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
-                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
-                L++;
-            }
-            else
-            {
-                code_table_temp = get_extra_word(uninitialized_symbol_head, line->source_operand, IC);
-                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
-                L++;
-            }
-        }
-    }
-    /* if both operands needs to be coded */
-    else
-    {
-        /* if one are more operands are registers */
-        if(is_register(line->source_operand) || is_register(line->target_operand))
-        {
-            /* if both operands are registers */
-            if (is_register(line->source_operand) && is_register(line->target_operand))
-            {
-                code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
-                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
-                L++;
-            }
-            /* if source operand a register add the extra code word after register code word*/
-            else if(is_register(line->source_operand))
-            {
-                code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
-                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
-                L++;
-
-                code_table_temp = get_extra_word(uninitialized_symbol_head, line->target_operand, IC);
-                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
-                L++;
-            }
-            /* if target operand a register add the extra code word before register code word*/
-            else if(is_register(line->target_operand))
-            {
-                code_table_temp = get_extra_word(uninitialized_symbol_head, line->target_operand, IC);
-                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
-                L++;
-
-                code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
-                ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
-                L++;
-
-            }
-        }
-        /* operands are not registers */
-        else if(!is_register(line->source_operand) && !is_register(line->target_operand))
-        {
-            code_table_temp = get_extra_word(uninitialized_symbol_head, line->source_operand, IC);
-            ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
-            L++;
-
+    /* if there's only one operand and it is a direct or immediate addressing */
+    else if(source_addressing_type == NO_OPERAND && (target_addressing_type == DIRECT_ADDRESSING || target_addressing_type == IMMEDIATE_ADDRESSING)){
             code_table_temp = get_extra_word(uninitialized_symbol_head, line->target_operand, IC);
             ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
             L++;
-        }
+    }
+    /* if both operands are registers */
+    else if(source_addressing_type == REGISTER_ADDRESSING && target_addressing_type == REGISTER_ADDRESSING){
+        code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
+        ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+        L++;
+    }    
+    /* if source operand is register and target is a number or lable */
+    else if( source_addressing_type == REGISTER_ADDRESSING){
+        /* add register to table*/
+        code_table_temp  = get_register_word(line->source_operand, line->target_operand, IC);
+        ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+        L++;
+        /* add extra word to table */
+        code_table_temp = get_extra_word(uninitialized_symbol_head, line->target_operand, IC);
+        ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+        L++;
+    }
+    else if( target_addressing_type == REGISTER_ADDRESSING){
+        /* add extra word to table */
+        code_table_temp = get_extra_word(uninitialized_symbol_head, line->source_operand, IC);
+        ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+        L++;
+        /* add register to table*/
+        code_table_temp  = get_register_word(line->source_operand, line->target_operand, IC);
+        ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+        L++;
+    }
+    else if(!(source_addressing_type == NO_OPERAND && target_addressing_type == NO_OPERAND)){
+        /* add extra words to table */
+        code_table_temp = get_extra_word(uninitialized_symbol_head, line->source_operand, IC);
+        ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+        L++;
+        /* add extra words to table */
+        code_table_temp = get_extra_word(uninitialized_symbol_head, line->target_operand, IC);
+        ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+        L++;
+
     }
 
     /*adding label to symbol table*/
     if(line->label_flag)
         if(!add_symbol_to_table(line, symbol_trable_head, *ext_head, INSTRUCTION, copy_IC, L))
-            error_flag = TRUE;
+            return FALSE;
 
     /*IC += L;*/
 
-    return !error_flag;
+    return TRUE;
 }
 
 code_table_entry* get_opcode_word(line_info* line, long* IC)
