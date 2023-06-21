@@ -5,4 +5,4 @@ typedef struct mcros_table_entry {
 } mcros_table_entry;
 
 
-void pre_assembler(FILE* source_file, char* file_name);
+boolean pre_assembler(FILE* source_file, char* file_name);

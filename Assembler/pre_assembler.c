@@ -96,11 +96,27 @@ static void add_mcro_to_table(char* mcro_name, char* mcro_value, mcros_table_ent
 	current_mcro_entry = new_mcro_entry;
 }
 
+static boolean check_reserved_word(char* mcro_name) {
+	if (strcmp(mcro_name, "mov") == 0|| strcmp(mcro_name, "cmp") == 0 ||
+		strcmp(mcro_name, "add") == 0 || strcmp(mcro_name, "sub") == 0 ||
+		strcmp(mcro_name, "not") == 0 || strcmp(mcro_name, "clr") == 0 ||
+		strcmp(mcro_name, "lea") == 0 || strcmp(mcro_name, "inc") == 0 ||
+		strcmp(mcro_name, "dec") == 0 || strcmp(mcro_name, "jmp") == 0 ||
+		strcmp(mcro_name, "bne") == 0 || strcmp(mcro_name, "red") == 0 ||
+		strcmp(mcro_name, "prn") == 0 || strcmp(mcro_name, "jsr") == 0 ||
+		strcmp(mcro_name, "rts") == 0 || strcmp(mcro_name, "stop") == 0 ||
+		strcmp(mcro_name, ".string") == 0 || strcmp(mcro_name, ".data") == 0 ||
+		strcmp(mcro_name, ".entry") == 0 || strcmp(mcro_name, ".extern") == 0) {
+		return FALSE;
+	}
+	return TRUE;
+}
 
-static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** first_mcro_entry, FILE* source_file, char* saved_line) {
+static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** first_mcro_entry, FILE* source_file, char* saved_line, char* file_name, char* am_file_name) {
 	char* first_word;
 	char* mcro_name = NULL;
 	char* saved_mcro_name = NULL;
+	char* as_file_name;
 
 	first_word = strtok(line, " \t\n");
 
@@ -122,6 +138,22 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 		/* Allocate memory for the mcro name, and copy it */
 		saved_mcro_name = (char*)malloc_with_check(strlen(mcro_name) + 1);
 		strcpy(saved_mcro_name, mcro_name);
+		
+		/* Check if mcro name is a reserved word */
+		if (!check_reserved_word(mcro_name)) {
+			as_file_name = add_file_postfix(file_name, ".as");
+			printf("Pre-assembler error in file \"% s\": mcro \"% s\" must not be an instruction or a directive name\n", as_file_name, mcro_name);
+			
+			fclose(am_file);
+			free(am_file_name);
+			free(as_file_name);
+			free(saved_line);
+			/* Need to free the table */
+			//if (first_mcro_entry) {
+			//	free_table_memory(first_mcro_entry);
+			//}
+			return ERROR;
+		}
 
 		/* Mcros definition, adds its value to the table, add all its lines to the mcros table and continue to next line */
 		while (TRUE) {
@@ -147,21 +179,22 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 }
 
 
-void pre_assembler(FILE* source_file, char* file_name) {
+boolean pre_assembler(FILE* source_file, char* file_name) {
 	char line[MAX_LINE_LENGTH];
 	mcros_table_entry* first_mcro_entry = NULL;
 	/*char* mcro_name = NULL;*/
 	char* saved_line = NULL;
 	FILE* am_file;
+	boolean line_mcro_related = FALSE;
 	char* am_file_name = add_file_postfix(file_name, ".am");
-	 
+
 	LOG_DEBUG("Pre-assembler start");
 
 	/* Create an empty .am file */
 	am_file = fopen(am_file_name, "w");
 	if (am_file == NULL) {
 		printf("Error: The file '%s' could not be opened\n", am_file_name);
-		return;
+		return FALSE;
 	}
 
 	/* Read file line by line until the end */
@@ -171,15 +204,18 @@ void pre_assembler(FILE* source_file, char* file_name) {
 		saved_line = (char*)malloc_with_check(sizeof(line));
 		strcpy(saved_line, line);
 
+		line_mcro_related = handle_mcro_line(line, am_file, &first_mcro_entry, source_file, saved_line, file_name, am_file_name);
 		/* If the line is a mcro name or definiton, handle it */
-		if (handle_mcro_line(line, am_file, &first_mcro_entry, source_file, saved_line)) {
+		if (line_mcro_related == TRUE) {
 			continue;
+		}
+		else if (line_mcro_related == ERROR) {
+			return FALSE;
 		}
 
 		/* If the line is not a mcro name or definition, write it to the .am file */
 		fprintf(am_file, "%s", saved_line);
 	}
-
 
 	/* Close the file */
 	fclose(am_file);
@@ -188,9 +224,10 @@ void pre_assembler(FILE* source_file, char* file_name) {
 	free(am_file_name);
 	free(saved_line);
 
-	/* If there are mcros in the table, free it */
-	if(first_mcro_entry)
+	/* If there are mcros in the table, free them */
+	if (first_mcro_entry) {
 		free_table_memory(first_mcro_entry);
+	}
 
 	LOG_DEBUG("pre assember done");
 }

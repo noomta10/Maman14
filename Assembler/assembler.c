@@ -59,7 +59,9 @@ void process_file(char* file_name) {
 	}
 
 	/* Call pre_assembler to create .am file */
-	pre_assembler(file_pointer, file_name);
+	if (!pre_assembler(file_pointer, file_name)) {
+		return;
+	}
 
 	/* Close file and free data */
 	fclose(file_pointer);
@@ -91,7 +93,7 @@ void process_file(char* file_name) {
 
 	/* Second pass, exit if errors were found */
 	if (!second_pass(uninitialized_symbol_head, symbol_table_head, ext_head, ent_head, file_name, IC, DC, code_table_head, data_table_head)) {
-		exit(-2);
+		exit(-4646);
 	}
 	LOG_DEBUG("After second pass:\n");
 	print_uninitialized_symbols_table(uninitialized_symbol_head);

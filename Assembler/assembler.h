@@ -5,5 +5,5 @@
 #define MAX_LABEL_LENGTH 31
 #define MAX_PROGRAM_LENGTH 1024
 
-typedef enum {FALSE = 0, TRUE = 1} boolean;
+typedef enum {FALSE = 0, TRUE = 1, ERROR = 2} boolean;
 
