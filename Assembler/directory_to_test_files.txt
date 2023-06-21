@@ -1,0 +1,14 @@
+assuming project is in C:\git directory
+
+C:\git\Maman14\Assembler\i&o_from_github\allvalid
+C:\git\Maman14\Assembler\i&o_from_github\input
+C:\git\Maman14\Assembler\i&o_from_github\reut_errors
+C:\git\Maman14\Assembler\i&o_from_github\spass_errors
+C:\git\Maman14\Assembler\i&o_from_github\test_entry_not_found
+C:\git\Maman14\Assembler\i&o_from_github\test_final
+C:\git\Maman14\Assembler\i&o_from_github\test_first_pass
+C:\git\Maman14\Assembler\i&o_from_github\test_input_errors
+C:\git\Maman14\Assembler\i&o_from_github\test_lable_not_found
+C:\git\Maman14\Assembler\i&o_from_github\test1
+C:\git\Maman14\Assembler\i&o_from_github\testwitherror
+C:\git\Maman14\Assembler\i&o_from_github\testwitherror1
