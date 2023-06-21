@@ -96,6 +96,7 @@
     <None Include="instruction_lines.as" />
     <None Include="workbook_example.as" />
     <None Include="workbook_example.ob" />
+    <None Include="test.as" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data_test.as" />

@@ -63,7 +63,6 @@ static boolean check_entry_defined_in_file(entry_entry* head_entry_entry, symbol
 			
 			if (strcmp(current_entry_entry->name, current_symbols_entry->name) == 0) {
 				entry_has_definition = TRUE;
-				current_entry_entry = current_entry_entry->next;
 				break;
 			}
 			current_symbols_entry = current_symbols_entry->next;
