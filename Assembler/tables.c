@@ -505,7 +505,7 @@ void add_100_to_code_table(code_table_entry** code_table_head, long* IC)
 void set_code_table_to_ic_initial_address(code_table_entry** code_table_head)
 {
     code_table_entry* code_table_ptr = *code_table_head;
-    if (code_table_head == NULL)
+    if (*code_table_head == NULL)
         return;
     while (code_table_ptr->address != IC_START_ADDRESS)
     {

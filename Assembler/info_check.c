@@ -47,7 +47,7 @@ boolean line_too_long(FILE* am_file, char* line_content)
         return FALSE;
 
     /* reads rest of line */
-    while ((c = getc(am_file)) != '\n' || c == EOF);
+    while ((c = getc(am_file)) != '\n' && c != EOF);
 
     return TRUE;
 }
