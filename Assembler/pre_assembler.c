@@ -97,23 +97,6 @@ static void add_mcro_to_table(char* mcro_name, char* mcro_value, mcros_table_ent
 }
 
 
-//static boolean check_reserved_word(char* mcro_name) {
-//	if (strcmp(mcro_name, "mov") == 0|| strcmp(mcro_name, "cmp") == 0 ||
-//		strcmp(mcro_name, "add") == 0 || strcmp(mcro_name, "sub") == 0 ||
-//		strcmp(mcro_name, "not") == 0 || strcmp(mcro_name, "clr") == 0 ||
-//		strcmp(mcro_name, "lea") == 0 || strcmp(mcro_name, "inc") == 0 ||
-//		strcmp(mcro_name, "dec") == 0 || strcmp(mcro_name, "jmp") == 0 ||
-//		strcmp(mcro_name, "bne") == 0 || strcmp(mcro_name, "red") == 0 ||
-//		strcmp(mcro_name, "prn") == 0 || strcmp(mcro_name, "jsr") == 0 ||
-//		strcmp(mcro_name, "rts") == 0 || strcmp(mcro_name, "stop") == 0 ||
-//		strcmp(mcro_name, ".string") == 0 || strcmp(mcro_name, ".data") == 0 ||
-//		strcmp(mcro_name, ".entry") == 0 || strcmp(mcro_name, ".extern") == 0) {
-//		return FALSE;
-//	}
-//	return TRUE;
-//}
-
-
 static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** first_mcro_entry, FILE* source_file, char* saved_line, char* file_name, char* am_file_name) {
 	char* first_word;
 	char* mcro_name = NULL;
