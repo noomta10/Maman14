@@ -195,7 +195,7 @@ boolean pre_assembler(FILE* source_file, char* file_name) {
 	/* Create an empty .am file */
 	am_file = fopen(am_file_name, "w");
 	if (am_file == NULL) {
-		printf("Error: The file '%s' could not be opened\n", am_file_name);
+		fprintf(stderr, "Error: The file '%s' could not be opened\n", am_file_name);
 		return FALSE;
 	}
 

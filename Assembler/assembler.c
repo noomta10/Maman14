@@ -13,20 +13,6 @@
 #include "info_check.h"
 #include "second_pass.h"
 
-static void process_file(char* file_name);
-
-int main(int argc, char* argv[]) {
-	int i;
-	
-	LOG_DEBUG("starting");
-
-	/* Process each file by arguments */
-	for (i = 1; i < argc; ++i) {
-		process_file(argv[i]);
-	}
-	return 0;
-}
-
 
 void process_file(char* file_name) {
 	FILE* file_pointer = NULL;
@@ -35,9 +21,9 @@ void process_file(char* file_name) {
 	long IC = IC_START_ADDRESS;
 	long DC = 0;
 	symbols_table_entry* symbol_table_head = NULL;
-    data_table_entry* data_table_head = NULL;
-    entry_entry* ent_head = NULL;
-    extern_entry* ext_head = NULL;
+	data_table_entry* data_table_head = NULL;
+	entry_entry* ent_head = NULL;
+	extern_entry* ext_head = NULL;
 	code_table_entry* code_table_head = NULL;
 	uninitialized_symbols_table_entry* uninitialized_symbol_head = NULL;
 
@@ -53,7 +39,7 @@ void process_file(char* file_name) {
 	/* Check if file opened successfully */
 	file_pointer = fopen(full_file_name, "r");
 	if (file_pointer == NULL) {
-		printf("Error: The file %s couldn't be opened\n", full_file_name);
+		fprintf(stderr, "Error: The file %s couldn't be opened\n", full_file_name);
 		free(full_file_name);
 		return;
 	}
@@ -70,7 +56,7 @@ void process_file(char* file_name) {
 	/* Check if .am file opened successfully */
 	file_pointer = fopen(full_am_name, "r");
 	if (file_pointer == NULL) {
-		printf("Error: The file %s couldn't be opened\n", full_am_name);
+		fprintf(stderr, "Error: The file %s couldn't be opened\n", full_am_name);
 		free(full_am_name);
 		return;
 	}
@@ -82,18 +68,23 @@ void process_file(char* file_name) {
 
 	/*printing data_tables for debugging*/
 	printf("IC = %ld\n", IC);
-    printf("DC = %ld\n", DC);
-    printf("\n");
-    print_data_table(data_table_head);
-    print_symbol_table(symbol_table_head);
-    print_entry_table(ent_head);
-    print_extern_table(ext_head);
+	printf("DC = %ld\n", DC);
+	printf("\n");
+	print_data_table(data_table_head);
+	print_symbol_table(symbol_table_head);
+	print_entry_table(ent_head);
+	print_extern_table(ext_head);
 	print_code_word(code_table_head);
 	print_uninitialized_symbols_table(uninitialized_symbol_head);
 
 	/* Second pass, exit if errors were found */
 	if (!second_pass(uninitialized_symbol_head, symbol_table_head, ext_head, ent_head, file_name, IC, DC, code_table_head, data_table_head)) {
-		exit(-4646);
+		free_data_table(data_table_head);
+		free_entry_table(ent_head);
+		free_extern_table(ext_head);
+		free_symbols_table(symbol_table_head);
+		fclose(file_pointer);
+		return;
 	}
 	LOG_DEBUG("After second pass:\n");
 	print_uninitialized_symbols_table(uninitialized_symbol_head);
@@ -109,7 +100,21 @@ void process_file(char* file_name) {
 	free_extern_table(ext_head);
 	free_symbols_table(symbol_table_head);
 	/*free_code_table(code_table_head);*/
-	
+
 	/* Close file */
 	fclose(file_pointer);
+}
+
+
+int main(int argc, char* argv[]) {
+	int i;
+	
+	LOG_DEBUG("starting");
+
+	/* Process each file by arguments */
+	for (i = 1; i < argc; ++i) {
+		printf("\n\n\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~ PROCESSING FILE \"%s.as\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", argv[i]);
+		process_file(argv[i]);
+	}
+	return 0;
 }

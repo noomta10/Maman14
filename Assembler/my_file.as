@@ -1,1 +1,1 @@
-mov @r1 2
+.entry NOTDEFINED
