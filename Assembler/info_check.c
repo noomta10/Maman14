@@ -52,7 +52,7 @@ boolean line_too_long(FILE* am_file, char* line_content)
     return TRUE;
 }
 
-boolean bad_label(char* label)
+boolean bad_label(char* label, char* line_content, long line_number)
 {
     int i = 0;
 
@@ -72,25 +72,25 @@ boolean bad_label(char* label)
         strcmp(label, "entry") == 0 || strcmp(label, "extern") == 0 ||
         *label == '@')
     {
-        printf("Error: label is a reserved word\n");
+        printf("Error: in line %d `%s` the label `%s` is a reserved word\n", line_number, line_content, label);
         return TRUE;
     }
 
     /* Check if label is too long or too short */
     if (strlen(label) > MAX_LABEL_LENGTH)
     {
-        printf("Error: label to long\n");
+        printf("Error: in line %ld `%s` the label `%s` is to long\n", line_number, line_content, label);
         return TRUE;
     }
     if (strlen(label) == 0)
     {
-        printf("Error: label to short\n");
+        printf("Error: in line %ld %s the label `%s` is  to short\n", line_number, line_content, label);
         return TRUE;
     }
 
     /* Check if label starts with a letter */
     if (!isalpha(label[i])) {
-        printf("Error: label must start with a letter\n");
+        printf("Error: in line %ld `%s` the label `%s` must start with a letter\n", line_number, line_content, label);
         return TRUE;
     }
 
@@ -99,7 +99,7 @@ boolean bad_label(char* label)
     {
         if (!isalnum(label[i]))
         {
-            printf("Error: label %s has invalid characters\n", label);
+            printf("Error: in line %ld `%s` the label `%s` has invalid characters\n",line_number, line_content, label);
             return TRUE;
         }
     }
@@ -180,7 +180,7 @@ boolean valid_directive_line(line_info* line)
     }
     else
     {
-        printf("Error: line: %ld %s\ninvalid directive command\n", line->line_number, line->line_content);
+        printf("Error: line: %ld %sinvalid directive command\n", line->line_number, line->line_content);
         return FALSE;
     }   
 
@@ -190,7 +190,7 @@ boolean valid_data_command(line_info* line)
 {
     if(strcmp(line->directive_data, "") == 0)
     {
-        printf("Error: in line: %ld %s\nmissing data\n", line->line_number, line->line_content);
+        printf("Error: in line: %ld %smissing data\n", line->line_number, line->line_content);
         return FALSE;
     }
     return TRUE;
@@ -204,14 +204,14 @@ boolean valid_string_command(line_info* line)
     /* check if string is empty */
     if(strcmp(directive_data, "") == 0)
     {
-        printf("Error: in line: %ld %s\nmissing data\n", line->line_number, line->line_content);
+        printf("Error: in line: %ld %smissing data\n", line->line_number, line->line_content);
         return FALSE;
     }
     /* check if string starts with quotes */
     skip_white_spaces(&directive_data);
     if(*directive_data != '"')
     {
-        printf("Error: in line: %ld %s\nstring must start with quotes\n", line->line_number, line->line_content);
+        printf("Error: in line: %ld %sstring must start with quotes\n", line->line_number, line->line_content);
         return FALSE;
     }
     /* check if string ends with quotes */
@@ -219,7 +219,7 @@ boolean valid_string_command(line_info* line)
         i--;
     if(directive_data[i] != '"')
     {
-        printf("Error: in line: %ld %s\nstring must end with quotes\n", line->line_number, line->line_content);
+        printf("Error: in line: %ld %sstring must end with quotes\n", line->line_number, line->line_content);
         return FALSE;
     }
 
@@ -229,8 +229,8 @@ boolean valid_string_command(line_info* line)
 boolean valid_entry_command(line_info* line)
 {
     if(strcmp(line->directive_data, "") == 0)
-    {
-        printf("Warning: in line:\n%ld %s\nno entry labels given\n", line->line_number, line->line_content);
+    { // TODO: error or warning?
+        printf("Error: in line: %ld %sno entry labels given\n", line->line_number, line->line_content);
         return FALSE;
     }
     return TRUE;
@@ -239,8 +239,8 @@ boolean valid_entry_command(line_info* line)
 boolean valid_extern_command(line_info* line)
 {
     if(strcmp(line->directive_data, "") == 0)
-    {
-        printf("Warning: in line: %ld %s\n no extern labels given\n", line->line_number, line->line_content);
+    {// TODO: error or warning?
+        printf("Error: in line: %ld %s no extern labels given\n", line->line_number, line->line_content);
         return FALSE;
     }
     return TRUE;
@@ -257,7 +257,7 @@ boolean check_extra_or_missing_operands(line_info* line)
         /*checking for missing operand*/
         if (line->source_operand == NULL || line->target_operand == NULL)
         {
-            printf("Error: missing operand\n");
+            printf("Error: in line %ld %s missing operand\n", line->line_number, line->line_content);
             return FALSE;
         }
     }
@@ -275,13 +275,13 @@ boolean check_extra_or_missing_operands(line_info* line)
             /*checking for missing operand*/
         if (line->source_operand == NULL)
         {
-            printf("Error: missing operand\n");
+            printf("Error: in line %ld %s missing operand\n", line->line_number, line->line_content);
             return FALSE;
         }
         /*checking for extra operand*/
         else if (line->target_operand != NULL && strcmp(line->target_operand, "") != 0)
         { 
-            printf("Error: extra operand\n");
+            printf("Error: in line %ld %sextra operand\n", line->line_number, line->line_content);
             return FALSE;
         }
         line->target_operand = line->source_operand; /*moving source operand to target operand*/
@@ -295,14 +295,14 @@ boolean check_extra_or_missing_operands(line_info* line)
         if ((line->source_operand != NULL && strcmp(line->source_operand, "")) ||
             (line->target_operand != NULL && strcmp(line->target_operand, "")))
         {
-            printf("Error: extra operand\n");
+            printf("Error: in line %ld %s extra operand\n", line->line_number, line->line_content);
             return FALSE;
         }
     }
     /*invalid opcode*/
     else
     {
-        printf("Error: invalid opcode\n");
+        printf("Error: in line %ld %s invalid opcode\n", line->line_number, line->line_content);
         return FALSE;
     }
 

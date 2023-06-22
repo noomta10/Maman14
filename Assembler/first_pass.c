@@ -97,7 +97,7 @@ boolean validate_line(line_info* line)
     /*label checking*/
     if (line->label_flag)
     {
-        if (bad_label(line->label))
+        if (bad_label(line->label, line->line_content, line->line_number))
             return FALSE;
     }
 

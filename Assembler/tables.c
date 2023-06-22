@@ -173,7 +173,7 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
         /*checking for errors in the number*/
         if (strlen(token) == 0 || strcmp(token, "-") == 0 || strcmp(token, "+") == 0)
         {
-            printf("Error: missing number\n");
+            printf("Error: in line %ld %s theres no numbers to add\n");
             return FALSE;
         }
 
@@ -198,7 +198,7 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
         }
         else if (!end_of_string(data_to_extract))
         {
-            printf("Error: expected a comma between numbers\n");
+            printf("Error: in line %d %s expected a comma between numbers\n");
             return FALSE;
         }
     }/*end of reading numbers*/

@@ -10,7 +10,7 @@ boolean ignore_line(char* line);
 
 boolean line_too_long(FILE* am_file, char* line_content);
 
-boolean bad_label(char* label);
+boolean bad_label(char* label, char* line_content, long line_number);
 boolean check_comma(char** string);
 boolean program_too_big(long IC, long DC);
 boolean valid_directive_line(line_info* line);
