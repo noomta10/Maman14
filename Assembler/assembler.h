@@ -4,6 +4,8 @@
 #define IC_START_ADDRESS 100 
 #define MAX_LABEL_LENGTH 31
 #define MAX_PROGRAM_LENGTH 1024
+#define MAX_INT_VALUE 1023
+#define MIN_INT_VALUE -1024
 
 typedef enum {FALSE = 0, TRUE = 1, ERROR = 2} boolean;
 

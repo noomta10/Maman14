@@ -38,10 +38,11 @@ boolean line_too_long(FILE* am_file, char* line_content)
     int c;
 
     /* checks if if full line was read */
-    while (*line_content++ != '\0')
+    while (*line_content != '\0')
     {
         if (*line_content == '\n')
             return FALSE;
+        line_content++;
     }
     if ((c = getc(am_file)) == EOF)
         return FALSE;
@@ -252,6 +253,7 @@ boolean check_extra_or_missing_operands(line_info* line)
     if (strcmp(line->opcode, "sub") == 0 || 
         strcmp(line->opcode, "mov") == 0 ||
         strcmp(line->opcode, "add") == 0 ||
+        strcmp(line->opcode, "cmp") == 0 ||
         strcmp(line->opcode, "lea") == 0)
     {
         /*checking for missing operand*/
@@ -327,9 +329,12 @@ boolean valid_source_operand(line_info* line)
             strcmp(line->opcode, "cmp") == 0 ||
             strcmp(line->opcode, "add") == 0 ||
             strcmp(line->opcode, "sub") == 0 ) {
-        return get_addressing_type(line->source_operand) == IMMEDIATE_ADDRESSING ||
-            get_addressing_type(line->source_operand) == DIRECT_ADDRESSING ||
-            get_addressing_type(line->source_operand) == REGISTER_ADDRESSING;
+        if( get_addressing_type(line->source_operand) != IMMEDIATE_ADDRESSING &&
+            get_addressing_type(line->source_operand) != DIRECT_ADDRESSING &&
+            get_addressing_type(line->source_operand) != REGISTER_ADDRESSING) {
+                printf("Error: in line %ld %s invalid source operand\n", line->line_number, line->line_content);
+                return FALSE;
+            }
     }
     else if(strcmp(line->opcode, "lea") == 0) {
         return get_addressing_type(line->source_operand) == DIRECT_ADDRESSING;
@@ -345,18 +350,33 @@ boolean valid_source_operand(line_info* line)
         strcmp(line->opcode, "jsr") == 0 ||
         strcmp(line->opcode, "rts") == 0 ||
         strcmp(line->opcode, "stop") == 0) {
-        return get_addressing_type(line->source_operand) == NO_OPERAND;
+        if( get_addressing_type(line->source_operand) != NO_OPERAND) {
+                printf("Error: in line %ld %s invalid source operand\n", line->line_number, line->line_content);
+                return FALSE;
+            }
     }
 
-    return FALSE;
+    /* if source operand is a label, check it */
+    if(get_addressing_type(line->source_operand) == DIRECT_ADDRESSING && bad_label(line->source_operand, line->line_content, line->line_number))
+            return FALSE;
+
+    if(get_addressing_type(line->source_operand) == IMMEDIATE_ADDRESSING && number_too_big(line->source_operand)){
+        printf("Error: in line %ld %s the number `%s` must be between %d - %d\n", line->line_number, line->line_content,
+                line->source_operand, MIN_INT_VALUE, MAX_INT_VALUE);
+            return FALSE;
+    }
+    return TRUE;
 }
 
 boolean valid_target_operand(line_info* line) {
     if (strcmp(line->opcode, "cmp") == 0 ||
         strcmp(line->opcode, "prn") == 0) {
-        return get_addressing_type(line->target_operand) == IMMEDIATE_ADDRESSING ||
-            get_addressing_type(line->target_operand) == DIRECT_ADDRESSING ||
-            get_addressing_type(line->target_operand) == REGISTER_ADDRESSING;
+        if( get_addressing_type(line->target_operand) != IMMEDIATE_ADDRESSING &&
+            get_addressing_type(line->target_operand) != DIRECT_ADDRESSING &&
+            get_addressing_type(line->target_operand) != REGISTER_ADDRESSING) {
+                printf("Error: in line %ld %s invalid target operand\n", line->line_number, line->line_content);
+                return FALSE;
+            }
     }
     else if(strcmp(line->opcode, "mov") == 0 ||
         strcmp(line->opcode, "add") == 0 ||
@@ -370,14 +390,30 @@ boolean valid_target_operand(line_info* line) {
         strcmp(line->opcode, "bne") == 0 ||
         strcmp(line->opcode, "red") == 0 ||
         strcmp(line->opcode, "jsr") == 0) {
-        return get_addressing_type(line->target_operand) == DIRECT_ADDRESSING ||
-            get_addressing_type(line->target_operand) == REGISTER_ADDRESSING;
+        if( get_addressing_type(line->target_operand) != DIRECT_ADDRESSING &&
+            get_addressing_type(line->target_operand) != REGISTER_ADDRESSING) {
+                printf("Error: in line %ld %s invalid target operand\n", line->line_number, line->line_content);
+                return FALSE;
+            }
     }
     else if(strcmp(line->opcode, "rts") == 0 ||
         strcmp(line->opcode, "stop") == 0) {
-        return get_addressing_type(line->target_operand) == NO_OPERAND;
+            if( get_addressing_type(line->target_operand) != NO_OPERAND) {
+                printf("Error: in line %ld %s invalid target operand\n", line->line_number, line->line_content);
+                return FALSE;
+            }
     }
-    return FALSE;
+
+    /* if target address is an lable, check it */
+    if(get_addressing_type(line->target_operand) == DIRECT_ADDRESSING && bad_label(line->target_operand, line->line_content, line->line_number))
+            return FALSE;
+
+    if(get_addressing_type(line->target_operand) == IMMEDIATE_ADDRESSING && number_too_big(line->target_operand)){
+            printf("Error: in line %ld %s the number `%s` must be between %d - %d\n", line->line_number, line->line_content,
+                line->target_operand, MIN_INT_VALUE, MAX_INT_VALUE);
+            return FALSE;
+    }
+    return TRUE;
 }
 
 boolean exists_in_symbol_table(char* symbol, symbols_table_entry* symbol_table) {
@@ -419,4 +455,11 @@ boolean is_register(char* operand) {
 	if (operand[0] == '@' && operand[1] == 'r' && operand[2] >= '0' && operand[2] <= '7' && operand[3] == '\0')
 		return TRUE;
 	return FALSE;
+}
+
+boolean number_too_big(char* number) {
+    int num = atoi(number);
+    if (num < MIN_INT_VALUE || num > MAX_INT_VALUE)
+        return TRUE;
+    return FALSE;
 }

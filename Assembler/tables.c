@@ -176,6 +176,10 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
             printf("Error: in line %ld %s theres no numbers to add\n");
             return FALSE;
         }
+        if(number_too_big(token))
+        {
+            printf("Error: in line %ld %s the number `%s` is too big\n", line->line_number, line->directive_data, token);
+        }
 
         /*adding the number to the data table*/
         data_table_ptr = (data_table_entry*)malloc_with_check(sizeof(data_table_entry));

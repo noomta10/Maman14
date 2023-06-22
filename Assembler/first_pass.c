@@ -29,8 +29,8 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
     line->line_number = 1;
 
     /*reading .as file line by line entil the end*/
-    while (fgets(line_content, MAX_LINE_LENGTH, am_file) != NULL) 
-    {
+    while (fgets(line_content, MAX_LINE_LENGTH, am_file) != NULL) {
+        printf("Debug: line %d %s\n", line->line_number, line_content);
         if (line_too_long(am_file, line_content))
         {
             *error_flag = TRUE;
@@ -54,6 +54,7 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
         /*reseting variables*/
         reset_line_info(line);
         reset_str(line_content);
+        printf("\n");
     }
 
 
