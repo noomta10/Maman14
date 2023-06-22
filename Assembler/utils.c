@@ -38,4 +38,20 @@ void* realloc_with_check(char* ptr, size_t length) {
 }
 
 
+boolean is_reserved_name(char* name) {
+	if (strcmp(name, "mov") == 0 || strcmp(name, "cmp") == 0 ||
+		strcmp(name, "add") == 0 || strcmp(name, "sub") == 0 ||
+		strcmp(name, "not") == 0 || strcmp(name, "clr") == 0 ||
+		strcmp(name, "lea") == 0 || strcmp(name, "inc") == 0 ||
+		strcmp(name, "dec") == 0 || strcmp(name, "jmp") == 0 ||
+		strcmp(name, "bne") == 0 || strcmp(name, "red") == 0 ||
+		strcmp(name, "prn") == 0 || strcmp(name, "jsr") == 0 ||
+		strcmp(name, "rts") == 0 || strcmp(name, "stop") == 0 ||
+		strcmp(name, ".string") == 0 || strcmp(name, ".data") == 0 ||
+		strcmp(name, ".entry") == 0 || strcmp(name, ".extern") == 0) {
+		return TRUE;
+	}
+	return FALSE;
+}
+
 

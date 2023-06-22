@@ -17,24 +17,19 @@
 boolean process_file(char* file_name) {
 	FILE* file_pointer = NULL;
 	boolean error_flag = FALSE;
-
-	long IC = IC_START_ADDRESS;
+	long IC = 0;
 	long DC = 0;
-	symbols_table_entry* symbol_table_head = NULL;
-	data_table_entry* data_table_head = NULL;
-	entry_entry* ent_head = NULL;
-	extern_entry* ext_head = NULL;
-	code_table_entry* code_table_head = NULL;
-	uninitialized_symbols_table_entry* uninitialized_symbol_head = NULL;
+	symbols_table_entry* symbol_entry_head = NULL;
+	data_table_entry* data_entry_head = NULL;
+	entry_entry* entry_entry_head = NULL;
+	extern_entry* extern_entry_head = NULL;
+	code_table_entry* code_entry_head = NULL;
+	uninitialized_symbols_table_entry* uninitialized_symbol_entry_head = NULL;
 
 	/* Concatenate '.as' postfix to file name */
 	char* full_file_name = add_file_postfix(file_name, ".as");
 	/* Concatenate '.am' postfix to file name */
 	char* full_am_name = add_file_postfix(file_name, ".am");
-
-
-	LOG_DEBUG("process_file start");
-
 
 	/* Check if file opened successfully */
 	file_pointer = fopen(full_file_name, "r");
@@ -46,7 +41,7 @@ boolean process_file(char* file_name) {
 		return FALSE;
 	}
 
-	/* Call pre_assembler to create .am file */
+	/* Pre_assembler, create .am file */
 	if (!pre_assembler(file_pointer, file_name)) {
 		LOG_DEBUG("Pre assembler failed");
 		return FALSE;
@@ -66,57 +61,54 @@ boolean process_file(char* file_name) {
 		return FALSE;
 	}
 
-	printf("first_pass started\n");
-	/*call first_pass*/
-	error_flag = first_pass(file_pointer, &symbol_table_head, &data_table_head, &ent_head, &ext_head, &code_table_head, &uninitialized_symbol_head, &IC, &DC);
-
+	/* First_pass */
+	error_flag = first_pass(file_pointer, &symbol_entry_head, &data_entry_head, &entry_entry_head, &extern_entry_head, &code_entry_head, &uninitialized_symbol_entry_head, &IC, &DC);
 	if (error_flag) {
-		free_data_table(data_table_head);
-		free_entry_table(ent_head);
-		free_extern_table(ext_head);
-		free_symbols_table(symbol_table_head);
+		free_data_table(data_entry_head);
+		free_entry_table(entry_entry_head);
+		free_extern_table(extern_entry_head);
+		free_symbols_table(symbol_entry_head);
 		fclose(file_pointer);
 
 		LOG_DEBUG("First pass failed");
 		return FALSE;
 	}
 
-	/*printing data_tables for debugging*/
+	/* DEBUG- printing data_tables */
 	printf("IC = %ld\n", IC);
-	printf("DC = %ld\n", DC);
-	printf("\n");
-	print_data_table(data_table_head);
-	print_symbol_table(symbol_table_head);
-	print_entry_table(ent_head);
-	print_extern_table(ext_head);
-	print_code_word(code_table_head);
-	print_uninitialized_symbols_table(uninitialized_symbol_head);
+	printf("DC = %ld\n\n", DC);
+	if(data_entry_head) print_data_table(data_entry_head);
+	if(symbol_entry_head) print_symbol_table(symbol_entry_head);
+	if(entry_entry_head) print_entry_table(entry_entry_head);
+	if (extern_entry_head) print_extern_table(extern_entry_head);
+	if (code_entry_head) print_code_word(code_entry_head);
+	if (uninitialized_symbol_entry_head) print_uninitialized_symbols_table(uninitialized_symbol_entry_head);
 
 	/* Second pass, exit if errors were found */
-	if (!second_pass(uninitialized_symbol_head, symbol_table_head, ext_head, ent_head, file_name, IC, DC, code_table_head, data_table_head)) {
-		free_data_table(data_table_head);
-		free_entry_table(ent_head);
-		free_extern_table(ext_head);
-		free_symbols_table(symbol_table_head);
+	if (!second_pass(uninitialized_symbol_entry_head, symbol_entry_head, extern_entry_head, entry_entry_head, file_name, IC, DC, code_entry_head, data_entry_head)) {
+		free_data_table(data_entry_head);
+		free_entry_table(entry_entry_head);
+		free_extern_table(extern_entry_head);
+		free_symbols_table(symbol_entry_head);
 		fclose(file_pointer);
 
 		LOG_DEBUG("Second pass failed");
 		return FALSE;
 	}
+
+	/* DEBUG */
 	LOG_DEBUG("After second pass:\n");
-	print_uninitialized_symbols_table(uninitialized_symbol_head);
-
-	print_code_table_in_binary(code_table_head);
-
+	print_uninitialized_symbols_table(uninitialized_symbol_entry_head);
+	print_code_table_in_binary(code_entry_head);
 	printf("IC: %ld\n", IC);
 	printf("DC: %ld\n", DC);
 
 	/* Free memory */
-	free_data_table(data_table_head);
-	free_entry_table(ent_head);
-	free_extern_table(ext_head);
-	free_symbols_table(symbol_table_head);
-	/*free_code_table(code_table_head);*/
+	free_data_table(data_entry_head);
+	free_entry_table(entry_entry_head);
+	free_extern_table(extern_entry_head);
+	free_symbols_table(symbol_entry_head);
+	free_code_table(code_entry_head);
 
 	/* Close file */
 	fclose(file_pointer);
@@ -127,14 +119,12 @@ boolean process_file(char* file_name) {
 
 
 int main(int argc, char* argv[]) {
-	int i;
-	
-	LOG_DEBUG("starting");
+	int file_index;
 
 	/* Process each file by arguments */
-	for (i = 1; i < argc; ++i) {
-		printf("\n\n\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~ PROCESSING FILE \"%s.as\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", argv[i]);
-		process_file(argv[i]);
+	for (file_index = 1; file_index < argc; ++file_index) {
+		printf("\n\n\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~ PROCESSING FILE \"%s.as\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", argv[file_index]);
+		process_file(argv[file_index]);
 	}
 
 	return 0;

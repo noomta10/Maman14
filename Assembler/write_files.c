@@ -10,6 +10,7 @@
 #include "write_files.h"
 #include "encoding.h"
 
+
 /* Write entry file */
 void write_entry_file(char* file_name, entry_entry* entry_table_head) {
 	char* entry_file_name;
