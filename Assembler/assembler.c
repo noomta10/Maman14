@@ -14,7 +14,7 @@
 #include "second_pass.h"
 
 
-void process_file(char* file_name) {
+boolean process_file(char* file_name) {
 	FILE* file_pointer = NULL;
 	boolean error_flag = FALSE;
 
@@ -41,12 +41,15 @@ void process_file(char* file_name) {
 	if (file_pointer == NULL) {
 		fprintf(stderr, "Error: The file %s couldn't be opened\n", full_file_name);
 		free(full_file_name);
-		return;
+
+		LOG_DEBUG("Openning file failed");
+		return FALSE;
 	}
 
 	/* Call pre_assembler to create .am file */
 	if (!pre_assembler(file_pointer, file_name)) {
-		return;
+		LOG_DEBUG("Pre assembler failed");
+		return FALSE;
 	}
 
 	/* Close file and free data */
@@ -58,13 +61,25 @@ void process_file(char* file_name) {
 	if (file_pointer == NULL) {
 		fprintf(stderr, "Error: The file %s couldn't be opened\n", full_am_name);
 		free(full_am_name);
-		return;
+
+		LOG_DEBUG("Openning file failed");
+		return FALSE;
 	}
 
 	printf("first_pass started\n");
 	/*call first_pass*/
 	error_flag = first_pass(file_pointer, &symbol_table_head, &data_table_head, &ent_head, &ext_head, &code_table_head, &uninitialized_symbol_head, &IC, &DC);
 
+	if (error_flag) {
+		free_data_table(data_table_head);
+		free_entry_table(ent_head);
+		free_extern_table(ext_head);
+		free_symbols_table(symbol_table_head);
+		fclose(file_pointer);
+
+		LOG_DEBUG("First pass failed");
+		return FALSE;
+	}
 
 	/*printing data_tables for debugging*/
 	printf("IC = %ld\n", IC);
@@ -84,7 +99,9 @@ void process_file(char* file_name) {
 		free_extern_table(ext_head);
 		free_symbols_table(symbol_table_head);
 		fclose(file_pointer);
-		return;
+
+		LOG_DEBUG("Second pass failed");
+		return FALSE;
 	}
 	LOG_DEBUG("After second pass:\n");
 	print_uninitialized_symbols_table(uninitialized_symbol_head);
@@ -103,6 +120,9 @@ void process_file(char* file_name) {
 
 	/* Close file */
 	fclose(file_pointer);
+
+	LOG_DEBUG("File was processed successfully");
+	return TRUE;
 }
 
 
@@ -116,5 +136,6 @@ int main(int argc, char* argv[]) {
 		printf("\n\n\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~ PROCESSING FILE \"%s.as\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", argv[i]);
 		process_file(argv[i]);
 	}
+
 	return 0;
 }
