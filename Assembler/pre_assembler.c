@@ -160,7 +160,6 @@ boolean pre_assembler(FILE* source_file, char* file_name) {
 	char line[MAX_LINE_LENGTH];
 	int line_number = 0;
 	mcros_table_entry* first_mcro_entry = NULL;
-	/*char* mcro_name = NULL;*/
 	char* saved_line = NULL;
 	FILE* am_file;
 	boolean line_is_mcro_related = FALSE;
