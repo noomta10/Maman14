@@ -28,8 +28,6 @@ void* malloc_with_check(size_t length) {
 void* realloc_with_check(char* ptr, size_t length) {
 	void* pointer = realloc(ptr, length);
 
-	printf("debug realloc before %p\n", ptr);
-
 	if (pointer == NULL) {
 		fprintf(stderr, "Error: memory reallocation failed\n");
 		exit(-1);

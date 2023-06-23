@@ -7,5 +7,5 @@
 #define MAX_INT_VALUE 1023
 #define MIN_INT_VALUE -1024
 
-typedef enum {FALSE = 0, TRUE = 1, ERROR = 2} boolean;
+typedef enum {FALSE = 0, TRUE = 1} boolean;
 
