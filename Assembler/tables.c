@@ -466,12 +466,12 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_
     
     if(exists_in_symbol_table(label_name, *symbol_table_head))
     {
-        printf("error: in line %d %s\nlabel `%s` already already declared\n", line->line_number, line->line_content, label_name);
+        printf("Error: in line %d %s\nlabel `%s` is already declared\n", line->line_number, line->line_content, label_name);
         return FALSE;
     }
     if (exists_in_extern_table(label_name, ext_head))
     {
-        printf("error: in line %d %s\nlabel `%s` already declared as extern\n", line->line_number, line->line_content, label_name);
+        printf("Error: in line %d %s\nlabel `%s` already declared as extern\n", line->line_number, line->line_content, label_name);
         return FALSE;
     }
 

@@ -66,7 +66,7 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
 
     program_too_big(*IC, *DC);
 
-    return *error_flag; /*returning error flag*/
+    return !error_flag; /*returning error flag*/
 }
 
 
