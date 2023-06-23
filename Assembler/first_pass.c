@@ -21,7 +21,7 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
     char line_content[MAX_LINE_LENGTH];
     line_info* line = NULL;
     boolean* error_flag = (boolean *)malloc_with_check(sizeof(boolean));
-    *DC = *IC = 0;/*end of page 48*/
+    *DC = *IC = 0;
 
     
     line = (line_info*)malloc_with_check(sizeof(line_info)); /*allocating memory for line*/
@@ -66,7 +66,7 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
 
     program_too_big(*IC, *DC);
 
-    return !error_flag; /*returning error flag*/
+    return *error_flag; /*returning error flag*/
 }
 
 

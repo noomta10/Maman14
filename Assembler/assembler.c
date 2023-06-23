@@ -63,6 +63,7 @@ boolean process_file(char* file_name) {
 
 	/* First_pass */
 	error_flag = first_pass(file_pointer, &symbol_entry_head, &data_entry_head, &entry_entry_head, &extern_entry_head, &code_entry_head, &uninitialized_symbol_entry_head, &IC, &DC);
+	printf("%d\n\n\n\n\n", error_flag);
 	if (error_flag) {
 		free_data_table(data_entry_head);
 		free_entry_table(entry_entry_head);
