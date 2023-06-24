@@ -235,9 +235,10 @@ boolean valid_string_command(line_info* line)
 
 boolean valid_entry_command(line_info* line)
 {
-    if(strcmp(line->directive_data, "") == 0)
+    //if(strcmp(line->directive_data, "") == 0)
+    if (string_is_empty(line->directive_data))
     { // TODO: error or warning?
-        printf("Error: in line: %ld %sno entry labels given\n", line->line_number, line->line_content);
+        printf("Error: in line %ld: %s\nNo entry labels given\n", line->line_number, line->line_content);
         return FALSE;
     }
     return TRUE;
@@ -245,8 +246,7 @@ boolean valid_entry_command(line_info* line)
 
 boolean valid_extern_command(line_info* line)
 {
-    if(strcmp(line->directive_data, "") == 0)
-    {// TODO: error or warning?
+    if(strcmp(line->directive_data, "") == 0){ // TODO: error or warning?
         printf("Error: in line: %ld %s no extern labels given\n", line->line_number, line->line_content);
         return FALSE;
     }

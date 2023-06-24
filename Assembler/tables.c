@@ -235,12 +235,12 @@ boolean add_entry_to_table(line_info* line, symbols_table_entry* symbols_table_h
     /* check existsents in tables */
     if(exists_in_entry_table(token, *ent_head))
     {
-        printf("Error: in line %d %s\n label `%s` already declared as entry\n", line->line_number, line->line_content, token);
+        printf("Error: in line %d: %s\nLabel '%s' is already declared as an entry\n", line->line_number, line->line_content, token);
         return FALSE;
     }
     if(exists_in_extern_table(token, ext_head))
     {
-        printf("Error: in line %d %s\n label `%s` already exists in current file\n", line->line_number, line->line_content, token);
+        printf("Error: in line %d: %s\nLabel '%s' already exists in current file\n", line->line_number, line->line_content, token);
         return FALSE;
     }
 
@@ -273,12 +273,12 @@ boolean add_extern_to_table(line_info* line, symbols_table_entry* symbols_table_
     /* check existsents in tables */
     if(exists_in_symbol_table(token, symbols_table_head))
     {
-        printf("Error: in line %d %s\n label `%s` already exists in current file\n", line->line_number, line->line_content, token);
+        printf("Error: in line %d: %s\nLabel '%s' already exists in current file\n", line->line_number, line->line_content, token);
         return FALSE;
     }
     if(exists_in_entry_table(token, ent_head))
     {
-        printf("Error: in line %d %s\n label `%s` already exists in current file\n", line->line_number, line->line_content, token);
+        printf("Error: in line %d: %s\nLabel '%s' already exists in current file\n", line->line_number, line->line_content, token);
         return FALSE;
     }
     if(exists_in_extern_table(token, *ext_head))
