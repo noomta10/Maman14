@@ -44,7 +44,7 @@ boolean line_too_long(FILE* am_file, char* line_content)
             return FALSE;
         line_content++;
     }
-    if ((c = getc(am_file)) == EOF)
+    if ((c = getc(am_file)) == EOF || c == '\n')
         return FALSE;
 
     /* reads rest of line */
@@ -71,27 +71,30 @@ boolean bad_label(char* label, char* line_content, long line_number)
         strcmp(label, "rts") == 0 || strcmp(label, "stop") == 0 ||
         strcmp(label, "data") == 0 || strcmp(label, "string") == 0 ||
         strcmp(label, "entry") == 0 || strcmp(label, "extern") == 0 ||
-        *label == '@')
+        strcmp(label, "@r0") == 0 || strcmp(label, "@r1") == 0 ||
+        strcmp(label, "@r2") == 0 || strcmp(label, "@r3") == 0 ||
+        strcmp(label, "@r4") == 0 || strcmp(label, "@r5") == 0 ||
+        strcmp(label, "@r6") == 0 || strcmp(label, "@r7") == 0)
     {
-        printf("Error: in line %d `%s` the label `%s` is a reserved word\n", line_number, line_content, label);
+        printf("Error: in line %d: %s\nThe label '%s' is a reserved word\n", line_number, line_content, label);
         return TRUE;
     }
 
     /* Check if label is too long or too short */
     if (strlen(label) > MAX_LABEL_LENGTH)
     {
-        printf("Error: in line %ld `%s` the label `%s` is to long\n", line_number, line_content, label);
+        printf("Error: in line %ld: %s\nThe label '%s' is too long\n", line_number, line_content, label);
         return TRUE;
     }
     if (strlen(label) == 0)
     {
-        printf("Error: in line %ld %s the label `%s` is  to short\n", line_number, line_content, label);
+        printf("Error: in line %ld: %s\nThe label '%s' is too short\n", line_number, line_content, label);
         return TRUE;
     }
 
     /* Check if label starts with a letter */
     if (!isalpha(label[i])) {
-        printf("Error: in line %ld `%s` the label `%s` must start with a letter\n", line_number, line_content, label);
+        printf("Error: in line %ld: %s\nThe label '%s' must start with a letter\n", line_number, line_content, label);
         return TRUE;
     }
 
@@ -100,7 +103,7 @@ boolean bad_label(char* label, char* line_content, long line_number)
     {
         if (!isalnum(label[i]))
         {
-            printf("Error: in line %ld `%s` the label `%s` has invalid characters\n",line_number, line_content, label);
+            printf("Error: in line %ld: %s\nThe label '%s' has invalid characters\n",line_number, line_content, label);
             return TRUE;
         }
     }
@@ -181,7 +184,7 @@ boolean valid_directive_line(line_info* line)
     }
     else
     {
-        printf("Error: line: %ld %sinvalid directive command\n", line->line_number, line->line_content);
+        printf("Error: line %ld: %s\nInvalid directive command\n", line->line_number, line->line_content);
         return FALSE;
     }   
 
@@ -189,9 +192,10 @@ boolean valid_directive_line(line_info* line)
 
 boolean valid_data_command(line_info* line)
 {
-    if(strcmp(line->directive_data, "") == 0)
+    //if(strcmp(line->directive_data, "") == 0)
+    if (string_is_empty(line->directive_data))
     {
-        printf("Error: in line: %ld %smissing data\n", line->line_number, line->line_content);
+        printf("Error: in line %ld: %s\nMissing data\n", line->line_number, line->line_content);
         return FALSE;
     }
     return TRUE;
@@ -205,7 +209,7 @@ boolean valid_string_command(line_info* line)
     /* check if string is empty */
     if(end_of_string(directive_data))
     {
-        printf("Error: in line: %ld %smissing data\n", line->line_number, line->line_content);
+        printf("Error: in line %ld: %s\nMissing data\n", line->line_number, line->line_content);
         return FALSE;
     }
     /* skip white spaced and update the length i */
@@ -216,7 +220,7 @@ boolean valid_string_command(line_info* line)
     /* check if string starts with quotes */
     if(*directive_data != '"')
     {
-        printf("Error: in line: %ld %sstring must start with quotes\n", line->line_number, line->line_content);
+        printf("Error: in line %ld: %s\nString must start with quotes\n", line->line_number, line->line_content);
         return FALSE;
     }
     /* check if string ends with quotes */
@@ -224,18 +228,20 @@ boolean valid_string_command(line_info* line)
         i--;
     if(directive_data[i] != '"')
     {
-        printf("Error: in line: %ld %sstring must end with quotes\n", line->line_number, line->line_content);
+        printf("Error: in line %ld: %s\nString must end with quotes\n", line->line_number, line->line_content);
         return FALSE;
     }
 
     return TRUE;
 }
 
+
 boolean valid_entry_command(line_info* line)
 {
-    if(strcmp(line->directive_data, "") == 0)
+    //if(strcmp(line->directive_data, "") == 0)
+    if (string_is_empty(line->directive_data))
     { // TODO: error or warning?
-        printf("Error: in line: %ld %sno entry labels given\n", line->line_number, line->line_content);
+        printf("Error: in line %ld: %s\nNo entry labels given\n", line->line_number, line->line_content);
         return FALSE;
     }
     return TRUE;
@@ -243,8 +249,7 @@ boolean valid_entry_command(line_info* line)
 
 boolean valid_extern_command(line_info* line)
 {
-    if(strcmp(line->directive_data, "") == 0)
-    {// TODO: error or warning?
+    if(strcmp(line->directive_data, "") == 0){ // TODO: error or warning?
         printf("Error: in line: %ld %s no extern labels given\n", line->line_number, line->line_content);
         return FALSE;
     }
@@ -308,7 +313,7 @@ boolean check_extra_or_missing_operands(line_info* line)
     /*invalid opcode*/
     else
     {
-        printf("Error: in line %ld %s invalid opcode\n", line->line_number, line->line_content);
+        printf("Error: in line %ld: %s\nInvalid opcode\n", line->line_number, line->line_content);
         return FALSE;
     }
 
@@ -449,7 +454,8 @@ boolean exists_in_entry_table(char* symbol, entry_entry* entry_table) {
 
 boolean program_too_big(long IC, long DC){
     if (IC + DC >= MAX_PROGRAM_LENGTH) {
-        printf("Error: the program you porvided is too big for imaginary computer.\n");
+        printf("Error: the program you porvided is too big for imaginary computer\n");
+        printf("Debug: IC + DC = %d\n", IC + DC);
         return TRUE;
     }
     return FALSE;
@@ -461,9 +467,20 @@ boolean is_register(char* operand) {
 	return FALSE;
 }
 
-boolean number_too_big(char* number) {
-    int num = atoi(number);
-    if (num < MIN_INT_VALUE || num > MAX_INT_VALUE)
+boolean number_too_big(char* string_number) {
+    int number = atoi(string_number);
+    if (number < MIN_INT_VALUE || number > MAX_INT_VALUE)
         return TRUE;
     return FALSE;
+}
+
+boolean string_is_empty(char* string) {
+    int i;
+    for (i = 0; i < strlen(string); i++) {
+        if (!isspace(string[i])) {
+            return FALSE;
+        }
+    }
+
+    return TRUE;
 }

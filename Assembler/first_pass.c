@@ -21,7 +21,8 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
     char line_content[MAX_LINE_LENGTH];
     line_info* line = NULL;
     boolean* error_flag = (boolean *)malloc_with_check(sizeof(boolean));
-    *DC = *IC = 0;/*end of page 48*/
+    *error_flag = FALSE;
+    *DC = *IC = 0;
 
     
     line = (line_info*)malloc_with_check(sizeof(line_info)); /*allocating memory for line*/
@@ -49,7 +50,9 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
 
         /*processing line*/
         extract_command_info(line_content, line);
-        process_line_first_pass(line, IC, DC, symbol_table_head, data_table_head, ent_head, ext_head, code_table_head, uninitialized_symbols_table_entry); /*processing line*/
+        if (!process_line_first_pass(line, IC, DC, symbol_table_head, data_table_head, ent_head, ext_head, code_table_head, uninitialized_symbols_table_entry)) {
+            *error_flag = TRUE;
+        }
 
         /*reseting variables*/
         reset_line_info(line);
@@ -64,9 +67,11 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
 
     add_final_ic_to_dc_count(*symbol_table_head, *data_table_head, *IC, DC);
 
-    program_too_big(*IC, *DC);
+    if (program_too_big(*IC, *DC)) {
+        *error_flag = TRUE;
+    }
 
-    return !error_flag; /*returning error flag*/
+    return *error_flag; /*returning error flag*/
 }
 
 
@@ -137,7 +142,7 @@ void extract_command_info(char* content, line_info* line)
         line->label_flag = FALSE;
     }
 
-    /*if there's an directive save it, else set directive flag to false*/
+    /*if there's a directive save it, else set directive flag to false*/
     skip_white_spaces(&content);
     if (is_directive(content))
     {
@@ -198,7 +203,3 @@ addressing_type get_addressing_type(char* operand)
     else
         return DIRECT_ADDRESSING;
 }
-
-
-
-
