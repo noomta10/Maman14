@@ -201,15 +201,19 @@ boolean valid_string_command(line_info* line)
 {
     char* directive_data = line->directive_data;
     /* set i to the end of the line and skip the null character */
-    int i = strlen(directive_data) - 2;
+    int i = strlen(directive_data) -1 ;
     /* check if string is empty */
-    if(strcmp(directive_data, "") == 0)
+    if(end_of_string(directive_data))
     {
         printf("Error: in line: %ld %smissing data\n", line->line_number, line->line_content);
         return FALSE;
     }
+    /* skip white spaced and update the length i */
+    while (isspace(*directive_data) && i >= 0) {
+        i--;
+        directive_data++;
+    }
     /* check if string starts with quotes */
-    skip_white_spaces(&directive_data);
     if(*directive_data != '"')
     {
         printf("Error: in line: %ld %sstring must start with quotes\n", line->line_number, line->line_content);
