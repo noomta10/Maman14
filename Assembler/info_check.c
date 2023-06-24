@@ -192,9 +192,10 @@ boolean valid_directive_line(line_info* line)
 
 boolean valid_data_command(line_info* line)
 {
-    if(strcmp(line->directive_data, "") == 0)
+    //if(strcmp(line->directive_data, "") == 0)
+    if (string_is_empty(line->directive_data))
     {
-        printf("Error: in line: %ld %smissing data\n", line->line_number, line->line_content);
+        printf("Error: in line %ld: %s\nMissing data\n", line->line_number, line->line_content);
         return FALSE;
     }
     return TRUE;
@@ -206,16 +207,17 @@ boolean valid_string_command(line_info* line)
     /* set i to the end of the line and skip the null character */
     int i = strlen(directive_data) - 2;
     /* check if string is empty */
-    if(strcmp(directive_data, "") == 0)
+    //if(strcmp(directive_data, "") == 0)
+    if(string_is_empty(directive_data))
     {
-        printf("Error: in line: %ld %smissing data\n", line->line_number, line->line_content);
+        printf("Error: in line %ld: %s\nMissing data\n", line->line_number, line->line_content);
         return FALSE;
     }
     /* check if string starts with quotes */
     skip_white_spaces(&directive_data);
     if(*directive_data != '"')
     {
-        printf("Error: in line: %ld %sstring must start with quotes\n", line->line_number, line->line_content);
+        printf("Error: in line %ld: %s\nString must start with quotes\n", line->line_number, line->line_content);
         return FALSE;
     }
     /* check if string ends with quotes */
@@ -223,12 +225,13 @@ boolean valid_string_command(line_info* line)
         i--;
     if(directive_data[i] != '"')
     {
-        printf("Error: in line: %ld %sstring must end with quotes\n", line->line_number, line->line_content);
+        printf("Error: in line %ld: %s\nString must end with quotes\n", line->line_number, line->line_content);
         return FALSE;
     }
 
     return TRUE;
 }
+
 
 boolean valid_entry_command(line_info* line)
 {
@@ -466,4 +469,15 @@ boolean number_too_big(char* string_number) {
     if (number < MIN_INT_VALUE || number > MAX_INT_VALUE)
         return TRUE;
     return FALSE;
+}
+
+boolean string_is_empty(char* string) {
+    int i;
+    for (i = 0; i < strlen(string); i++) {
+        if (!isspace(string[i])) {
+            return FALSE;
+        }
+    }
+
+    return TRUE;
 }

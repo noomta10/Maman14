@@ -204,7 +204,7 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
         }
         else if (!end_of_string(data_to_extract))
         {
-            printf("Error: in line %d %s expected a comma between numbers\n");
+            printf("Error: in line %d: %s\nExpected a comma between numbers\n", line->line_number, line->line_content);
             return FALSE;
         }
     }/*end of reading numbers*/
