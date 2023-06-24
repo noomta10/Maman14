@@ -445,7 +445,8 @@ boolean exists_in_entry_table(char* symbol, entry_entry* entry_table) {
 
 boolean program_too_big(long IC, long DC){
     if (IC + DC >= MAX_PROGRAM_LENGTH) {
-        printf("Error: the program you porvided is too big for imaginary computer.\n");
+        printf("Error: the program you porvided is too big for imaginary computer\n");
+        printf("Debug: IC + DC = %d\n", IC + DC);
         return TRUE;
     }
     return FALSE;

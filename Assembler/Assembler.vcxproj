@@ -158,8 +158,9 @@
     <None Include="every_line_has_an_error.as" />
     <None Include="instruction_lines.as" />
     <None Include="label_check.as" />
+    <None Include="1_line_too_long.as" />
     <None Include="makefile" />
-    <None Include="my_file.as" />
+    <None Include="1_program_too_big.as" />
     <None Include="temp_error_lines.as" />
     <None Include="test.as" />
     <None Include="test_lable.am" />
