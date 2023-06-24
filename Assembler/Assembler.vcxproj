@@ -154,7 +154,9 @@
     <ClInclude Include="write_files.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="1_invalid_label.as" />
     <None Include="1_invalid_number.as" />
+    <None Include="1_invalid_directive.as" />
     <None Include="data_test.am" />
     <None Include="every_line_has_an_error.as" />
     <None Include="instruction_lines.as" />

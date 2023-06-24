@@ -124,9 +124,6 @@ char* get_label(char** str)
     char* token;
     int label_length = 0;
 
-        printf("get_label\n");
-
-    
     while (*temp != ':')
     {
         temp++;

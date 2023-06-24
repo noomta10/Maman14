@@ -71,27 +71,30 @@ boolean bad_label(char* label, char* line_content, long line_number)
         strcmp(label, "rts") == 0 || strcmp(label, "stop") == 0 ||
         strcmp(label, "data") == 0 || strcmp(label, "string") == 0 ||
         strcmp(label, "entry") == 0 || strcmp(label, "extern") == 0 ||
-        *label == '@')
+        strcmp(label, "@r0") == 0 || strcmp(label, "@r1") == 0 ||
+        strcmp(label, "@r2") == 0 || strcmp(label, "@r3") == 0 ||
+        strcmp(label, "@r4") == 0 || strcmp(label, "@r5") == 0 ||
+        strcmp(label, "@r6") == 0 || strcmp(label, "@r7") == 0)
     {
-        printf("Error: in line %d `%s` the label `%s` is a reserved word\n", line_number, line_content, label);
+        printf("Error: in line %d: %s\nThe label '%s' is a reserved word\n", line_number, line_content, label);
         return TRUE;
     }
 
     /* Check if label is too long or too short */
     if (strlen(label) > MAX_LABEL_LENGTH)
     {
-        printf("Error: in line %ld `%s` the label `%s` is to long\n", line_number, line_content, label);
+        printf("Error: in line %ld: %s\nThe label '%s' is too long\n", line_number, line_content, label);
         return TRUE;
     }
     if (strlen(label) == 0)
     {
-        printf("Error: in line %ld %s the label `%s` is  to short\n", line_number, line_content, label);
+        printf("Error: in line %ld: %s\nThe label '%s' is too short\n", line_number, line_content, label);
         return TRUE;
     }
 
     /* Check if label starts with a letter */
     if (!isalpha(label[i])) {
-        printf("Error: in line %ld `%s` the label `%s` must start with a letter\n", line_number, line_content, label);
+        printf("Error: in line %ld: %s\nThe label '%s' must start with a letter\n", line_number, line_content, label);
         return TRUE;
     }
 
@@ -100,7 +103,7 @@ boolean bad_label(char* label, char* line_content, long line_number)
     {
         if (!isalnum(label[i]))
         {
-            printf("Error: in line %ld `%s` the label `%s` has invalid characters\n",line_number, line_content, label);
+            printf("Error: in line %ld: %s\nThe label '%s' has invalid characters\n",line_number, line_content, label);
             return TRUE;
         }
     }
@@ -181,7 +184,7 @@ boolean valid_directive_line(line_info* line)
     }
     else
     {
-        printf("Error: line: %ld %sinvalid directive command\n", line->line_number, line->line_content);
+        printf("Error: line %ld: %s\nInvalid directive command\n", line->line_number, line->line_content);
         return FALSE;
     }   
 
@@ -304,7 +307,7 @@ boolean check_extra_or_missing_operands(line_info* line)
     /*invalid opcode*/
     else
     {
-        printf("Error: in line %ld %s invalid opcode\n", line->line_number, line->line_content);
+        printf("Error: in line %ld: %s\nInvalid opcode\n", line->line_number, line->line_content);
         return FALSE;
     }
 
