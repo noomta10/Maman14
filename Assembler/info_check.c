@@ -458,9 +458,9 @@ boolean is_register(char* operand) {
 	return FALSE;
 }
 
-boolean number_too_big(char* number) {
-    int num = atoi(number);
-    if (num < MIN_INT_VALUE || num > MAX_INT_VALUE)
+boolean number_too_big(char* string_number) {
+    int number = atoi(string_number);
+    if (number < MIN_INT_VALUE || number > MAX_INT_VALUE)
         return TRUE;
     return FALSE;
 }

@@ -50,7 +50,9 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
 
         /*processing line*/
         extract_command_info(line_content, line);
-        process_line_first_pass(line, IC, DC, symbol_table_head, data_table_head, ent_head, ext_head, code_table_head, uninitialized_symbols_table_entry); /*processing line*/
+        if (!process_line_first_pass(line, IC, DC, symbol_table_head, data_table_head, ent_head, ext_head, code_table_head, uninitialized_symbols_table_entry)) {
+            *error_flag = TRUE;
+        }
 
         /*reseting variables*/
         reset_line_info(line);

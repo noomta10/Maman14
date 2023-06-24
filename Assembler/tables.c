@@ -173,12 +173,14 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
         /*checking for errors in the number*/
         if (strlen(token) == 0 || strcmp(token, "-") == 0 || strcmp(token, "+") == 0)
         {
-            printf("Error: in line %ld %s theres no numbers to add\n");
+            printf("Error: in line %ld %s there are no numbers to add\n");
             return FALSE;
         }
+
         if(number_too_big(token))
         {
-            printf("Error: in line %ld %s the number `%s` is too big\n", line->line_number, line->directive_data, token);
+            printf("Error: in line %ld the number %s is too big\n", line->line_number, token);
+            return FALSE;
         }
 
         /*adding the number to the data table*/
