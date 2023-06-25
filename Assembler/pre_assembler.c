@@ -127,7 +127,7 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 		/* Check if mcro name is a reserved word */
 		if (is_reserved_name(mcro_name)) {
 			as_file_name = add_file_postfix(file_name, ".as");
-			printf("Pre-assembler error in file \"% s\", line %d: mcro \"%s\" must not be an instruction or a directive name\n", as_file_name, *line_number, mcro_name);
+			printf("Pre-assembler error in file \"%s\", line %d: mcro \"%s\" must not be an instruction or a directive name\n", as_file_name, *line_number, mcro_name);
 			free(as_file_name);
 			*error_flag = TRUE;
 		}

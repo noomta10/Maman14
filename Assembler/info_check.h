@@ -1,15 +1,8 @@
-#pragma once
-
-
-
 boolean is_directive(char*);
 boolean is_label(char*);
 boolean is_number(char* string);
 boolean ignore_line(char* line);
-
-
 boolean line_too_long(FILE* am_file, char* line_content);
-
 boolean bad_label(char* label, char* line_content, long line_number);
 boolean check_comma(char** string);
 boolean program_too_big(long IC, long DC);
@@ -29,6 +22,3 @@ boolean exists_in_extern_table(char* symbol, extern_entry* external_table);
 boolean exists_in_entry_table(char* symbol, entry_entry* entry_table);
 boolean number_too_big(char* string_number);
 boolean string_is_empty(char* string);
-
-
-
