@@ -1,5 +1,5 @@
 assembler: assembler.o pre_assembler.o utils.o first_pass.o string_handling.o tables.o debuging.o info_check.o second_pass.o encoding.o write_files.o
-	gcc -g -ansi -Wall -pedantic assembler.o pre_assembler.o utils.o first_pass.o debuging.o string_handling.o tables.o encoding.o write_files.o -o assembler 
+	gcc -g -ansi -Wall -pedantic assembler.o pre_assembler.o utils.o first_pass.o string_handling.o tables.o debuging.o info_check.o second_pass.o encoding.o write_files.o -o assembler 
 
 assembler.o:  assembler.c assembler.h
 	gcc -c -g -ansi -Wall -pedantic assembler.c -o assembler.o
