@@ -184,7 +184,7 @@ boolean valid_directive_line(line_info* line)
     }
     else
     {
-        printf("Error: line %ld: %s\nInvalid directive command\n", line->line_number, line->line_content);
+        printf("Error: in line %ld: %sInvalid directive command\n", line->line_number, line->line_content);
         return FALSE;
     }   
 

@@ -157,7 +157,7 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
     
     SET_PREV_POINTER(data_table_prev, data_table_ptr)
     
-    token = (char*)malloc_with_check(sizeof(sizeof(data_to_extract)));
+    token = (char*)malloc_with_check(strlen(data_to_extract) * sizeof(char));
 
     /*reading numbers*/
     skip_white_spaces(&data_to_extract);
