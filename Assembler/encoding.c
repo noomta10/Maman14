@@ -28,9 +28,10 @@ char encode_six_bit_number(unsigned int bits) {
 
 char* encode_base64(unsigned int number) {
     char final_base64[3];
+    char* final_base64_pointer = final_base64;
     /* Extract the two 6 - bit groups */
-    unsigned int number_left_part = (number >> 6) & 0b111111; /* left part of the number & 111111 */ 
-    unsigned int number_right_part = number & 0b111111; /* right part of the number & 111111 */
+    unsigned int number_left_part = (number >> 6) & 0xFF; /* left part of the number & 111111 */ 
+    unsigned int number_right_part = number & 0xFF; /* right part of the number & 111111 */
 
     /* Encode each group using base64 */
     char encoded_char1 = encode_six_bit_number(number_left_part);
@@ -40,5 +41,5 @@ char* encode_base64(unsigned int number) {
     final_base64[1] = encoded_char2;
     final_base64[2] = '\0';
 
-    return final_base64;
+    return final_base64_pointer;
 }
