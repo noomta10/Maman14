@@ -177,7 +177,7 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
 
         if(number_too_big(token))
         {
-            printf("Error: in line %ld the number %s is too big\n", line->line_number, token);
+            printf("Error: in line %ld: %s\nThe number %s is too big\n", line->line_number,line->line_content, token);
             return FALSE;
         }
 
