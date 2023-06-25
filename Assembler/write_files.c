@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "assembler.h"
 #include "utils.h"
 #include "line_info.h"
@@ -34,7 +35,7 @@ void write_entry_file(char* file_name, entry_entry* entry_table_head) {
 	current_entry_entry = entry_table_head;
 	
 	while (current_entry_entry) {
-		fprintf(entry_file, "%s %5d\n", current_entry_entry->name, current_entry_entry->address);
+		fprintf(entry_file, "%s %5ld\n", current_entry_entry->name, current_entry_entry->address);
 		current_entry_entry = current_entry_entry->next;
 	}
 
@@ -72,7 +73,7 @@ void write_extern_file(char* file_name, extern_entry* extern_table_head, uniniti
 
 		while (current_uninitialized_entry) {
 			if (strcmp(current_extern_entry->name, current_uninitialized_entry->name) == 0) {
-				fprintf(extern_file, "%s %5d\n", current_extern_entry->name, current_uninitialized_entry->address);
+				fprintf(extern_file, "%s %5ld\n", current_extern_entry->name, current_uninitialized_entry->address);
 				current_uninitialized_entry = current_uninitialized_entry->next;
 				continue;
 			}
@@ -103,7 +104,7 @@ void write_object_file(char* file_name, long IC, long DC, code_table_entry* code
 	}
 
 	/* Print first line */
-	fprintf(object_file, "%d %d\n", IC, DC);
+	fprintf(object_file, "%ld %ld\n", IC, DC);
 	current_code_entry = code_entry_head;
 
 	/* Print all encoded code words to the object file */

@@ -1,5 +1,5 @@
-assembler: assembler.o pre_assembler.o utils.o first_pass.o string_handling.o tables.o debuging.o info_check.o second_pass.o
-	gcc -g -ansi -Wall -pedantic assembler.o pre_assembler.o utils.o first_pass.o debuging.o string_handling.o tables.o -o assembler 
+assembler: assembler.o pre_assembler.o utils.o first_pass.o string_handling.o tables.o debuging.o info_check.o second_pass.o encoding.o write_files.o
+	gcc -g -ansi -Wall -pedantic assembler.o pre_assembler.o utils.o first_pass.o debuging.o string_handling.o tables.o encoding.o write_files.o -o assembler 
 
 assembler.o:  assembler.c assembler.h
 	gcc -c -g -ansi -Wall -pedantic assembler.c -o assembler.o
@@ -27,6 +27,12 @@ info_check.o:  info_check.c info_check.h
 
 second_pass.o:  second_pass.c second_pass.h
 	gcc -c -g -ansi -Wall -pedantic second_pass.c -o second_pass.o
+
+encoding.o:  encoding.c encoding.h
+	gcc -c -g -ansi -Wall -pedantic encoding.c -o encoding.o
+
+write_files.o:  write_files.c write_files.h
+	gcc -c -g -ansi -Wall -pedantic write_files.c -o write_files.o
 
 clean:
 	rm -f assembler.o pre_assembler.o utils.o assembler *.o

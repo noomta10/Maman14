@@ -76,7 +76,7 @@ boolean bad_label(char* label, char* line_content, long line_number)
         strcmp(label, "@r4") == 0 || strcmp(label, "@r5") == 0 ||
         strcmp(label, "@r6") == 0 || strcmp(label, "@r7") == 0)
     {
-        printf("Error: in line %d: %s\nThe label '%s' is a reserved word\n", line_number, line_content, label);
+        printf("Error: in line %ld: %s\nThe label '%s' is a reserved word\n", line_number, line_content, label);
         return TRUE;
     }
 
@@ -182,17 +182,13 @@ boolean valid_directive_line(line_info* line)
         if (!valid_extern_command(line))
             return FALSE;
     }
-    else
-    {
-        printf("Error: in line %ld: %sInvalid directive command\n", line->line_number, line->line_content);
-        return FALSE;
-    }   
-
+    
+    printf("Error: in line %ld: %sInvalid directive command\n", line->line_number, line->line_content);
+    return FALSE;
 }
 
 boolean valid_data_command(line_info* line)
 {
-    //if(strcmp(line->directive_data, "") == 0)
     if (string_is_empty(line->directive_data))
     {
         printf("Error: in line %ld: %s\nMissing data\n", line->line_number, line->line_content);
@@ -238,9 +234,8 @@ boolean valid_string_command(line_info* line)
 
 boolean valid_entry_command(line_info* line)
 {
-    //if(strcmp(line->directive_data, "") == 0)
     if (string_is_empty(line->directive_data))
-    { // TODO: error or warning?
+    { /* TODO: error or warning? */
         printf("Error: in line %ld: %s\nNo entry labels given\n", line->line_number, line->line_content);
         return FALSE;
     }
@@ -249,7 +244,7 @@ boolean valid_entry_command(line_info* line)
 
 boolean valid_extern_command(line_info* line)
 {
-    if(strcmp(line->directive_data, "") == 0){ // TODO: error or warning?
+    if(strcmp(line->directive_data, "") == 0){ /* TODO: error or warning? */
         printf("Error: in line: %ld %s no extern labels given\n", line->line_number, line->line_content);
         return FALSE;
     }
@@ -455,7 +450,7 @@ boolean exists_in_entry_table(char* symbol, entry_entry* entry_table) {
 boolean program_too_big(long IC, long DC){
     if (IC + DC >= MAX_PROGRAM_LENGTH) {
         printf("Error: the program you porvided is too big for imaginary computer\n");
-        printf("Debug: IC + DC = %d\n", IC + DC);
+        printf("Debug: IC + DC = %ld\n", IC + DC);
         return TRUE;
     }
     return FALSE;

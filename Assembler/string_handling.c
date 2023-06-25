@@ -131,7 +131,6 @@ char* get_label(char** str)
     }
     
     token = (char*)malloc_with_check(sizeof(char) * (label_length + 1));
-    //printf("token: %p\n", token);
 
     strncpy(token, *str, label_length);
     token[label_length] = '\0';

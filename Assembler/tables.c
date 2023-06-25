@@ -105,7 +105,6 @@ boolean add_string_to_table(line_info* line, data_table_entry** data_table_head,
 {
     long L = 0;
     char* string_to_add = line->directive_data;
-    data_types data_type = TYPE_STRING;
     data_table_entry* data_table_ptr = *data_table_head;
     data_table_entry* data_table_prev = NULL;
     SET_PREV_POINTER(data_table_prev, data_table_ptr)
@@ -137,7 +136,6 @@ boolean add_string_to_table(line_info* line, data_table_entry** data_table_head,
     /*check if there is a label and add it*/
     if (line->label_flag)
     {
-        data_type = TYPE_STRING;
         if (!add_symbol_to_table(line, symbol_table_head, ext_head, TYPE_STRING, *DC, L))
             return FALSE;
     }
@@ -173,7 +171,7 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
         /*checking for errors in the number*/
         if (strlen(token) == 0 || strcmp(token, "-") == 0 || strcmp(token, "+") == 0)
         {
-            printf("Error: in line %ld %s there are no numbers to add\n");
+            printf("Error: in line %ld %s there are no numbers to add\n", line->line_number, line->directive_command);
             return FALSE;
         }
 
@@ -204,7 +202,7 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
         }
         else if (!end_of_string(data_to_extract))
         {
-            printf("Error: in line %d: %s\nExpected a comma between numbers\n", line->line_number, line->line_content);
+            printf("Error: in line %ld: %s\nExpected a comma between numbers\n", line->line_number, line->line_content);
             return FALSE;
         }
     }/*end of reading numbers*/
@@ -235,12 +233,12 @@ boolean add_entry_to_table(line_info* line, symbols_table_entry* symbols_table_h
     /* check existsents in tables */
     if(exists_in_entry_table(token, *ent_head))
     {
-        printf("Error: in line %d: %s\nLabel '%s' is already declared as an entry\n", line->line_number, line->line_content, token);
+        printf("Error: in line %ld: %s\nLabel '%s' is already declared as an entry\n", line->line_number, line->line_content, token);
         return FALSE;
     }
     if(exists_in_extern_table(token, ext_head))
     {
-        printf("Error: in line %d: %s\nLabel '%s' already exists in current file\n", line->line_number, line->line_content, token);
+        printf("Error: in line %ld: %s\nLabel '%s' already exists in current file\n", line->line_number, line->line_content, token);
         return FALSE;
     }
 
@@ -252,7 +250,7 @@ boolean add_entry_to_table(line_info* line, symbols_table_entry* symbols_table_h
 
     /* if theres a lable print a warning */
     if(line->label_flag)
-        printf("Warning: in line %d %s\n label `%s` is being igored\n", line->line_number, line->line_content, token);
+        printf("Warning: in line %ld %s\n label `%s` is being igored\n", line->line_number, line->line_content, token);
 
     return TRUE;
 }
@@ -273,29 +271,29 @@ boolean add_extern_to_table(line_info* line, symbols_table_entry* symbols_table_
     /* check existsents in tables */
     if(exists_in_symbol_table(token, symbols_table_head))
     {
-        printf("Error: in line %d: %s\nLabel '%s' already exists in current file\n", line->line_number, line->line_content, token);
+        printf("Error: in line %ld: %s\nLabel '%s' already exists in current file\n", line->line_number, line->line_content, token);
         return FALSE;
     }
     if(exists_in_entry_table(token, ent_head))
     {
-        printf("Error: in line %d: %s\nLabel '%s' already exists in current file\n", line->line_number, line->line_content, token);
+        printf("Error: in line %ld: %s\nLabel '%s' already exists in current file\n", line->line_number, line->line_content, token);
         return FALSE;
     }
     if(exists_in_extern_table(token, *ext_head))
     {
-        printf("Error: in line %d %s\n label `%s` already declared as extern\n", line->line_number, line->line_content, token);
+        printf("Error: in line %ld %s\n label `%s` already declared as extern\n", line->line_number, line->line_content, token);
         return FALSE;
     }
 
     /* adding label to table */
-    ext_ptr = (entry_entry*)malloc_with_check(sizeof(entry_entry));
+    ext_ptr = (extern_entry*)malloc_with_check(sizeof(extern_entry));
     ext_ptr->name = token;
     ext_ptr->address = 0;
     ADD_NODE_TO_LIST(ext_prev, ext_ptr, ext_head);
 
     /* if theres a lable print a warning */
     if(line->label_flag)
-        printf("Warning: in line %d %s\n label `%s` is being igored\n", line->line_number, line->line_content, token);
+        printf("Warning: in line %ld %s\n label `%s` is being igored\n", line->line_number, line->line_content, token);
 
     return TRUE;
 }
@@ -309,7 +307,6 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
     addressing_type source_addressing_type = 0;
     addressing_type target_addressing_type = 0;
 
-    boolean error_flag = FALSE;
     long L = 0;    
     long copy_IC = *IC;
 
@@ -421,10 +418,10 @@ code_table_entry* get_extra_word(uninitialized_symbols_table_entry** uninitializ
 
     uninitialized_symbols_table_entry* uninitialized_symbol_prev = NULL;
     uninitialized_symbols_table_entry* uninitialized_symbol_ptr = *uninitialized_symbol_head;
+    code_table_entry* code_table_temp = (code_table_entry*)malloc_with_check(sizeof(code_table_entry));
 
     SET_PREV_POINTER(uninitialized_symbol_prev, uninitialized_symbol_ptr);
 
-    code_table_entry* code_table_temp = (code_table_entry*)malloc_with_check(sizeof(code_table_entry));
     code_table_temp->type = TYPE_EXTRA_CODE_WORD;
     if(is_number(operand))
     {
@@ -468,12 +465,12 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_
     
     if(exists_in_symbol_table(label_name, *symbol_table_head))
     {
-        printf("Error: in line %d: %s\nLabel '%s' is already declared\n", line->line_number, line->line_content, label_name);
+        printf("Error: in line %ld: %s\nLabel '%s' is already declared\n", line->line_number, line->line_content, label_name);
         return FALSE;
     }
     if (exists_in_extern_table(label_name, ext_head))
     {
-        printf("Error: in line %d %s\nlabel `%s` already declared as extern\n", line->line_number, line->line_content, label_name);
+        printf("Error: in line %ld %s\nlabel `%s` already declared as extern\n", line->line_number, line->line_content, label_name);
         return FALSE;
     }
 

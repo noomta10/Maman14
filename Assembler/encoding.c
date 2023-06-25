@@ -11,19 +11,12 @@ static const char base64_chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqr
 
 /* For debugging */
 void print_decimal_to_binary(int num, int number_of_bits_to_print) {
-    //if (num == 0) {
-    //    printf("0"); /* Special case for zero */
-    //    return;
-    //}
-
-    //int bits = sizeof(num) * 8; /* Number of bits in an integer */
-    /*printf("%d\n", bits);*/
+    int i = 0;
     /* Iterate over each bit from left to right */
-    for (int i = number_of_bits_to_print - 1; i >= 0; i--) {
+    for (i = number_of_bits_to_print - 1; i >= 0; i--) {
         int bit = (num >> i) & 1; /* Extract the i-th bit */
         printf("%d", bit);
     }
-    //printf("\n");
 }
 
 
@@ -36,8 +29,8 @@ char encode_six_bit_number(unsigned int bits) {
 char* encode_base64(unsigned int number) {
     char final_base64[3];
     /* Extract the two 6 - bit groups */
-    unsigned int number_left_part = (number >> 6) & 0b111111; // left part of the number & 111111 
-    unsigned int number_right_part = number & 0b111111; // right part of the number & 111111 
+    unsigned int number_left_part = (number >> 6) & 0b111111; /* left part of the number & 111111 */ 
+    unsigned int number_right_part = number & 0b111111; /* right part of the number & 111111 */
 
     /* Encode each group using base64 */
     char encoded_char1 = encode_six_bit_number(number_left_part);
