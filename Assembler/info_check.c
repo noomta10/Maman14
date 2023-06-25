@@ -182,9 +182,10 @@ boolean valid_directive_line(line_info* line)
         if (!valid_extern_command(line))
             return FALSE;
     }
-    
-    printf("Error: in line %ld: %sInvalid directive command\n", line->line_number, line->line_content);
-    return FALSE;
+    else {
+        printf("Error: in line %ld: %sInvalid directive command\n", line->line_number, line->line_content);
+        return FALSE;
+    }
 }
 
 boolean valid_data_command(line_info* line)
