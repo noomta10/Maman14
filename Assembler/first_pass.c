@@ -15,7 +15,7 @@
 #include "info_check.h"
 
 
-boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_table_entry** data_table_head,
+boolean first_pass(char* file_name, FILE *am_file, symbols_table_entry** symbol_table_head, data_table_entry** data_table_head,
                    entry_entry** ent_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbols_table_entry, long* IC, long* DC) /*processes file*/
 {
     char line_content[MAX_LINE_LENGTH];
@@ -28,6 +28,7 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
     line = (line_info*)malloc_with_check(sizeof(line_info)); /*allocating memory for line*/
     reset_line_info(line);
     line->line_number = 1;
+    line->file_name = file_name;
 
     /*reading .as file line by line entil the end*/
     while (fgets(line_content, MAX_LINE_LENGTH, am_file) != NULL) {
@@ -38,6 +39,7 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
             printf("Error: line %ld is too long.\n", line->line_number);
             continue;
         }
+        remove_new_line_character(line_content);
         line->line_content = copy_string(line_content);
 
         /*checking if line is empty or command line*/
@@ -67,7 +69,7 @@ boolean first_pass(FILE *am_file, symbols_table_entry** symbol_table_head, data_
 
     add_final_ic_to_dc_count(*symbol_table_head, *data_table_head, *IC, DC);
 
-    if (program_too_big(*IC, *DC)) {
+    if (program_too_big(file_name, *IC, *DC)) {
         *error_flag = TRUE;
     }
 
@@ -103,7 +105,7 @@ boolean validate_line(line_info* line)
     /*label checking*/
     if (line->label_flag)
     {
-        if (bad_label(line->label, line->line_content, line->line_number))
+        if (bad_label(line->file_name, line->label, line->line_content, line->line_number))
             return FALSE;
     }
 

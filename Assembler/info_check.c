@@ -53,7 +53,7 @@ boolean line_too_long(FILE* am_file, char* line_content)
     return TRUE;
 }
 
-boolean bad_label(char* label, char* line_content, long line_number)
+boolean bad_label(char* file_name, char* label, char* line_content, long line_number)
 {
     int i = 0;
 
@@ -76,25 +76,29 @@ boolean bad_label(char* label, char* line_content, long line_number)
         strcmp(label, "@r4") == 0 || strcmp(label, "@r5") == 0 ||
         strcmp(label, "@r6") == 0 || strcmp(label, "@r7") == 0)
     {
-        printf("Error: in line %ld: %s\nThe label '%s' is a reserved word\n", line_number, line_content, label);
-        return TRUE;
+        PRINT_ERROR(file_name, line_number, line_content, "label is a reserved word");
+        //printf("Error: in line %ld: %s\nThe label '%s' is a reserved word\n", line_number, line_content, label);
+            return TRUE;
     }
 
     /* Check if label is too long or too short */
     if (strlen(label) > MAX_LABEL_LENGTH)
     {
-        printf("Error: in line %ld: %s\nThe label '%s' is too long\n", line_number, line_content, label);
+        PRINT_ERROR(file_name, line_number, line_content, "label is too long");
+        //printf("Error: in line %ld: %s\nThe label '%s' is too long\n", line_number, line_content, label);
         return TRUE;
     }
     if (strlen(label) == 0)
     {
-        printf("Error: in line %ld: %s\nThe label '%s' is too short\n", line_number, line_content, label);
+        PRINT_ERROR(file_name, line_number, line_content, "empty label");
+        //printf("Error: in line %ld: %s\nThe label '%s' is too short\n", line_number, line_content, label);
         return TRUE;
     }
 
     /* Check if label starts with a letter */
     if (!isalpha(label[i])) {
-        printf("Error: in line %ld: %s\nThe label '%s' must start with a letter\n", line_number, line_content, label);
+        PRINT_ERROR(file_name, line_number, line_content, "label must start with a letter");
+        //printf("Error: in line %ld: %s\nThe label '%s' must start with a letter\n", line_number, line_content, label);
         return TRUE;
     }
 
@@ -103,7 +107,8 @@ boolean bad_label(char* label, char* line_content, long line_number)
     {
         if (!isalnum(label[i]))
         {
-            printf("Error: in line %ld: %s\nThe label '%s' has invalid characters\n",line_number, line_content, label);
+            PRINT_ERROR(file_name, line_number, line_content, "label has invalid characters");
+            //printf("Error: in line %ld: %s\nThe label '%s' has invalid characters\n",line_number, line_content, label);
             return TRUE;
         }
     }
@@ -183,7 +188,8 @@ boolean valid_directive_line(line_info* line)
             return FALSE;
     }
     else {
-        printf("Error: in line %ld: %sInvalid directive command\n", line->line_number, line->line_content);
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "invalid directive command");
+        //printf("Error: in line %ld: %sInvalid directive command\n", line->line_number, line->line_content);
         return FALSE;
     }
 
@@ -194,7 +200,8 @@ boolean valid_data_command(line_info* line)
 {
     if (string_is_empty(line->directive_data))
     {
-        printf("Error: in line %ld: %s\nMissing data\n", line->line_number, line->line_content);
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "missing data");
+        //printf("Error: in line %ld: %s issing data\n", line->line_number, line->line_content);
         return FALSE;
     }
     return TRUE;
@@ -208,7 +215,8 @@ boolean valid_string_command(line_info* line)
     /* check if string is empty */
     if(end_of_string(directive_data))
     {
-        printf("Error: in line %ld: %s\nMissing data\n", line->line_number, line->line_content);
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "missing data");
+        //printf("Error: in line %ld: %s\nMissing data\n", line->line_number, line->line_content);
         return FALSE;
     }
     /* skip white spaced and update the length i */
@@ -219,7 +227,8 @@ boolean valid_string_command(line_info* line)
     /* check if string starts with quotes */
     if(*directive_data != '"')
     {
-        printf("Error: in line %ld: %s\nString must start with quotes\n", line->line_number, line->line_content);
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "string must start with quotes");
+        //printf("Error: in line %ld: %s\nString must start with quotes\n", line->line_number, line->line_content);
         return FALSE;
     }
     /* check if string ends with quotes */
@@ -227,7 +236,8 @@ boolean valid_string_command(line_info* line)
         i--;
     if(directive_data[i] != '"')
     {
-        printf("Error: in line %ld: %s\nString must end with quotes\n", line->line_number, line->line_content);
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "string must end with quotes");
+        //printf("Error: in line %ld: %s\nString must end with quotes\n", line->line_number, line->line_content);
         return FALSE;
     }
 
@@ -238,8 +248,9 @@ boolean valid_string_command(line_info* line)
 boolean valid_entry_command(line_info* line)
 {
     if (string_is_empty(line->directive_data))
-    { /* TODO: error or warning? */
-        printf("Error: in line %ld: %s\nNo entry labels given\n", line->line_number, line->line_content);
+    { 
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "no entry labels given");
+        //printf("Error: in line %ld: %s\nNo entry labels given\n", line->line_number, line->line_content);
         return FALSE;
     }
     return TRUE;
@@ -247,8 +258,9 @@ boolean valid_entry_command(line_info* line)
 
 boolean valid_extern_command(line_info* line)
 {
-    if(strcmp(line->directive_data, "") == 0){ /* TODO: error or warning? */
-        printf("Error: in line: %ld %s no extern labels given\n", line->line_number, line->line_content);
+    if(strcmp(line->directive_data, "") == 0){ 
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "no extern labels given");
+        //printf("Error: in line: %ld %s no extern labels given\n", line->line_number, line->line_content);
         return FALSE;
     }
     return TRUE;
@@ -266,7 +278,8 @@ boolean check_extra_or_missing_operands(line_info* line)
         /*checking for missing operand*/
         if (line->source_operand == NULL || line->target_operand == NULL)
         {
-            printf("Error: in line %ld %s missing operand\n", line->line_number, line->line_content);
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "missing operand");
+            //printf("Error: in line %ld %s missing operand\n", line->line_number, line->line_content);
             return FALSE;
         }
     }
@@ -284,13 +297,15 @@ boolean check_extra_or_missing_operands(line_info* line)
             /*checking for missing operand*/
         if (line->source_operand == NULL)
         {
-            printf("Error: in line %ld %s missing operand\n", line->line_number, line->line_content);
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "missing operand");
+            //printf("Error: in line %ld %s missing operand\n", line->line_number, line->line_content);
             return FALSE;
         }
         /*checking for extra operand*/
         else if (line->target_operand != NULL && strcmp(line->target_operand, "") != 0)
         { 
-            printf("Error: in line %ld %sextra operand\n", line->line_number, line->line_content);
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "extra operand");
+            //printf("Error: in line %ld %sextra operand\n", line->line_number, line->line_content);
             return FALSE;
         }
         line->target_operand = line->source_operand; /*moving source operand to target operand*/
@@ -304,14 +319,16 @@ boolean check_extra_or_missing_operands(line_info* line)
         if ((line->source_operand != NULL && strcmp(line->source_operand, "")) ||
             (line->target_operand != NULL && strcmp(line->target_operand, "")))
         {
-            printf("Error: in line %ld %s extra operand\n", line->line_number, line->line_content);
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "extra operand");
+            //printf("Error: in line %ld %s extra operand\n", line->line_number, line->line_content);
             return FALSE;
         }
     }
     /*invalid opcode*/
     else
     {
-        printf("Error: in line %ld: %s\nInvalid opcode\n", line->line_number, line->line_content);
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "invalid opcode");
+        //printf("Error: in line %ld: %s\nInvalid opcode\n", line->line_number, line->line_content);
         return FALSE;
     }
 
@@ -339,7 +356,8 @@ boolean valid_source_operand(line_info* line)
         if( get_addressing_type(line->source_operand) != IMMEDIATE_ADDRESSING &&
             get_addressing_type(line->source_operand) != DIRECT_ADDRESSING &&
             get_addressing_type(line->source_operand) != REGISTER_ADDRESSING) {
-                printf("Error: in line %ld %s invalid source operand\n", line->line_number, line->line_content);
+                PRINT_ERROR(line->file_name, line->line_number, line->line_content, "invalid source operand");
+                //printf("Error: in line %ld %s invalid source operand\n", line->line_number, line->line_content);
                 return FALSE;
             }
     }
@@ -358,17 +376,18 @@ boolean valid_source_operand(line_info* line)
         strcmp(line->opcode, "rts") == 0 ||
         strcmp(line->opcode, "stop") == 0) {
         if( get_addressing_type(line->source_operand) != NO_OPERAND) {
-                printf("Error: in line %ld %s invalid source operand\n", line->line_number, line->line_content);
+                PRINT_ERROR(line->file_name, line->line_number, line->line_content, "invalid source operand");
+                //printf("Error: in line %ld %s invalid source operand\n", line->line_number, line->line_content);
                 return FALSE;
             }
     }
 
     /* if source operand is a label, check it */
-    if(get_addressing_type(line->source_operand) == DIRECT_ADDRESSING && bad_label(line->source_operand, line->line_content, line->line_number))
+    if(get_addressing_type(line->source_operand) == DIRECT_ADDRESSING && bad_label(line->file_name, line->source_operand, line->line_content, line->line_number))
             return FALSE;
 
     if(get_addressing_type(line->source_operand) == IMMEDIATE_ADDRESSING && number_too_big(line->source_operand)){
-        printf("Error: in line %ld %s the number `%s` must be between %d - %d\n", line->line_number, line->line_content,
+        printf("Error: in file `%s` line %ld \"%s\" the number `%s` must be between %d - %d\n",line->file_name, line->line_number, line->line_content,
                 line->source_operand, MIN_INT_VALUE, MAX_INT_VALUE);
             return FALSE;
     }
@@ -381,7 +400,8 @@ boolean valid_target_operand(line_info* line) {
         if( get_addressing_type(line->target_operand) != IMMEDIATE_ADDRESSING &&
             get_addressing_type(line->target_operand) != DIRECT_ADDRESSING &&
             get_addressing_type(line->target_operand) != REGISTER_ADDRESSING) {
-                printf("Error: in line %ld %s invalid target operand\n", line->line_number, line->line_content);
+                PRINT_ERROR(line->file_name, line->line_number, line->line_content, "invalid target operand");
+                //printf("Error: in line %ld %s invalid target operand\n", line->line_number, line->line_content);
                 return FALSE;
             }
     }
@@ -399,25 +419,28 @@ boolean valid_target_operand(line_info* line) {
         strcmp(line->opcode, "jsr") == 0) {
         if( get_addressing_type(line->target_operand) != DIRECT_ADDRESSING &&
             get_addressing_type(line->target_operand) != REGISTER_ADDRESSING) {
-                printf("Error: in line %ld %s invalid target operand\n", line->line_number, line->line_content);
+                PRINT_ERROR(line->file_name, line->line_number, line->line_content, "invalid target operand");
+                //printf("Error: in line %ld %s invalid target operand\n", line->line_number, line->line_content);
                 return FALSE;
             }
     }
     else if(strcmp(line->opcode, "rts") == 0 ||
         strcmp(line->opcode, "stop") == 0) {
             if( get_addressing_type(line->target_operand) != NO_OPERAND) {
-                printf("Error: in line %ld %s invalid target operand\n", line->line_number, line->line_content);
+                PRINT_ERROR(line->file_name, line->line_number, line->line_content, "invalid target operand");
+                //printf("Error: in line %ld %s invalid target operand\n", line->line_number, line->line_content);
                 return FALSE;
             }
     }
 
     /* if target address is an lable, check it */
-    if(get_addressing_type(line->target_operand) == DIRECT_ADDRESSING && bad_label(line->target_operand, line->line_content, line->line_number))
+    if(get_addressing_type(line->target_operand) == DIRECT_ADDRESSING && bad_label(line->file_name, line->target_operand, line->line_content, line->line_number))
             return FALSE;
 
     if(get_addressing_type(line->target_operand) == IMMEDIATE_ADDRESSING && number_too_big(line->target_operand)){
-            printf("Error: in line %ld %s the number `%s` must be between %d - %d\n", line->line_number, line->line_content,
-                line->target_operand, MIN_INT_VALUE, MAX_INT_VALUE);
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "invalid target operand");
+            //printf("Error: in line %ld %s the number `%s` must be between %d - %d\n", line->line_number, line->line_content,
+                //line->target_operand, MIN_INT_VALUE, MAX_INT_VALUE);
             return FALSE;
     }
     return TRUE;
@@ -450,9 +473,9 @@ boolean exists_in_entry_table(char* symbol, entry_entry* entry_table) {
     return FALSE;
 }
 
-boolean program_too_big(long IC, long DC){
+boolean program_too_big(char* file_name, long IC, long DC){
     if (IC + DC >= MAX_PROGRAM_LENGTH) {
-        printf("Error: the program you porvided is too big for imaginary computer\n");
+        printf("Error: the file `%s` you porvided is too large for imaginary computer\n", file_name);
         printf("Debug: IC + DC = %ld\n", IC + DC);
         return TRUE;
     }

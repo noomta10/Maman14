@@ -16,5 +16,6 @@ boolean end_of_string(char *string);
 
 opcode_type get_opcode_bits(char* opcode);
 register_type get_register_number(char* register_name);
+void remove_new_line_character(char* string);
 
 

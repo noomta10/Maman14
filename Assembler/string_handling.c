@@ -197,3 +197,8 @@ register_type get_register_number(char* register_name)
     return R7;
 }
 
+void remove_new_line_character(char* string) {
+    if (string[strlen(string) - 1] == '\n')
+        string[strlen(string) - 1] = '\0';
+}
+
