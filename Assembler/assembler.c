@@ -25,7 +25,6 @@ boolean process_file(char* file_name) {
 	extern_entry* extern_entry_head = NULL;
 	code_table_entry* code_entry_head = NULL;
 	uninitialized_symbols_table_entry* uninitialized_symbol_entry_head = NULL;
-
 	/* Concatenate '.as' postfix to file name */
 	char* full_file_name = add_file_postfix(file_name, ".as");
 	/* Concatenate '.am' postfix to file name */
@@ -49,7 +48,6 @@ boolean process_file(char* file_name) {
 
 	/* Close file and free data */
 	fclose(file_pointer);
-	free(full_file_name);
 
 	/* Check if .am file opened successfully */
 	file_pointer = fopen(full_am_name, "r");
@@ -85,7 +83,7 @@ boolean process_file(char* file_name) {
 	if (uninitialized_symbol_entry_head) print_uninitialized_symbols_table(uninitialized_symbol_entry_head);
 
 	/* Second pass, exit if errors were found */
-	if (!second_pass(uninitialized_symbol_entry_head, symbol_entry_head, extern_entry_head, entry_entry_head, file_name, IC, DC, code_entry_head, data_entry_head)) {
+	if (!second_pass(uninitialized_symbol_entry_head, symbol_entry_head, extern_entry_head, entry_entry_head, full_file_name, file_name, IC, DC, code_entry_head, data_entry_head)) {
 		free_data_table(data_entry_head);
 		free_entry_table(entry_entry_head);
 		free_extern_table(extern_entry_head);
@@ -104,6 +102,7 @@ boolean process_file(char* file_name) {
 	printf("DC: %ld\n", DC);
 
 	/* Free memory */
+	free(full_file_name);
 	free_data_table(data_entry_head);
 	free_entry_table(entry_entry_head);
 	free_extern_table(extern_entry_head);

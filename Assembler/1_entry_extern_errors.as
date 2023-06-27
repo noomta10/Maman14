@@ -1,4 +1,3 @@
 .entry NOTHERE
-.extern HELLO
-.entry HELLO
-.entry 1INVALID
+.entry			
+.extern			

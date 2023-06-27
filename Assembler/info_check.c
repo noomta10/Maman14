@@ -241,7 +241,7 @@ boolean valid_entry_command(line_info* line)
 {
     if (string_is_empty(line->directive_data))
     { 
-        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "no entry labels given");
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "No entry labels were given.");
         //printf("Error: in line %ld: %s\nNo entry labels given\n", line->line_number, line->line_content);
         return FALSE;
     }
@@ -251,7 +251,7 @@ boolean valid_entry_command(line_info* line)
 boolean valid_extern_command(line_info* line)
 {
     if(strcmp(line->directive_data, "") == 0){ 
-        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "no extern labels given");
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "No extern labels were given.");
         //printf("Error: in line: %ld %s no extern labels given\n", line->line_number, line->line_content);
         return FALSE;
     }
@@ -525,6 +525,7 @@ boolean extra_comma(char* line) {
         if (line[i] == ',') {
             return TRUE;
         }
+        i--;
     }
 
     return FALSE;

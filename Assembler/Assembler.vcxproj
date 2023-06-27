@@ -156,6 +156,7 @@
   <ItemGroup>
     <None Include="1_entry_extern_errors.as" />
     <None Include="1_invalid_label.as" />
+    <None Include="1_invalid_mcro.as" />
     <None Include="1_invalid_number.as" />
     <None Include="1_invalid_directive.as" />
     <None Include="data_test.am" />

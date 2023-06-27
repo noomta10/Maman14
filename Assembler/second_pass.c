@@ -50,7 +50,7 @@ static boolean is_external(char* current_symbol, extern_entry* head_extern_entry
 
 
 /* Check if all entries are defined in the current file */
-static boolean check_entry_defined_in_file(entry_entry* head_entry_entry, symbols_table_entry* head_symbols_entry) {
+static boolean check_entry_defined_in_file(entry_entry* head_entry_entry, symbols_table_entry* head_symbols_entry, char* as_file_name) {
 	symbols_table_entry* current_symbols_entry;
 	entry_entry* current_entry_entry = head_entry_entry;
 	boolean entry_has_definition;
@@ -69,7 +69,7 @@ static boolean check_entry_defined_in_file(entry_entry* head_entry_entry, symbol
 		}
 
 		if (!entry_has_definition) {
-			printf("Error: entry symbol %s is not defined in file\n", current_entry_entry->name);
+			PRINT_ERROR(as_file_name, 0, "line content", "Entry symbol is not defined in file.");
 			return FALSE;
 		}
 
@@ -124,11 +124,11 @@ static boolean check_defined_symbol_operand(symbols_table_entry* head_symbols_en
 
 
 boolean second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbols_entry, symbols_table_entry* head_symbols_entry, extern_entry* head_extern_entry,
-	entry_entry* head_entry_entry,char* file_name, long IC, long DC, code_table_entry* code_entry_head, data_table_entry* data_entry_head) {
+	entry_entry* head_entry_entry,char* as_file_name, char* file_name, long IC, long DC, code_table_entry* code_entry_head, data_table_entry* data_entry_head) {
 	uninitialized_symbols_table_entry* current_uninitialized_symbols_entry = head_uninitialized_symbols_entry;
 	symbols_table_entry* current_symbol_entry;
 
-	if (!check_entry_defined_in_file(head_entry_entry, head_symbols_entry)) {
+	if (!check_entry_defined_in_file(head_entry_entry, head_symbols_entry, as_file_name)) {
 		return FALSE;
 	}
 
