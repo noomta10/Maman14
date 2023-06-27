@@ -152,6 +152,7 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
     char* data_to_extract = line->directive_data;
     int i = 0;
     int L = 0;
+    boolean first_number_check = TRUE;
     
     SET_PREV_POINTER(data_table_prev, data_table_ptr)
     
@@ -168,11 +169,21 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
             token[i++] = *data_to_extract++;
         token[i] = '\0';
 
+        /* Check if there is an invalid comma after last number */
+        if (extra_comma(line->directive_data) && first_number_check) {
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "There is an invalid comma after last number.");
+            first_number_check = FALSE;
+        }
+
         /*checking for errors in the number*/
+        if (!is_number(token)) {
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Data directive must contain numbers only.");
+            return FALSE;
+        }
+
         if (strlen(token) == 0 || strcmp(token, "-") == 0 || strcmp(token, "+") == 0)
         {
-            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Error: there are no numbers to add");
-            //printf("Error: in line %ld %s there are no numbers to add\n", line->line_number, line->directive_command);
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "There are no numbers to add.");
             return FALSE;
         }
 
@@ -185,7 +196,6 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
         if (data_number_too_small(token))
         {
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The number is too small.");
-            //printf("Error: in line %ld: %s\nThe number %s is too big\n", line->line_number,line->line_content, token);
             return FALSE;
         }
 
@@ -214,6 +224,7 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
             return FALSE;
         }
     }/*end of reading numbers*/
+     
 
     /*check if there is a label and add it*/
     if (line->label)

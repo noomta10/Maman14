@@ -23,3 +23,4 @@ boolean exists_in_entry_table(char* symbol, entry_entry* entry_table);
 boolean data_number_too_big(char* string_number);
 boolean data_number_too_small(char* string_number);
 boolean string_is_empty(char* string);
+boolean extra_comma(char* line);

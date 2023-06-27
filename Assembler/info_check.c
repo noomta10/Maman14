@@ -124,7 +124,7 @@ boolean check_comma(char** str)
 boolean is_number(char* string)
 {
     int i = 0;
-    if (string == NULL)
+    if (string == NULL || strlen(string) == 0)
         return FALSE;
     if (string[0] == '-' || string[0] == '+')
         i++;
@@ -507,4 +507,25 @@ boolean string_is_empty(char* string) {
     }
 
     return TRUE;
+}
+
+boolean extra_comma(char* line) {
+    int i = 0;
+
+    /* Go to '\0' position */
+    while (line[i] != '\0') {
+        i++;
+    }
+
+    /* One strp back */
+    i--;
+
+    while (!isspace(line[i]))
+    {
+        if (line[i] == ',') {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
 }
