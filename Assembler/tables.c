@@ -228,7 +228,7 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
 
     /*check if there is a label and add it*/
     if (line->label)
-        if(!add_symbol_to_table(line, symbol_table_head, ext_head, TYPE_NUMBER, *DC, L))
+        if(!add_symbol_to_table(line, symbol_table_head, ext_head, DIRECTIVE, *DC, L))
             return FALSE;
     *DC += L;
 
@@ -547,13 +547,13 @@ void set_code_table_to_ic_initial_address(code_table_entry** code_table_head)
 
 void add_final_ic_to_dc_count(symbols_table_entry* symbol_table, data_table_entry* data_table, long IC, long* DC)
 {
-    /* add IC count to all symbols that have DC count */
-    while (symbol_table)
-    {
-        if (symbol_table->address_type == DIRECTIVE)
-            symbol_table->address += IC;
-        symbol_table = symbol_table->next;
-    }
+    ///* add IC count to all symbols that have DC count */
+    //while (symbol_table)
+    //{
+    //    if (symbol_table->address_type == DIRECTIVE)
+    //        symbol_table->address += IC;
+    //    symbol_table = symbol_table->next;
+    //}
     /* add IC count to all data addresses */
     while (data_table)
     {
