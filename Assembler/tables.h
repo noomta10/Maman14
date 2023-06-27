@@ -140,6 +140,7 @@ typedef struct extern_entry{/*data table for extern flags */
 	struct extern_entry *next;
 	long address;
 	long line_number;
+	char *line_content;
 	char *name;
 } extern_entry;
 
@@ -147,13 +148,15 @@ typedef struct entry_entry{/*data table for entry flags */
 	struct entry_entry *next;
 	long address;
 	char *name;
+	int line_number;
+	char *line_content;
 } entry_entry;
 
 typedef struct symbols_table_entry{/*struct for the symbols table*/
 	struct symbols_table_entry *next;/*pointer to the next entry*/
 	long address;/*address of IC or DC*/
 	long L;/*if data type, length of data*/
-	char * name;
+	char* name;
 	line_type address_type;
 } symbols_table_entry;
 

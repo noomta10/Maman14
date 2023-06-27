@@ -267,6 +267,8 @@ boolean add_entry_to_table(line_info* line, symbols_table_entry* symbols_table_h
     ent_ptr = (entry_entry*)malloc_with_check(sizeof(entry_entry));
     ent_ptr->name = token;
     ent_ptr->address = 0;
+    ent_ptr->line_number = line->line_number;
+    ent_ptr->line_content = line->line_content;
     ADD_NODE_TO_LIST(ent_prev, ent_ptr, ent_head);
 
     /* if theres a lable print a warning */
@@ -312,6 +314,8 @@ boolean add_extern_to_table(line_info* line, symbols_table_entry* symbols_table_
     /* adding label to table */
     ext_ptr = (extern_entry*)malloc_with_check(sizeof(extern_entry));
     ext_ptr->name = token;
+    ext_ptr->line_number = line->line_number;
+    ext_ptr->line_content = line->line_content;
     ext_ptr->address = 0;
     ADD_NODE_TO_LIST(ext_prev, ext_ptr, ext_head);
 
