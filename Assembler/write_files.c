@@ -127,7 +127,7 @@ void write_object_file(char* file_name, long IC, long DC, code_table_entry* code
 	}
 
 	/* Print first line */
-	fprintf(object_file, "%ld %ld\n", IC, DC);
+	fprintf(object_file, "%ld %ld\n", IC - IC_START_ADDRESS, DC);
 	current_code_entry = code_entry_head;
 
 	/* Print all encoded code words to the object file */
