@@ -14,7 +14,7 @@
 #include "debuging.h"
 #include "info_check.h"
 
-
+/* gets a string and returns true if the string starts with a piread (full stop) */
 boolean is_directive(char* str)
 {
     if (*str == '.')
@@ -22,6 +22,7 @@ boolean is_directive(char* str)
     return FALSE;
 }
 
+/* checks if the string that was reseved as argument is a label */
 boolean is_label(char* str)
 {
     while (!isspace(*str) && !end_of_string(str))
@@ -33,6 +34,8 @@ boolean is_label(char* str)
     return FALSE;
 }
 
+/* checks if the line that was read - line_content, is the whole line. if it is, the function will return true.
+ * if its not, will return false and read the read of the line */
 boolean line_too_long(FILE* am_file, char* line_content)
 {
     int c;
@@ -53,6 +56,8 @@ boolean line_too_long(FILE* am_file, char* line_content)
     return TRUE;
 }
 
+/* gets a label and the location of the label and returns true if the label if valid. 
+ * else retruns false and prints a error */
 boolean bad_label(char* file_name, char* label, char* line_content, long line_number)
 {
     int i = 0;
@@ -80,14 +85,13 @@ boolean bad_label(char* file_name, char* label, char* line_content, long line_nu
             return TRUE;
     }
 
-    /* Check if label is too long or too short */
-    if (strlen(label) > MAX_LABEL_LENGTH)
-    {
+    /* Check if label is too long */
+    if (strlen(label) > MAX_LABEL_LENGTH) {
         PRINT_ERROR(file_name, line_number, line_content, "The label is too long.");
         return TRUE;
     }
-    if (strlen(label) == 0)
-    {
+    /* checks if the label is empty */
+    if (strlen(label) == 0) {
         PRINT_ERROR(file_name, line_number, line_content, "The label is empty.");
         return TRUE;
     }
@@ -99,10 +103,8 @@ boolean bad_label(char* file_name, char* label, char* line_content, long line_nu
     }
 
     /* Check if label has invalid characters */
-    for (i = 1; i < strlen(label); i++)
-    {
-        if (!isalnum(label[i]))
-        {
+    for (i = 1; i < strlen(label); i++) {
+        if (!isalnum(label[i])) {
             PRINT_ERROR(file_name, line_number, line_content, "The label has invalid characters.");
             return TRUE;
         }
@@ -111,42 +113,40 @@ boolean bad_label(char* file_name, char* label, char* line_content, long line_nu
     return FALSE;
 }
 
-boolean check_comma(char** str)
-{
-    if (**str == ',')
-    {
+/* returns true if the string starts with a comma and skips it. else, returns false */
+boolean check_comma(char** str) {
+    if (**str == ',') {
         (*str)++;
         return TRUE;
     }
     return FALSE;
 }
 
-boolean is_number(char* string)
-{
+/* returns true if the string is a number */
+boolean is_number(char* string) {
     int i = 0;
     if (string == NULL || strlen(string) == 0)
         return FALSE;
     if (string[0] == '-' || string[0] == '+')
         i++;
-    for (; i < strlen(string); i++)
-    {
+    for (; i < strlen(string); i++) {
         if (!isdigit(string[i]))
             return FALSE;
     }
     return TRUE;
 }
 
-boolean ignore_line(char* line)
-{
+/* returns true if the line is a command or empty line */
+boolean ignore_line(char* line) {
     /* Epmty line or comment line */
-    if (end_of_string(line) || *line == ';')
-    {
+    if (end_of_string(line) || *line == ';') {
         return TRUE;
     }
 
     return FALSE;
 }
 
+/* calls function to check if the instruction line is valid */
 boolean valid_instruction_line(line_info* line)
 {
              
@@ -160,25 +160,21 @@ boolean valid_instruction_line(line_info* line)
     return TRUE;
 }
 
-boolean valid_directive_line(line_info* line)
-{
-    if(strcmp(line->directive_command, "data") == 0)
-    {
+/* calls the right functions to check the directive line */
+boolean valid_directive_line(line_info* line) {
+    if(strcmp(line->directive_command, "data") == 0) {
         if (!valid_data_command(line))
             return FALSE;
     }
-    else if(strcmp(line->directive_command, "string") == 0)
-    {
+    else if(strcmp(line->directive_command, "string") == 0) {
         if(!valid_string_command(line))
             return FALSE;
     }
-    else if(strcmp(line->directive_command, "entry") == 0)
-    {
+    else if(strcmp(line->directive_command, "entry") == 0) {
         if (!valid_entry_command(line))
             return FALSE;
     }
-    else if(strcmp(line->directive_command, "extern") == 0)
-    {
+    else if(strcmp(line->directive_command, "extern") == 0) {
         if (!valid_extern_command(line))
             return FALSE;
     }
@@ -191,25 +187,22 @@ boolean valid_directive_line(line_info* line)
     return TRUE;
 }
 
-boolean valid_data_command(line_info* line)
-{
-    if (string_is_empty(line->directive_data))
-    {
+/* checks if the line is a valid data command */
+boolean valid_data_command(line_info* line) {
+    if (string_is_empty(line->directive_data)) {
         PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Missing data.");
-        //printf("Error: in line %ld: %s issing data\n", line->line_number, line->line_content);
         return FALSE;
     }
     return TRUE;
 }
 
-boolean valid_string_command(line_info* line)
-{
+/* checks if the line is a valid string command */
+boolean valid_string_command(line_info* line) {
     char* directive_data = line->directive_data;
     /* set i to the end of the line and skip the null character */
     int i = strlen(directive_data) -1 ;
     /* check if string is empty */
-    if(end_of_string(directive_data))
-    {
+    if(end_of_string(directive_data)) {
         PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Missing data.");
         return FALSE;
     }
@@ -219,16 +212,14 @@ boolean valid_string_command(line_info* line)
         directive_data++;
     }
     /* check if string starts with quotes */
-    if(*directive_data != '"')
-    {
+    if(*directive_data != '"') {
         PRINT_ERROR(line->file_name, line->line_number, line->line_content, "String must start with quotes.");
         return FALSE;
     }
     /* check if string ends with quotes */
     while(isspace(directive_data[i]))
         i--;
-    if(directive_data[i] != '"' || i == 0)
-    {
+    if(directive_data[i] != '"' || i == 0) {
         PRINT_ERROR(line->file_name, line->line_number, line->line_content, "String must end with quotes.");
         return FALSE;
     }
@@ -236,11 +227,9 @@ boolean valid_string_command(line_info* line)
     return TRUE;
 }
 
-
-boolean valid_entry_command(line_info* line)
-{
-    if (string_is_empty(line->directive_data))
-    { 
+/* checks if the line is a valid entry command */
+boolean valid_entry_command(line_info* line) {
+    if (string_is_empty(line->directive_data)) { 
         PRINT_ERROR(line->file_name, line->line_number, line->line_content, "No entry labels were given.");
         //printf("Error: in line %ld: %s\nNo entry labels given\n", line->line_number, line->line_content);
         return FALSE;
@@ -248,9 +237,9 @@ boolean valid_entry_command(line_info* line)
     return TRUE;
 }
 
-boolean valid_extern_command(line_info* line)
-{
-    if(strcmp(line->directive_data, "") == 0){ 
+/* checks if the line is a valid extern command */
+boolean valid_extern_command(line_info* line) {
+    if(strcmp(line->directive_data, "") == 0) { 
         PRINT_ERROR(line->file_name, line->line_number, line->line_content, "No extern labels were given.");
         //printf("Error: in line: %ld %s no extern labels given\n", line->line_number, line->line_content);
         return FALSE;
@@ -258,18 +247,16 @@ boolean valid_extern_command(line_info* line)
     return TRUE;
 }
 
-boolean check_extra_or_missing_operands(line_info* line)
-{
+/* checks if there is the right amount of operands */
+boolean check_extra_or_missing_operands(line_info* line) {
  /*checking sub, mov, add, lea commands*/
     if (strcmp(line->opcode, "sub") == 0 || 
         strcmp(line->opcode, "mov") == 0 ||
         strcmp(line->opcode, "add") == 0 ||
         strcmp(line->opcode, "cmp") == 0 ||
-        strcmp(line->opcode, "lea") == 0)
-    {
+        strcmp(line->opcode, "lea") == 0) {
         /*checking for missing operand*/
-        if (line->source_operand == NULL || line->target_operand == NULL)
-        {
+        if (line->source_operand == NULL || line->target_operand == NULL) {
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "missing operand");
             //printf("Error: in line %ld %s missing operand\n", line->line_number, line->line_content);
             return FALSE;
@@ -284,18 +271,15 @@ boolean check_extra_or_missing_operands(line_info* line)
         strcmp(line->opcode, "bne") == 0 ||
         strcmp(line->opcode, "red") == 0 ||
         strcmp(line->opcode, "prn") == 0 ||
-        strcmp(line->opcode, "jsr") == 0)
-    {
+        strcmp(line->opcode, "jsr") == 0) {
             /*checking for missing operand*/
-        if (line->source_operand == NULL)
-        {
+        if (line->source_operand == NULL) {
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "missing operand");
             //printf("Error: in line %ld %s missing operand\n", line->line_number, line->line_content);
             return FALSE;
         }
         /*checking for extra operand*/
-        else if (line->target_operand != NULL && strcmp(line->target_operand, "") != 0)
-        { 
+        else if (line->target_operand != NULL && strcmp(line->target_operand, "") != 0) { 
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "extra operand");
             //printf("Error: in line %ld %sextra operand\n", line->line_number, line->line_content);
             return FALSE;
@@ -305,20 +289,17 @@ boolean check_extra_or_missing_operands(line_info* line)
     }
     /*checking rts, stop commands*/
     else if (strcmp(line->opcode, "rts") == 0 ||
-        strcmp(line->opcode, "stop") == 0)
-    {
+        strcmp(line->opcode, "stop") == 0) {
             /*checking for extra operand*/
         if ((line->source_operand != NULL && strcmp(line->source_operand, "")) ||
-            (line->target_operand != NULL && strcmp(line->target_operand, "")))
-        {
+            (line->target_operand != NULL && strcmp(line->target_operand, ""))) {
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "extra operand");
             //printf("Error: in line %ld %s extra operand\n", line->line_number, line->line_content);
             return FALSE;
         }
     }
     /*invalid opcode*/
-    else
-    {
+    else {
         PRINT_ERROR(line->file_name, line->line_number, line->line_content, "invalid opcode");
         //printf("Error: in line %ld: %s\nInvalid opcode\n", line->line_number, line->line_content);
         return FALSE;
@@ -327,8 +308,8 @@ boolean check_extra_or_missing_operands(line_info* line)
     return TRUE;
 }
 
-boolean check_operands(line_info* line)
-{
+/* checks if the operands are valid */
+boolean check_operands(line_info* line) {
     /* checking if source operand is valid */
     if(!valid_source_operand(line))
         return FALSE;
@@ -339,8 +320,8 @@ boolean check_operands(line_info* line)
     return TRUE;
 }
 
-boolean valid_source_operand(line_info* line)
-{
+/* checks if the source operand is valid */
+boolean valid_source_operand(line_info* line) {
     if (strcmp(line->opcode, "mov") == 0 ||
             strcmp(line->opcode, "cmp") == 0 ||
             strcmp(line->opcode, "add") == 0 ||
@@ -386,6 +367,7 @@ boolean valid_source_operand(line_info* line)
     return TRUE;
 }
 
+/* checks if the target operand is valid */
 boolean valid_target_operand(line_info* line) {
     if (strcmp(line->opcode, "cmp") == 0 ||
         strcmp(line->opcode, "prn") == 0) {
@@ -438,6 +420,7 @@ boolean valid_target_operand(line_info* line) {
     return TRUE;
 }
 
+/* check if the symbol is already defined in symbol_table */
 boolean exists_in_symbol_table(char* symbol, symbols_table_entry* symbol_table) {
     while (symbol_table != NULL) {
         if (strcmp(symbol_table->name, symbol) == 0)
@@ -447,6 +430,7 @@ boolean exists_in_symbol_table(char* symbol, symbols_table_entry* symbol_table) 
     return FALSE;
 }
 
+/* checks if symbol already exists in extern table */
 boolean exists_in_extern_table(char* symbol, extern_entry* external_table) {
     while (external_table != NULL) {
         if (strcmp(external_table->name, symbol) == 0)
@@ -456,6 +440,7 @@ boolean exists_in_extern_table(char* symbol, extern_entry* external_table) {
     return FALSE;
 }
 
+/* checks if symbol already exists in entry table */
 boolean exists_in_entry_table(char* symbol, entry_entry* entry_table) {
     while (entry_table != NULL) {
         if (strcmp(entry_table->name, symbol) == 0)
@@ -465,9 +450,11 @@ boolean exists_in_entry_table(char* symbol, entry_entry* entry_table) {
     return FALSE;
 }
 
-boolean program_too_big(char* file_name, long IC, long DC){
+/* checks if the program size (IC + DC) is bigger than what the imagenary PC can hold */
+boolean program_too_big(char* file_name, long IC, long DC) {
     char* as_file_name;
 
+    /* if the program is too big, print error and return TRUE */
     if (IC + DC >= MAX_PROGRAM_LENGTH) {
         as_file_name = add_file_postfix(file_name, ".as");
         printf("Error: The file '%s' you provided is too large for the imaginary computer.\n", as_file_name);
@@ -478,12 +465,14 @@ boolean program_too_big(char* file_name, long IC, long DC){
     return FALSE;
 }
 
+/* checks if the operand is a regiser */
 boolean is_register(char* operand) {
 	if (operand[0] == '@' && operand[1] == 'r' && operand[2] >= '0' && operand[2] <= '7' && operand[3] == '\0')
 		return TRUE;
 	return FALSE;
 }
 
+/* checks if the number is too big to code in to the memory word */
 boolean data_number_too_big(char* string_number) {
     int number = atoi(string_number);
     if (number > MAX_DATA_NUMBER_VALUE)
@@ -491,6 +480,7 @@ boolean data_number_too_big(char* string_number) {
     return FALSE;
 }
 
+/* checks if the number is too small to code in to the memory word */
 boolean data_number_too_small(char* string_number) {
     int number = atoi(string_number);
     if (number < MIN_DATA_NUMBER_VALUE)
@@ -498,6 +488,7 @@ boolean data_number_too_small(char* string_number) {
     return FALSE;
 }
 
+/* checks if the string is empty (white spaces) */
 boolean string_is_empty(char* string) {
     int i;
     for (i = 0; i < strlen(string); i++) {
@@ -509,6 +500,7 @@ boolean string_is_empty(char* string) {
     return TRUE;
 }
 
+/* checks for extra command in the end of the line */
 boolean extra_comma(char* line) {
     int i = 0;
 
@@ -520,7 +512,7 @@ boolean extra_comma(char* line) {
     /* One strp back */
     i--;
 
-    while (!isspace(line[i]))
+    while (isspace(line[i]))
     {
         if (line[i] == ',') {
             return TRUE;

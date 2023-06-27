@@ -10,7 +10,7 @@
 #include "pre_assembler.h"
 #include "utils.h"
 
-
+/* frees the macro list */
 static void free_table_memory(mcros_table_entry* first_mcro_entry) {
 	mcros_table_entry* current_mcro_entry = first_mcro_entry;
 	mcros_table_entry* next_mcro_entry;

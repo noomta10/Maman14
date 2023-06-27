@@ -15,10 +15,10 @@
 #include "info_check.h"
 
 
-
+/* gets a line and calls functions to add the data to the tables */
 static boolean process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_entry** symbol_table_head, data_table_entry** data_table,
     entry_entry** ent, extern_entry** ext, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head) {
-    /*validating line*/
+    /* checks and prints errors in the line */
     if (!validate_line(line)) {
         printf("debug: invalid line\n");
         return FALSE;
@@ -37,7 +37,7 @@ static boolean process_line_first_pass(line_info* line, long* IC, long* DC, symb
     return TRUE;    
 }
 
-
+/* calls functions to check errors based on the type of the line */
 static boolean validate_line(line_info* line) {
     /*label checking*/
     if (line->label_flag){
@@ -59,6 +59,7 @@ static boolean validate_line(line_info* line) {
     return TRUE;
 }
 
+/* gets a string that contains the line that was read and extact the infomaing by saving it in line_info */
 static void extract_command_info(char* content, line_info* line) {
     char* token;
     
@@ -122,6 +123,7 @@ static void extract_command_info(char* content, line_info* line) {
         line->extra_chars_flag = FALSE;
 }
 
+/* reades file and add infomation to tables */
 boolean first_pass(char* file_name, FILE* am_file, symbols_table_entry** symbol_table_head, data_table_entry** data_table_head,
     entry_entry** ent_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbols_table_entry, long* IC, long* DC) {
     char line_content[MAX_LINE_LENGTH];
@@ -182,7 +184,7 @@ boolean first_pass(char* file_name, FILE* am_file, symbols_table_entry** symbol_
     return *error_flag; /*returning error flag*/
 }
 
-
+/* gets a string that contans an operand and returns the addressing type */
 addressing_type get_addressing_type(char* operand){
     if (operand == NULL || strcmp(operand, "") == 0)
         return NO_OPERAND;

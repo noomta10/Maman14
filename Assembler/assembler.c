@@ -13,7 +13,7 @@
 #include "info_check.h"
 #include "second_pass.h"
 
-
+/* prosseses a file by calling pre-prosesser, first and second pass */
 boolean process_file(char* file_name) {
 	FILE* file_pointer = NULL;
 	boolean error_flag = FALSE;
@@ -116,9 +116,15 @@ boolean process_file(char* file_name) {
 	return TRUE;
 }
 
-
+/* Main function
+ * sends to prosses file all files that were gived as comand line arguments one by one */
 int main(int argc, char* argv[]) {
 	int file_index;
+
+	if(argc == 1) {
+		fprintf(stderr, "Error: No files were given\n");
+		return 0;
+	}
 
 	/* Process each file by arguments */
 	for (file_index = 1; file_index < argc; ++file_index) {

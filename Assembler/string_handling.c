@@ -12,30 +12,28 @@
 #include "info_check.h"
 
 
-
-void reset_str(char* str) /*clears string*/
-{
+/* clears the string */
+void reset_str(char* str) {
     while (*str != '\0')
         *str++ = '\0';
 }
 
-void skip_white_spaces(char** str)
-{
+/* skips white spaces */
+void skip_white_spaces(char** str) {
     char* temp = *str;
     while (*temp == ' ' || *temp == '\t') /*skip  white space*/
         temp++;
     *str = temp;
 }
 
-char* copy_next_word(char* string)
-{
+/* returns a copy of the next word in the string */
+char* copy_next_word(char* string) {
     int word_length = 0;
     char* result;
     char* string_ptr = string;
 
     /* get the length of the next word */
-    while (!isspace(*string_ptr) && !end_of_string(string_ptr))
-    {
+    while (!isspace(*string_ptr) && !end_of_string(string_ptr)) {
         word_length++;
         string_ptr++;
     }
@@ -47,34 +45,32 @@ char* copy_next_word(char* string)
     return result;    
 }
 
-char* copy_string(char* string)
-{
+/* returns a copy of the string */
+char* copy_string(char* string) {
     char* result = malloc_with_check(sizeof(string)* (strlen(string) + 1));
     strcpy(result, string);
     return result;
 }
 
-boolean end_of_string(char* str)
-{
+/* return true if theres no more characters that are not white spases */
+boolean end_of_string(char* str) {
     skip_white_spaces(&str);
     if (*str == '\0' || *str == '\n')
         return TRUE;
     return FALSE;
 }
 
-
-
-
-char* get_opcode(char** str)
-{
+/* returns a copy of the opcode from the line str */
+char* get_opcode(char** str) {
     int opcode_length = 0;
     char* temp = *str;
     char* token;
-    while (!isspace(*temp) && *temp != '\0')
-    {
+    /* gets opcode length */
+    while (!isspace(*temp) && *temp != '\0') {
         temp++;
         opcode_length++;
     }
+    /* copies it */
     token = (char*)malloc_with_check(sizeof(char) * (opcode_length +1));
     strncpy(token, *str, opcode_length);
     token[opcode_length] = '\0';
@@ -82,18 +78,19 @@ char* get_opcode(char** str)
     return token;
 }
 
-char* get_operand(char** str)
-{
+/* returns a copy of the operand and skips it in the string */
+char* get_operand(char** str) {
     int operand_length = 0;
     char* temp = *str;
     char* token;
-    while (!isspace(*temp) && *temp != '\0')
-    {
+    /* gets the operand length */
+    while (!isspace(*temp) && *temp != '\0') {
         if (*temp == ',')
             break;
         temp++;
         operand_length++;
     }
+    /* copies it */
     token = (char*)malloc_with_check(sizeof(char) * (operand_length + 1));
     strncpy(token, *str, operand_length);
     token[operand_length] = '\0';
@@ -101,16 +98,17 @@ char* get_operand(char** str)
     return token;
 }
 
-char* get_directive(char** str)
-{
+/* gets the copys the directive command and skips it in the original string */
+char* get_directive(char** str) {
     char* temp = ++ * str; /*skip '.'*/
     char* token;
     int directive_length = 0;
-    while (!isspace(*temp) && *temp != '\0')
-    {
+    /* get the length */
+    while (!isspace(*temp) && *temp != '\0') {
         temp++;
         directive_length++;
     }
+    /* copy it */
     token = (char*)malloc_with_check(sizeof(char) * (directive_length + 1));
     strncpy(token, *str, directive_length);
     token[directive_length] = '\0';
@@ -118,18 +116,17 @@ char* get_directive(char** str)
     return token;
 }
 
-char* get_label(char** str)
-{
+/* returns a copy of the label and skips it in the original string */
+char* get_label(char** str) {
     char* temp = *str;
     char* token;
     int label_length = 0;
-
-    while (*temp != ':')
-    {
+    /* get the length */
+    while (*temp != ':') {
         temp++;
         label_length++;
     }
-    
+    /* copy it */
     token = (char*)malloc_with_check(sizeof(char) * (label_length + 1));
 
     strncpy(token, *str, label_length);
@@ -139,6 +136,7 @@ char* get_label(char** str)
     return token;
 }
 
+/* returns the opcode code */
 opcode_type get_opcode_bits(char* opcode)
 {
     if (strcmp(opcode, "mov") == 0)
@@ -176,6 +174,7 @@ opcode_type get_opcode_bits(char* opcode)
     return 0; 
 }
 
+/* returns the register code */
 register_type get_register_number(char* register_name)
 {
     if (register_name == NULL || strcmp(register_name, "") == 0 || !is_register(register_name))
@@ -197,6 +196,7 @@ register_type get_register_number(char* register_name)
     return R7;
 }
 
+/* removes the new line character from the end of the string */
 void remove_new_line_character(char* string) {
     if (string[strlen(string) - 1] == '\n')
         string[strlen(string) - 1] = '\0';
