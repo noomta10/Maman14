@@ -15,71 +15,8 @@
 #include "info_check.h"
 
 
-boolean first_pass(char* file_name, FILE *am_file, symbols_table_entry** symbol_table_head, data_table_entry** data_table_head,
-                   entry_entry** ent_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbols_table_entry, long* IC, long* DC) /*processes file*/
-{
-    char line_content[MAX_LINE_LENGTH];
-    line_info* line = NULL;
-    boolean* error_flag = (boolean *)malloc_with_check(sizeof(boolean));
-    *error_flag = FALSE;
-    *DC = *IC = 0;
 
-    
-    line = (line_info*)malloc_with_check(sizeof(line_info)); /*allocating memory for line*/
-    reset_line_info(line);
-    line->line_number = 1;
-    line->file_name = add_file_postfix(file_name, ".as");
-
-    /*reading .as file line by line entil the end*/
-    while (fgets(line_content, MAX_LINE_LENGTH, am_file) != NULL) {
-        printf("Debug: line %ld %s\n", line->line_number, line_content);
-        if (line_too_long(am_file, line_content))
-        { 
-            *error_flag = TRUE;
-            PRINT_ERROR(line->file_name, line->line_number, line_content, "Line is too long.");
-            continue;
-        }
-        remove_new_line_character(line_content);
-        line->line_content = copy_string(line_content);
-
-        /*checking if line is empty or command line*/
-        if (ignore_line(line_content))
-        { 
-            printf("debug: empty or command line\n");
-            reset_line_info(line);
-            continue;
-        }
-
-        /*processing line*/
-        extract_command_info(line_content, line);
-        if (!process_line_first_pass(line, IC, DC, symbol_table_head, data_table_head, ent_head, ext_head, code_table_head, uninitialized_symbols_table_entry)) {
-            *error_flag = TRUE;
-        }
-        line->line_number++;
-        /*reseting variables*/
-        reset_line_info(line);
-        reset_str(line_content);
-        printf("\n");
-    }
-
-    
-    /*if a line was read, free it*/
-    if (line) {
-        free(line->file_name);
-        free(line);
-    }
-
-    add_final_ic_to_dc_count(*symbol_table_head, *data_table_head, *IC, DC);
-
-    if (program_too_big(file_name, *IC, *DC)) {
-        *error_flag = TRUE;
-    }
-
-    return *error_flag; /*returning error flag*/
-}
-
-
-boolean process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_entry** symbol_table_head, data_table_entry** data_table,
+static boolean process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_entry** symbol_table_head, data_table_entry** data_table,
     entry_entry** ent, extern_entry** ext, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head)
 {
     /*validating line*/
@@ -102,7 +39,7 @@ boolean process_line_first_pass(line_info* line, long* IC, long* DC, symbols_tab
 }
 
 
-boolean validate_line(line_info* line)
+static boolean validate_line(line_info* line)
 {
     /*label checking*/
     if (line->label_flag)
@@ -127,7 +64,7 @@ boolean validate_line(line_info* line)
     return TRUE;
 }
 
-void extract_command_info(char* content, line_info* line)
+static void extract_command_info(char* content, line_info* line)
 {
     char* token;
     
@@ -193,6 +130,69 @@ void extract_command_info(char* content, line_info* line)
         line->extra_chars_flag = TRUE;
     else
         line->extra_chars_flag = FALSE;
+}
+
+boolean first_pass(char* file_name, FILE* am_file, symbols_table_entry** symbol_table_head, data_table_entry** data_table_head,
+    entry_entry** ent_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbols_table_entry, long* IC, long* DC) /*processes file*/
+{
+    char line_content[MAX_LINE_LENGTH];
+    line_info* line = NULL;
+    boolean* error_flag = (boolean*)malloc_with_check(sizeof(boolean));
+    *error_flag = FALSE;
+    *DC = *IC = 0;
+
+
+    line = (line_info*)malloc_with_check(sizeof(line_info)); /*allocating memory for line*/
+    reset_line_info(line);
+    line->line_number = 1;
+    line->file_name = add_file_postfix(file_name, ".as");
+
+    /*reading .as file line by line entil the end*/
+    while (fgets(line_content, MAX_LINE_LENGTH, am_file) != NULL) {
+        printf("Debug: line %ld %s\n", line->line_number, line_content);
+        if (line_too_long(am_file, line_content))
+        {
+            *error_flag = TRUE;
+            PRINT_ERROR(line->file_name, line->line_number, line_content, "Line is too long.");
+            continue;
+        }
+        remove_new_line_character(line_content);
+        line->line_content = copy_string(line_content);
+
+        /*checking if line is empty or command line*/
+        if (ignore_line(line_content))
+        {
+            printf("debug: empty or command line\n");
+            reset_line_info(line);
+            continue;
+        }
+
+        /*processing line*/
+        extract_command_info(line_content, line);
+        if (!process_line_first_pass(line, IC, DC, symbol_table_head, data_table_head, ent_head, ext_head, code_table_head, uninitialized_symbols_table_entry)) {
+            *error_flag = TRUE;
+        }
+        line->line_number++;
+        /*reseting variables*/
+        reset_line_info(line);
+        reset_str(line_content);
+        printf("\n");
+    }
+
+
+    /*if a line was read, free it*/
+    if (line) {
+        free(line->file_name);
+        free(line);
+    }
+
+    add_final_ic_to_dc_count(*symbol_table_head, *data_table_head, *IC, DC);
+
+    if (program_too_big(file_name, *IC, *DC)) {
+        *error_flag = TRUE;
+    }
+
+    return *error_flag; /*returning error flag*/
 }
 
 
