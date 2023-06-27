@@ -84,13 +84,13 @@ boolean bad_label(char* file_name, char* label, char* line_content, long line_nu
     /* Check if label is too long or too short */
     if (strlen(label) > MAX_LABEL_LENGTH)
     {
-        PRINT_ERROR(file_name, line_number, line_content, "label is too long");
+        PRINT_ERROR(file_name, line_number, line_content, "The label is too long.");
         //printf("Error: in line %ld: %s\nThe label '%s' is too long\n", line_number, line_content, label);
         return TRUE;
     }
     if (strlen(label) == 0)
     {
-        PRINT_ERROR(file_name, line_number, line_content, "empty label");
+        PRINT_ERROR(file_name, line_number, line_content, "The label is empty.");
         //printf("Error: in line %ld: %s\nThe label '%s' is too short\n", line_number, line_content, label);
         return TRUE;
     }

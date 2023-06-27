@@ -28,15 +28,15 @@ boolean first_pass(char* file_name, FILE *am_file, symbols_table_entry** symbol_
     line = (line_info*)malloc_with_check(sizeof(line_info)); /*allocating memory for line*/
     reset_line_info(line);
     line->line_number = 1;
-    line->file_name = file_name;
+    line->file_name = add_file_postfix(file_name, ".as");
 
     /*reading .as file line by line entil the end*/
     while (fgets(line_content, MAX_LINE_LENGTH, am_file) != NULL) {
         printf("Debug: line %ld %s\n", line->line_number, line_content);
         if (line_too_long(am_file, line_content))
-        {
+        { 
             *error_flag = TRUE;
-            PRINT_ERROR(file_name, line->line_number, line_content, "Line is too long.");
+            PRINT_ERROR(line->file_name, line->line_number, line_content, "Line is too long.");
             continue;
         }
         remove_new_line_character(line_content);
@@ -62,10 +62,12 @@ boolean first_pass(char* file_name, FILE *am_file, symbols_table_entry** symbol_
         printf("\n");
     }
 
-
+    
     /*if a line was read, free it*/
-    if(line)
+    if (line) {
+        free(line->file_name);
         free(line);
+    }
 
     add_final_ic_to_dc_count(*symbol_table_head, *data_table_head, *IC, DC);
 
