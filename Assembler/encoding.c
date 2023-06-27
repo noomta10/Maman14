@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include "assembler.h"
+#include "encoding.h"
 
 
 /* Base64 character mapping table */
@@ -28,7 +30,7 @@ char encode_six_bit_number(unsigned int bits) {
 
 char* encode_base64(unsigned int number) {
     char final_base64[3];
-    //char* final_base64_pointer = final_base64;
+    char* final_base64_pointer = final_base64;
     /* Extract the two 6 - bit groups */
     unsigned int number_left_part = (number >> 6) & 0x3F; /* left part of the number & 111111 */ 
     unsigned int number_right_part = number & 0x3F; /* right part of the number & 111111 */
@@ -41,6 +43,6 @@ char* encode_base64(unsigned int number) {
     final_base64[1] = encoded_char2;
     final_base64[2] = '\0';
 
-    //return final_base64_pointer;
-    return final_base64;
+    return final_base64_pointer;
+   // return final_base64;
 }
