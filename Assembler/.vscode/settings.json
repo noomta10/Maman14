@@ -1,9 +1,11 @@
 {
     "files.associations": {
-        "debuging.h": "c",
-        "utils.h": "c",
-        "tables.h": "c",
-        "info_check.h": "c",
-        "second_pass.h": "c"
-    }
-}
+      "debuging.h": "c",
+      "utils.h": "c",
+      "tables.h": "c",
+      "info_check.h": "c",
+      "second_pass.h": "c"
+    },
+    "prettier.bracketSameLine": true
+  }
+  
