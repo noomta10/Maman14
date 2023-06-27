@@ -210,8 +210,7 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
         }
         else if (!end_of_string(data_to_extract))
         {
-            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Error: expected a comma between numbers");
-            //printf("Error: in line %ld: %s\nExpected a comma between numbers\n", line->line_number, line->line_content);
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Expected a comma between the numbers.");
             return FALSE;
         }
     }/*end of reading numbers*/
@@ -479,14 +478,12 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_
     
     if(exists_in_symbol_table(label_name, *symbol_table_head))
     {
-        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "label is already declared");
-        //printf("Error: in line %ld: %s\nLabel '%s' is already declared\n", line->line_number, line->line_content, label_name);
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The label is already declared.");
         return FALSE;
     }
     if (exists_in_extern_table(label_name, ext_head))
     {
         PRINT_ERROR(line->file_name, line->line_number, line->line_content, "label is already declared as extern");
-        //printf("Error: in line %ld %s\nlabel `%s` already declared as extern\n", line->line_number, line->line_content, label_name);
         return FALSE;
     }
 

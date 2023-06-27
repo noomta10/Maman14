@@ -76,8 +76,7 @@ boolean bad_label(char* file_name, char* label, char* line_content, long line_nu
         strcmp(label, "@r4") == 0 || strcmp(label, "@r5") == 0 ||
         strcmp(label, "@r6") == 0 || strcmp(label, "@r7") == 0)
     {
-        PRINT_ERROR(file_name, line_number, line_content, "label is a reserved word");
-        //printf("Error: in line %ld: %s\nThe label '%s' is a reserved word\n", line_number, line_content, label);
+        PRINT_ERROR(file_name, line_number, line_content, "The label is a reserved word.");
             return TRUE;
     }
 
@@ -85,20 +84,17 @@ boolean bad_label(char* file_name, char* label, char* line_content, long line_nu
     if (strlen(label) > MAX_LABEL_LENGTH)
     {
         PRINT_ERROR(file_name, line_number, line_content, "The label is too long.");
-        //printf("Error: in line %ld: %s\nThe label '%s' is too long\n", line_number, line_content, label);
         return TRUE;
     }
     if (strlen(label) == 0)
     {
         PRINT_ERROR(file_name, line_number, line_content, "The label is empty.");
-        //printf("Error: in line %ld: %s\nThe label '%s' is too short\n", line_number, line_content, label);
         return TRUE;
     }
 
     /* Check if label starts with a letter */
     if (!isalpha(label[i])) {
-        PRINT_ERROR(file_name, line_number, line_content, "label must start with a letter");
-        //printf("Error: in line %ld: %s\nThe label '%s' must start with a letter\n", line_number, line_content, label);
+        PRINT_ERROR(file_name, line_number, line_content, "The label must start with a letter.");
         return TRUE;
     }
 
@@ -107,8 +103,7 @@ boolean bad_label(char* file_name, char* label, char* line_content, long line_nu
     {
         if (!isalnum(label[i]))
         {
-            PRINT_ERROR(file_name, line_number, line_content, "label has invalid characters");
-            //printf("Error: in line %ld: %s\nThe label '%s' has invalid characters\n",line_number, line_content, label);
+            PRINT_ERROR(file_name, line_number, line_content, "The label has invalid characters.");
             return TRUE;
         }
     }
@@ -188,7 +183,7 @@ boolean valid_directive_line(line_info* line)
             return FALSE;
     }
     else {
-        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "invalid directive command");
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Invalid directive command.");
         //printf("Error: in line %ld: %sInvalid directive command\n", line->line_number, line->line_content);
         return FALSE;
     }
@@ -200,7 +195,7 @@ boolean valid_data_command(line_info* line)
 {
     if (string_is_empty(line->directive_data))
     {
-        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "missing data");
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Missing data.");
         //printf("Error: in line %ld: %s issing data\n", line->line_number, line->line_content);
         return FALSE;
     }
@@ -215,8 +210,7 @@ boolean valid_string_command(line_info* line)
     /* check if string is empty */
     if(end_of_string(directive_data))
     {
-        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "missing data");
-        //printf("Error: in line %ld: %s\nMissing data\n", line->line_number, line->line_content);
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Missing data.");
         return FALSE;
     }
     /* skip white spaced and update the length i */
@@ -227,17 +221,15 @@ boolean valid_string_command(line_info* line)
     /* check if string starts with quotes */
     if(*directive_data != '"')
     {
-        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "string must start with quotes");
-        //printf("Error: in line %ld: %s\nString must start with quotes\n", line->line_number, line->line_content);
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "String must start with quotes.");
         return FALSE;
     }
     /* check if string ends with quotes */
     while(isspace(directive_data[i]))
         i--;
-    if(directive_data[i] != '"')
+    if(directive_data[i] != '"' || i == 0)
     {
-        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "string must end with quotes");
-        //printf("Error: in line %ld: %s\nString must end with quotes\n", line->line_number, line->line_content);
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "String must end with quotes.");
         return FALSE;
     }
 
