@@ -20,5 +20,6 @@ boolean is_register(char* operand);
 boolean exists_in_symbol_table(char* symbol, symbols_table_entry* symbol_table);
 boolean exists_in_extern_table(char* symbol, extern_entry* external_table);
 boolean exists_in_entry_table(char* symbol, entry_entry* entry_table);
-boolean number_too_big(char* string_number);
+boolean data_number_too_big(char* string_number);
+boolean data_number_too_small(char* string_number);
 boolean string_is_empty(char* string);

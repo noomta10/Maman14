@@ -176,9 +176,16 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
             return FALSE;
         }
 
-        if(number_too_big(token))
+        if(data_number_too_big(token))
         {
-            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Error: the number is too big");
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The number is too big.");
+            //printf("Error: in line %ld: %s\nThe number %s is too big\n", line->line_number,line->line_content, token);
+            return FALSE;
+        }
+
+        if (data_number_too_small(token))
+        {
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The number is too small.");
             //printf("Error: in line %ld: %s\nThe number %s is too big\n", line->line_number,line->line_content, token);
             return FALSE;
         }

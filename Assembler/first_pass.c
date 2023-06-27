@@ -36,7 +36,7 @@ boolean first_pass(char* file_name, FILE *am_file, symbols_table_entry** symbol_
         if (line_too_long(am_file, line_content))
         {
             *error_flag = TRUE;
-            printf("Error: line %ld is too long.\n", line->line_number);
+            PRINT_ERROR(file_name, line->line_number, line_content, "Line is too long.");
             continue;
         }
         remove_new_line_character(line_content);

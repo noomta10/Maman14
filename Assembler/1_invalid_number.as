@@ -1,2 +1,2 @@
-TOOSMALL: .data -513
-TOOBIG: .data 1024
+TOOSMALL: .data -2049
+TOOBIG: .data 2048

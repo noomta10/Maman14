@@ -386,9 +386,9 @@ boolean valid_source_operand(line_info* line)
     if(get_addressing_type(line->source_operand) == DIRECT_ADDRESSING && bad_label(line->file_name, line->source_operand, line->line_content, line->line_number))
             return FALSE;
 
-    if(get_addressing_type(line->source_operand) == IMMEDIATE_ADDRESSING && number_too_big(line->source_operand)){
+    if(get_addressing_type(line->source_operand) == IMMEDIATE_ADDRESSING && data_number_too_big(line->source_operand)){
         printf("Error: in file `%s` line %ld \"%s\" the number `%s` must be between %d - %d\n",line->file_name, line->line_number, line->line_content,
-                line->source_operand, MIN_INT_VALUE, MAX_INT_VALUE);
+                line->source_operand, MIN_DATA_NUMBER_VALUE, MAX_DATA_NUMBER_VALUE);
             return FALSE;
     }
     return TRUE;
@@ -437,7 +437,7 @@ boolean valid_target_operand(line_info* line) {
     if(get_addressing_type(line->target_operand) == DIRECT_ADDRESSING && bad_label(line->file_name, line->target_operand, line->line_content, line->line_number))
             return FALSE;
 
-    if(get_addressing_type(line->target_operand) == IMMEDIATE_ADDRESSING && number_too_big(line->target_operand)){
+    if(get_addressing_type(line->target_operand) == IMMEDIATE_ADDRESSING && data_number_too_big(line->target_operand)){
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "invalid target operand");
             //printf("Error: in line %ld %s the number `%s` must be between %d - %d\n", line->line_number, line->line_content,
                 //line->target_operand, MIN_INT_VALUE, MAX_INT_VALUE);
@@ -474,9 +474,13 @@ boolean exists_in_entry_table(char* symbol, entry_entry* entry_table) {
 }
 
 boolean program_too_big(char* file_name, long IC, long DC){
+    char* as_file_name;
+
     if (IC + DC >= MAX_PROGRAM_LENGTH) {
-        printf("Error: the file `%s` you porvided is too large for imaginary computer\n", file_name);
+        as_file_name = add_file_postfix(file_name, ".as");
+        printf("Error: The file '%s' you provided is too large for the imaginary computer.\n", as_file_name);
         printf("Debug: IC + DC = %ld\n", IC + DC);
+        free(as_file_name);
         return TRUE;
     }
     return FALSE;
@@ -488,9 +492,16 @@ boolean is_register(char* operand) {
 	return FALSE;
 }
 
-boolean number_too_big(char* string_number) {
+boolean data_number_too_big(char* string_number) {
     int number = atoi(string_number);
-    if (number < MIN_INT_VALUE || number > MAX_INT_VALUE)
+    if (number > MAX_DATA_NUMBER_VALUE)
+        return TRUE;
+    return FALSE;
+}
+
+boolean data_number_too_small(char* string_number) {
+    int number = atoi(string_number);
+    if (number < MIN_DATA_NUMBER_VALUE)
         return TRUE;
     return FALSE;
 }
