@@ -17,8 +17,7 @@
 
 
 static boolean process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_entry** symbol_table_head, data_table_entry** data_table,
-    entry_entry** ent, extern_entry** ext, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head)
-{
+    entry_entry** ent, extern_entry** ext, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head) {
     /*validating line*/
     if (!validate_line(line)) {
         printf("debug: invalid line\n");
@@ -39,33 +38,28 @@ static boolean process_line_first_pass(line_info* line, long* IC, long* DC, symb
 }
 
 
-static boolean validate_line(line_info* line)
-{
+static boolean validate_line(line_info* line) {
     /*label checking*/
-    if (line->label_flag)
-    {
+    if (line->label_flag){
         if (bad_label(line->file_name, line->label, line->line_content, line->line_number))
             return FALSE;
     }
 
     /*checks for errors in directive lines*/
-    if (line->directive_flag) 
-    {
+    if (line->directive_flag) {
         if (!valid_directive_line(line))
             return FALSE;
     }
 
     /*checks for errors in directive lines*/
-    if (line->instruction_flag)
-    {
+    if (line->instruction_flag) {
         if (!valid_instruction_line(line))
             return FALSE;
     }
     return TRUE;
 }
 
-static void extract_command_info(char* content, line_info* line)
-{
+static void extract_command_info(char* content, line_info* line) {
     char* token;
     
     line->line_content = (char*) malloc_with_check(sizeof(char)*(MAX_LINE_LENGTH+1));
@@ -73,27 +67,23 @@ static void extract_command_info(char* content, line_info* line)
 
     /* if there's a label save it, else set label flag to false */
     skip_white_spaces(&content);
-    if (is_label(content)) /* check for label */
-    {
+    if (is_label(content)) {
         line->label = get_label(&content);
         line->label_flag = TRUE;
     }
-    else
-    {
+    else{
         line->label_flag = FALSE;
     }
 
     /*if there's a directive save it, else set directive flag to false*/
     skip_white_spaces(&content);
-    if (is_directive(content))
-    {
+    if (is_directive(content)){
         line->directive_command = get_directive(&content);
         line->directive_flag = TRUE;
         line->directive_data = content;
         return;
     }
-    else
-    {
+    else {
         line->directive_flag = FALSE;
         line->instruction_flag = TRUE;
     }
@@ -133,8 +123,7 @@ static void extract_command_info(char* content, line_info* line)
 }
 
 boolean first_pass(char* file_name, FILE* am_file, symbols_table_entry** symbol_table_head, data_table_entry** data_table_head,
-    entry_entry** ent_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbols_table_entry, long* IC, long* DC) /*processes file*/
-{
+    entry_entry** ent_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbols_table_entry, long* IC, long* DC) {
     char line_content[MAX_LINE_LENGTH];
     line_info* line = NULL;
     boolean* error_flag = (boolean*)malloc_with_check(sizeof(boolean));
@@ -150,8 +139,7 @@ boolean first_pass(char* file_name, FILE* am_file, symbols_table_entry** symbol_
     /*reading .as file line by line entil the end*/
     while (fgets(line_content, MAX_LINE_LENGTH, am_file) != NULL) {
         printf("Debug: line %ld %s\n", line->line_number, line_content);
-        if (line_too_long(am_file, line_content))
-        {
+        if (line_too_long(am_file, line_content)){
             *error_flag = TRUE;
             PRINT_ERROR(line->file_name, line->line_number, line_content, "Line is too long.");
             continue;
@@ -160,8 +148,7 @@ boolean first_pass(char* file_name, FILE* am_file, symbols_table_entry** symbol_
         line->line_content = copy_string(line_content);
 
         /*checking if line is empty or command line*/
-        if (ignore_line(line_content))
-        {
+        if (ignore_line(line_content)){
             printf("debug: empty or command line\n");
             reset_line_info(line);
             continue;
@@ -196,8 +183,7 @@ boolean first_pass(char* file_name, FILE* am_file, symbols_table_entry** symbol_
 }
 
 
-addressing_type get_addressing_type(char* operand)
-{
+addressing_type get_addressing_type(char* operand){
     if (operand == NULL || strcmp(operand, "") == 0)
         return NO_OPERAND;
     else if (is_number(operand))

@@ -1,2 +1,1 @@
-;.data 2, -2
-mov -5 @r3
+LENGTH: .data 6,-9,15
