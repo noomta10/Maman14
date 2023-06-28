@@ -137,7 +137,6 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 			fgets(line, MAX_LINE_LENGTH, source_file);
 			(*line_number)++;
 			strcpy(saved_line, line);
-			LOG_DEBUG(line);
 			first_word = strtok(line, " \t\n");
 			/* Stop if "endmcro" was encountered */
 			if (strcmp(first_word, "endmcro") == 0) {
@@ -165,7 +164,6 @@ boolean pre_assembler(FILE* source_file, char* file_name) {
 	boolean line_is_mcro_related = FALSE;
 	char* am_file_name = add_file_postfix(file_name, ".am");
 
-	LOG_DEBUG("Pre-assembler start");
 
 	/* Create an empty .am file */
 	am_file = fopen(am_file_name, "w");
@@ -206,6 +204,5 @@ boolean pre_assembler(FILE* source_file, char* file_name) {
 		free_table_memory(first_mcro_entry);
 	}
 
-	LOG_DEBUG("pre assember done");
 	return TRUE;
 }

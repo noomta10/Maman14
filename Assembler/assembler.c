@@ -36,13 +36,12 @@ boolean process_file(char* file_name) {
 		fprintf(stderr, "Error: The file %s couldn't be opened\n", full_file_name);
 		free(full_file_name);
 
-		LOG_DEBUG("Openning file failed");
 		return FALSE;
 	}
 
 	/* Pre_assembler, create .am file */
 	if (!pre_assembler(file_pointer, file_name)) {
-		LOG_DEBUG("Pre assembler failed");
+		printf("PRE-ASSEMBLER FAILED\n");
 		return FALSE;
 	}
 
@@ -55,20 +54,20 @@ boolean process_file(char* file_name) {
 		fprintf(stderr, "Error: The file %s couldn't be opened\n", full_am_name);
 		free(full_am_name);
 
-		LOG_DEBUG("Openning file failed");
 		return FALSE;
 	}
 
 	/* First_pass */
 	error_flag = first_pass(file_name, file_pointer, &symbol_entry_head, &data_entry_head, &entry_entry_head, &extern_entry_head, &code_entry_head, &uninitialized_symbol_entry_head, &IC, &DC);
 	if (error_flag) {
+		printf("FIRST PASS FAILED\n");
+
 		free_data_table(data_entry_head);
 		free_entry_table(entry_entry_head);
 		free_extern_table(extern_entry_head);
 		free_symbols_table(symbol_entry_head);
 		fclose(file_pointer);
 
-		LOG_DEBUG("First pass failed");
 		return FALSE;
 	}
 
@@ -84,18 +83,18 @@ boolean process_file(char* file_name) {
 
 	/* Second pass, exit if errors were found */
 	if (!second_pass(uninitialized_symbol_entry_head, symbol_entry_head, extern_entry_head, entry_entry_head, full_file_name, file_name, IC, DC, code_entry_head, data_entry_head)) {
+		printf("SECOND PASS FAILED\n");
+
 		free_data_table(data_entry_head);
 		free_entry_table(entry_entry_head);
 		free_extern_table(extern_entry_head);
 		free_symbols_table(symbol_entry_head);
 		fclose(file_pointer);
 
-		LOG_DEBUG("Second pass failed");
 		return FALSE;
 	}
 
 	/* DEBUG */
-	LOG_DEBUG("After second pass:\n");
 	print_uninitialized_symbols_table(uninitialized_symbol_entry_head);
 	print_code_table_in_binary(code_entry_head);
 	printf("IC: %ld\n", IC);
@@ -112,7 +111,6 @@ boolean process_file(char* file_name) {
 	/* Close file */
 	fclose(file_pointer);
 
-	LOG_DEBUG("File was processed successfully");
 	return TRUE;
 }
 
@@ -132,5 +130,6 @@ int main(int argc, char* argv[]) {
 		process_file(argv[file_index]);
 	}
 
+	printf("FILE WAS PROCESSED SUCCESSFULY\n");
 	return 0;
 }
