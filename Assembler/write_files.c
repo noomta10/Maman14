@@ -43,7 +43,6 @@ void write_entry_file(char* file_name, entry_entry* entry_table_head) {
 
 	/* If there are no entries in the table, do not create entry file */
 	if (!entry_table_head) {
-		LOG_DEBUG("No entries in file");
 		return;
 	}
 
@@ -77,7 +76,6 @@ void write_extern_file(char* file_name, extern_entry* extern_table_head, uniniti
 
 	/* If there are no entries in the table, do not create entry file */
 	if (!extern_table_head) {
-		LOG_DEBUG("No externs in file");
 		return;
 	}
 

@@ -1,9 +1,4 @@
-#define MY_DEBUG
-#ifdef MY_DEBUG
-#define LOG_DEBUG(x) printf("debug %s\n",x)
-#endif
-
-
+/* DEBUG */
 void print_line_info(line_info *line);
 void print_symbol_table(symbols_table_entry *symbol_table);
 void print_data_table(data_table_entry *data_table);
