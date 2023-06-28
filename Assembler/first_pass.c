@@ -63,7 +63,7 @@ static boolean validate_line(line_info* line) {
 static void extract_command_info(char* content, line_info* line) {
     char* token;
     
-    line->line_content = (char*) malloc_with_check(sizeof(char)*(MAX_LINE_LENGTH+1));
+    line->line_content = (char*) malloc_with_check(sizeof(char)*(MAX_LINE_LENGTH));
     strcpy(line->line_content, content);
 
     /* If there's a label save it, else set label flag to false */
@@ -166,7 +166,8 @@ boolean first_pass(char* file_name, FILE* am_file, symbols_table_entry** symbol_
         /* Reseting variables */
         reset_line_info(line);
         reset_str(line_content);
-        printf("\n");
+        /* Freeing */
+        free(line->line_content);
     }
 
 

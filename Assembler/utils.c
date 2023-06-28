@@ -7,7 +7,7 @@
 #include "line_info.h"
 #include "tables.h"
 
-/* adds postfix to the file name */
+/* Adds postfix to the file name */
 char* add_file_postfix(char* file_name, char* postfix) {
 	char* full_file_name = (char*)malloc_with_check(strlen(file_name) + strlen(postfix) + 1);
 	strcpy(full_file_name, file_name);
@@ -15,7 +15,7 @@ char* add_file_postfix(char* file_name, char* postfix) {
 	return full_file_name;
 }
 
-/* allowcates memory and checks for failer */
+/* Allowcates memory and checks for failer */
 void* malloc_with_check(size_t length) {
 	void* pointer = malloc(length);
 	if (pointer == NULL) {
@@ -25,7 +25,7 @@ void* malloc_with_check(size_t length) {
 	return pointer;
 }
 
-/* reallocs memory and checks for failer */
+/* Reallocs memory and checks for failer */
 void* realloc_with_check(char* ptr, size_t length) {
 	void* pointer = realloc(ptr, length);
 
@@ -36,7 +36,7 @@ void* realloc_with_check(char* ptr, size_t length) {
 	return pointer;
 }
 
-/* checks if the name if a reseved word */
+/* Checks if the name if a reseved word */
 boolean is_reserved_name(char* name) {
 	if (strcmp(name, "mov") == 0 || strcmp(name, "cmp") == 0 ||
 		strcmp(name, "add") == 0 || strcmp(name, "sub") == 0 ||
