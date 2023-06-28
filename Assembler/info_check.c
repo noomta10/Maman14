@@ -230,8 +230,13 @@ boolean valid_string_command(line_info* line) {
 /* checks if the line is a valid entry command */
 boolean valid_entry_command(line_info* line) {
     if (string_is_empty(line->directive_data)) { 
+        /* no entry labels were given */
         PRINT_ERROR(line->file_name, line->line_number, line->line_content, "No entry labels were given.");
-        //printf("Error: in line %ld: %s\nNo entry labels given\n", line->line_number, line->line_content);
+        return FALSE;
+    }
+    /* ilegal comma at the end of the line */
+    if(extra_comma(line->line_content)){
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Extra comma at end of line.");
         return FALSE;
     }
     return TRUE;
@@ -239,9 +244,14 @@ boolean valid_entry_command(line_info* line) {
 
 /* checks if the line is a valid extern command */
 boolean valid_extern_command(line_info* line) {
-    if(strcmp(line->directive_data, "") == 0) { 
+    /* no extern labels were given */
+    if(string_is_empty(line->directive_data)) { 
         PRINT_ERROR(line->file_name, line->line_number, line->line_content, "No extern labels were given.");
-        //printf("Error: in line: %ld %s no extern labels given\n", line->line_number, line->line_content);
+        return FALSE;
+    }
+    /* ilegal comma at the end of the line */
+    if(extra_comma(line->line_content)){
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Extra comma at end of line.");
         return FALSE;
     }
     return TRUE;
@@ -257,8 +267,7 @@ boolean check_extra_or_missing_operands(line_info* line) {
         strcmp(line->opcode, "lea") == 0) {
         /*checking for missing operand*/
         if (string_is_empty(line->source_operand) || string_is_empty(line->target_operand)) {
-            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "missing operand");
-            //printf("Error: in line %ld %s missing operand\n", line->line_number, line->line_content);
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "missing operand.");
             return FALSE;
         }
     }
@@ -506,16 +515,14 @@ boolean extra_comma(char* line) {
         i++;
     }
 
-    /* One strp back */
-    i--;
+    do{
+        /* One strp back */
+        i--;
 
-    while (isspace(line[i]))
-    {
         if (line[i] == ',') {
             return TRUE;
         }
-        i--;
-    }
+    } while (isspace(line[i]));
 
     return FALSE;
 }

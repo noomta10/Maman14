@@ -1,1 +1,2 @@
-LENGTH: .data 6,-9,15
+.entry A ,B , C, H ,
+.extern D, E , F
