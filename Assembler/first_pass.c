@@ -136,12 +136,13 @@ boolean first_pass(char* file_name, FILE* am_file, symbols_table_entry** symbol_
 
     line = (line_info*)malloc_with_check(sizeof(line_info)); /*allocating memory for line*/
     reset_line_info(line);
-    line->line_number = 1;
+    line->line_number = 0;
     line->file_name = add_file_postfix(file_name, ".as");
 
     /*reading .as file line by line entil the end*/
     while (fgets(line_content, MAX_LINE_LENGTH, am_file) != NULL) {
-        printf("Debug: line %ld %s\n", line->line_number, line_content);
+        line->line_number++;
+        printf("Debug: line %ld %s", line->line_number, line_content);
         if (line_too_long(am_file, line_content)){
             *error_flag = TRUE;
             PRINT_ERROR(line->file_name, line->line_number, line_content, "Line is too long.");
@@ -152,7 +153,6 @@ boolean first_pass(char* file_name, FILE* am_file, symbols_table_entry** symbol_
 
         /*checking if line is empty or command line*/
         if (ignore_line(line_content)){
-            printf("debug: empty or command line\n");
             reset_line_info(line);
             continue;
         }
@@ -162,7 +162,6 @@ boolean first_pass(char* file_name, FILE* am_file, symbols_table_entry** symbol_
         if (!process_line_first_pass(line, IC, DC, symbol_table_head, data_table_head, ent_head, ext_head, code_table_head, uninitialized_symbols_table_entry)) {
             *error_flag = TRUE;
         }
-        line->line_number++;
         /*reseting variables*/
         reset_line_info(line);
         reset_str(line_content);

@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-
-
+<<<<<<< HEAD
     <LocalDebuggerCommandArguments>workbook_example</LocalDebuggerCommandArguments>
+=======
+    <LocalDebuggerCommandArguments>1_check_addressing_type</LocalDebuggerCommandArguments>
+>>>>>>> 684a3f2509c0a0b7e237cd551b95621a5d9f4af2
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
