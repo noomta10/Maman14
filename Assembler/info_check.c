@@ -339,7 +339,10 @@ boolean valid_source_operand(line_info* line) {
             }
     }
     else if(strcmp(line->opcode, "lea") == 0) {
-        return get_addressing_type(line->source_operand) == DIRECT_ADDRESSING;
+        if (get_addressing_type(line->source_operand) != DIRECT_ADDRESSING) {
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Invalid source operand");
+            return FALSE;
+        }
     }
     else if(strcmp(line->opcode, "not") == 0 ||
         strcmp(line->opcode, "clr") == 0 ||
