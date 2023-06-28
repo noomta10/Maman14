@@ -3,7 +3,7 @@ boolean is_label(char*);
 boolean is_number(char* string);
 boolean ignore_line(char* line);
 boolean line_too_long(FILE* am_file, char* line_content);
-boolean bad_label(char* file_name, char* label, char* line_content, long line_number);
+boolean invalid_label(char* file_name, char* label, char* line_content, long line_number);
 boolean check_comma(char** string);
 boolean program_too_big(char* file_name, long IC, long DC);
 boolean valid_directive_line(line_info* line);

@@ -1,3 +1,5 @@
+.extern ONE, TWO
+ONE: .data 6
 .entry NOTHERE
-.entry			
-.extern			
+L: .string "original"
+L: .string "copy"
