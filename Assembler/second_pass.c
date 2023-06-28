@@ -18,12 +18,7 @@ static void add_entry_table_address(entry_entry* head_entry_entry, symbols_table
 		/* Loop over the symbols table and find entry entry address */
 		while (current_symbol_entry) {
 			if (strcmp(current_entry_entry->name, current_symbol_entry->name) == 0) {
-				if (current_symbol_entry->address_type == DIRECTIVE) {
-					current_entry_entry->address = current_symbol_entry->address + IC;
-				}
-				else {
-					current_entry_entry->address = current_symbol_entry->address;
-				}
+				current_entry_entry->address = current_symbol_entry->address;
 				break;
 			}
 			current_symbol_entry = current_symbol_entry->next;
@@ -155,13 +150,8 @@ boolean second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbol
 			}
 
 			if (strcmp(current_uninitialized_symbols_entry->name, current_symbol_entry->name) == 0) {
-				/* Check if it is a directive or instruction symbol and set data accordingly */
-				if (current_symbol_entry->address_type == DIRECTIVE) {
-					current_uninitialized_symbols_entry->extra_code_word_value->data = current_symbol_entry->address + IC;
-				}
-				else {
-					current_uninitialized_symbols_entry->extra_code_word_value->data = current_symbol_entry->address;
-				}
+				/* Set symbol data */
+				current_uninitialized_symbols_entry->extra_code_word_value->data = current_symbol_entry->address;
 				break;
 			}
 

@@ -545,16 +545,14 @@ void set_code_table_to_ic_initial_address(code_table_entry** code_table_head) {
     *code_table_head = code_table_ptr;
 }
 
-/* Addes the final length of the IC to DC */
+/* Add IC count to all data addresses */
 void add_final_ic_to_dc_count(symbols_table_entry* symbol_table, data_table_entry* data_table, long IC, long* DC) {
-    ///* Add IC count to all symbols that have DC count */
-    //while (symbol_table)
-    //{
-    //    if (symbol_table->address_type == DIRECTIVE)
-    //        symbol_table->address += IC;
-    //    symbol_table = symbol_table->next;
-    //}
-    /* Add IC count to all data addresses */
+    /* Add IC count to all symbols that have DC count */
+    while (symbol_table) {
+        if (symbol_table->address_type == DIRECTIVE)
+            symbol_table->address += IC;
+        symbol_table = symbol_table->next;
+    }
     /* Updated the address in the data table */
     while (data_table) {
         data_table->address += IC;
