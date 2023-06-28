@@ -171,28 +171,62 @@ typedef struct uninitialized_symbols_table_entry{/*struct for the symbols table*
 
 
 
-
+/* Calls functions to add directive lines data to the table */
 boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table, data_table_entry** data_table, extern_entry** ext, entry_entry** ent, long* DC, long* IC);
+
+/* Adds instruction data to the tables */
 boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_trable_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head, long* IC);
+
+/* Adds a symbol to the symbols table */
 boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_head, extern_entry* ext_head, line_type type, long address, long L);
+
+/* Adds a string from a .string line to the table data_table_entry */
 boolean add_string_to_table(line_info* line, data_table_entry** data_table_head, symbols_table_entry** symbol_table_head, extern_entry* ext_head, long* DC);
+
+/* Adds a number from a .data line to the table data_table_entry */
 boolean add_number_to_table(line_info* line, data_table_entry** data_table_head, symbols_table_entry** symbol_table_head, extern_entry* ext_head, long* DC);
+
+/* Adds entry labels to the entry_entry table */
 boolean add_entry_to_table(line_info* line, symbols_table_entry* symbols_table_head, extern_entry* ext_head, entry_entry** ent_head);
+
+/* Adds extern labels to the extern_entry table */
 boolean add_extern_to_table(line_info* line, symbols_table_entry* symbols_table_head, extern_entry** ext_head, entry_entry* ent_head);
 
+/* Adds 100 empty code word to the table code_table_entry */
 void add_100_to_code_table(code_table_entry** code_table_head, long* IC);
+
+/* Frees the data table */
 void free_data_table(data_table_entry*);
+
+/* Frees the symbols table */
 void free_symbols_table(symbols_table_entry*);
+
+/* Frees the extern table */
 void free_extern_table(extern_entry*);
+
+/* Frees the entry table */
 void free_entry_table(entry_entry*);
+
+/* Frees the code table */
 void free_code_table(code_table_entry* head);
+
+/* Skips the unused 100 first words */
 void set_code_table_to_ic_initial_address(code_table_entry** code_table_head);
 
+/* Returns the number of extra code words that's needed */
 int extra_words_for_addressing(line_info* line);
 
+/* Returns the opcode word */
 code_table_entry* get_opcode_word(line_info* line, long* IC);
+
+/* Returns a register code word */
 code_table_entry* get_register_word(char* source_register, char* target_register, long* IC);
+
+/* Returns a code word for a number or a label */
 code_table_entry* get_extra_word(uninitialized_symbols_table_entry** uninitialized_symbol_head, char* operand, long* IC);
+
+/* DEBUGING*/
 void print_code_table_in_binary(code_table_entry* code_table);
 
+/* Adds the final ic number to dc */
 void add_final_ic_to_dc_count(symbols_table_entry* symbol_table, data_table_entry* data_table, long IC, long* DC);
