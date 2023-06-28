@@ -39,10 +39,11 @@ static boolean process_line_first_pass(line_info* line, long* IC, long* DC, symb
 
 /* calls functions to check errors based on the type of the line */
 static boolean validate_line(line_info* line) {
-    /*label checking*/
+    boolean valid_line_flag = TRUE;
+    /* if there's a bad lable print the error and continue to check rest of line */
     if (line->label_flag){
         if (bad_label(line->file_name, line->label, line->line_content, line->line_number))
-            return FALSE;
+            valid_line_flag = FALSE;
     }
 
     /*checks for errors in directive lines*/
@@ -56,7 +57,7 @@ static boolean validate_line(line_info* line) {
         if (!valid_instruction_line(line))
             return FALSE;
     }
-    return TRUE;
+    return valid_line_flag;
 }
 
 /* gets a string that contains the line that was read and extact the infomaing by saving it in line_info */

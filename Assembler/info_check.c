@@ -256,7 +256,7 @@ boolean check_extra_or_missing_operands(line_info* line) {
         strcmp(line->opcode, "cmp") == 0 ||
         strcmp(line->opcode, "lea") == 0) {
         /*checking for missing operand*/
-        if (line->source_operand == NULL || line->target_operand == NULL) {
+        if (string_is_empty(line->source_operand) || string_is_empty(line->target_operand)) {
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "missing operand");
             //printf("Error: in line %ld %s missing operand\n", line->line_number, line->line_content);
             return FALSE;
@@ -273,15 +273,13 @@ boolean check_extra_or_missing_operands(line_info* line) {
         strcmp(line->opcode, "prn") == 0 ||
         strcmp(line->opcode, "jsr") == 0) {
             /*checking for missing operand*/
-        if (line->source_operand == NULL) {
+        if (string_is_empty(line->source_operand)) {
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "missing operand");
-            //printf("Error: in line %ld %s missing operand\n", line->line_number, line->line_content);
             return FALSE;
         }
         /*checking for extra operand*/
-        else if (line->target_operand != NULL && strcmp(line->target_operand, "") != 0) { 
+        if(!string_is_empty(line->target_operand)){
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "extra operand");
-            //printf("Error: in line %ld %sextra operand\n", line->line_number, line->line_content);
             return FALSE;
         }
         line->target_operand = line->source_operand; /*moving source operand to target operand*/
@@ -291,17 +289,14 @@ boolean check_extra_or_missing_operands(line_info* line) {
     else if (strcmp(line->opcode, "rts") == 0 ||
         strcmp(line->opcode, "stop") == 0) {
             /*checking for extra operand*/
-        if ((line->source_operand != NULL && strcmp(line->source_operand, "")) ||
-            (line->target_operand != NULL && strcmp(line->target_operand, ""))) {
+        if (!string_is_empty(line->source_operand) || !string_is_empty(line->target_operand)) {
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "extra operand");
-            //printf("Error: in line %ld %s extra operand\n", line->line_number, line->line_content);
             return FALSE;
         }
     }
     /*invalid opcode*/
     else {
         PRINT_ERROR(line->file_name, line->line_number, line->line_content, "invalid opcode");
-        //printf("Error: in line %ld: %s\nInvalid opcode\n", line->line_number, line->line_content);
         return FALSE;
     }
 
@@ -491,6 +486,8 @@ boolean data_number_too_small(char* string_number) {
 /* checks if the string is empty (white spaces) */
 boolean string_is_empty(char* string) {
     int i;
+    if (string == NULL)
+        return TRUE;
     for (i = 0; i < strlen(string); i++) {
         if (!isspace(string[i])) {
             return FALSE;

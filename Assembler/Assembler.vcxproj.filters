@@ -88,7 +88,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="my_file.as" />
     <None Include="makefile" />
     <None Include="test_lable.am" />
     <None Include="label_check.as" />
@@ -97,8 +96,19 @@
     <None Include="workbook_example.as" />
     <None Include="workbook_example.ob" />
     <None Include="test.as" />
+    <None Include="1_entry_extern_errors.as" />
+    <None Include="1_invalid_label.as" />
+    <None Include="1_invalid_mcro.as" />
+    <None Include="1_invalid_number.as" />
+    <None Include="1_invalid_directive.as" />
+    <None Include="every_line_has_an_error.as" />
+    <None Include="1_line_too_long.as" />
+    <None Include="1_program_too_big.as" />
+    <None Include="temp_error_lines.as" />
+    <None Include="1_invalid_operand_label.as" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data_test.as" />
+    <Text Include="directory_to_test_files.txt" />
   </ItemGroup>
 </Project>

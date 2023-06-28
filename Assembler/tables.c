@@ -6,7 +6,6 @@
 
 #include "assembler.h"
 #include "line_info.h"
-
 #include "tables.h"
 #include "first_pass.h"
 #include "utils.h"
