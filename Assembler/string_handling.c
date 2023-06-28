@@ -54,8 +54,7 @@ char* copy_string(char* string) {
 
 /* Return true if theres no more characters that are not white spases */
 boolean end_of_string(char* str) {
-    skip_white_spaces(&str);
-    if (*str == '\0' || *str == '\n')
+    if (string_is_empty(str))
         return TRUE;
     return FALSE;
 }
