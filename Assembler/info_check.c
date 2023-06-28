@@ -354,7 +354,6 @@ boolean valid_source_operand(line_info* line) {
         strcmp(line->opcode, "stop") == 0) {
         if( get_addressing_type(line->source_operand) != NO_OPERAND) {
                 PRINT_ERROR(line->file_name, line->line_number, line->line_content, "invalid source operand");
-                //printf("Error: in line %ld %s invalid source operand\n", line->line_number, line->line_content);
                 return FALSE;
             }
     }
@@ -363,9 +362,8 @@ boolean valid_source_operand(line_info* line) {
     if(get_addressing_type(line->source_operand) == DIRECT_ADDRESSING && bad_label(line->file_name, line->source_operand, line->line_content, line->line_number))
             return FALSE;
 
-    if(get_addressing_type(line->source_operand) == IMMEDIATE_ADDRESSING && data_number_too_big(line->source_operand)){
-        printf("Error: in file `%s` line %ld \"%s\" the number `%s` must be between %d - %d\n",line->file_name, line->line_number, line->line_content,
-                line->source_operand, MIN_DATA_NUMBER_VALUE, MAX_DATA_NUMBER_VALUE);
+    if(get_addressing_type(line->source_operand) == IMMEDIATE_ADDRESSING &&( instruction_number_too_big(line->source_operand) || instruction_number_too_small(line->source_operand))){
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "operand numbers must be between -512 and 511");
             return FALSE;
     }
     return TRUE;
@@ -415,10 +413,8 @@ boolean valid_target_operand(line_info* line) {
     if(get_addressing_type(line->target_operand) == DIRECT_ADDRESSING && bad_label(line->file_name, line->target_operand, line->line_content, line->line_number))
             return FALSE;
 
-    if(get_addressing_type(line->target_operand) == IMMEDIATE_ADDRESSING && data_number_too_big(line->target_operand)){
-            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "invalid target operand");
-            //printf("Error: in line %ld %s the number `%s` must be between %d - %d\n", line->line_number, line->line_content,
-                //line->target_operand, MIN_INT_VALUE, MAX_INT_VALUE);
+    if(get_addressing_type(line->target_operand) == IMMEDIATE_ADDRESSING && (instruction_number_too_big(line->target_operand) || instruction_number_too_small(line->target_operand))){
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "operand numbers must be between -512 and 511");
             return FALSE;
     }
     return TRUE;
@@ -484,6 +480,19 @@ boolean data_number_too_big(char* string_number) {
     return FALSE;
 }
 
+boolean instruction_number_too_big(char* string_number) {
+    int number = atoi(string_number);
+    if (number > MAX_INSTRUCTION_NUMBER_VALUE)
+        return TRUE;
+    return FALSE;
+}
+
+boolean instruction_number_too_small(char* string_number) {
+    int number = atoi(string_number);
+    if (number < MIN_INSTRUCTION_NUMBER_VALUE)
+        return TRUE;
+    return FALSE;
+}
 /* checks if the number is too small to code in to the memory word */
 boolean data_number_too_small(char* string_number) {
     int number = atoi(string_number);
