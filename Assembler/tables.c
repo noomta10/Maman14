@@ -248,13 +248,11 @@ boolean add_entry_to_table(line_info* line, symbols_table_entry* symbols_table_h
 
         /* check existsents in tables */
         if (exists_in_entry_table(token, *ent_head)) {
-            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Error: label is already declared as an entry");
-            //printf("Error: in line %ld: %s\nLabel '%s' is already declared as an entry\n", line->line_number, line->line_content, token);
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The label is already declared as an entry.");
             return FALSE;
         }
         if (exists_in_extern_table(token, ext_head)) {
-            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Error: label is already declared as an extern");
-            //printf("Error: in line %ld: %s\nLabel '%s' already exists in current file\n", line->line_number, line->line_content, token);
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The label is already declared as an extern.");
             return FALSE;
         }
         /* look for the comma */
@@ -264,7 +262,7 @@ boolean add_entry_to_table(line_info* line, symbols_table_entry* symbols_table_h
             return FALSE;
         }
         /* check if it's a bad lable */
-        if (bad_label(line->file_name, token, line->line_content, line->line_number))
+        if (invalid_label(line->file_name, token, line->line_content, line->line_number))
             return FALSE;
 
         /* adding label to table */
@@ -303,28 +301,25 @@ boolean add_extern_to_table(line_info* line, symbols_table_entry* symbols_table_
 
         /* check existsents in tables */
         if(exists_in_symbol_table(token, symbols_table_head)) {
-            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Error: label is already declared as an extern");
-            //printf("Error: in line %ld: %s\nLabel '%s' already exists in current file\n", line->line_number, line->line_content, token);
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The label is already declared as an extern.");
             return FALSE;
         }
         if(exists_in_entry_table(token, ent_head)) {
-            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Error: label is already declared as an entry");
-            //printf("Error: in line %ld: %s\nLabel '%s' already exists in current file\n", line->line_number, line->line_content, token);
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The label is already declared as an entry.");
             return FALSE;
         }
         if(exists_in_extern_table(token, *ext_head)) {
-            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Error: label is already declared as an extern");
-            //printf("Error: in line %ld %s\n label `%s` already declared as extern\n", line->line_number, line->line_content, token);
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The label is already declared as an extern.");
             return FALSE;
         }
         /* look for the comma */
         skip_white_spaces(&extern_lables);
         if(!check_comma(&extern_lables) && !end_of_string(extern_lables)){
-            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "missing a comma between the labels");
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Missing a comma between the labels.");
             return FALSE;
         }
         /* check if it's a bad lable */
-        if(bad_label(line->file_name, token, line->line_content, line->line_number))
+        if(invalid_label(line->file_name, token, line->line_content, line->line_number))
             return FALSE;
 
         /* adding label to table */
@@ -336,8 +331,9 @@ boolean add_extern_to_table(line_info* line, symbols_table_entry* symbols_table_
         ADD_NODE_TO_LIST(ext_prev, ext_ptr, ext_head);
     }
     /* if theres a lable print a warning */
-    if(line->label_flag)
-        printf("Warning: in file `%s` line %ld %s: label `%s` is being igored\n",line->file_name, line->line_number, line->line_content, token);
+    if (line->label_flag) {
+        printf("Warning: in file '%s', line %ld %s:\nLabel '%s' is being ignored.\n", line->file_name, line->line_number, line->line_content, token);
+    }
 
     return TRUE;
 }

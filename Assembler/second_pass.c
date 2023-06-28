@@ -69,7 +69,7 @@ static boolean check_entry_defined_in_file(entry_entry* head_entry_entry, symbol
 		}
 
 		if (!entry_has_definition) {
-			PRINT_ERROR(as_file_name, 0, "line content", "Entry symbol is not defined in file.");
+			PRINT_ERROR(as_file_name, current_entry_entry->line_number, current_entry_entry->line_content, "Entry symbol is not defined in file.");
 			return FALSE;
 		}
 

@@ -58,7 +58,7 @@ boolean line_too_long(FILE* am_file, char* line_content)
 
 /* gets a label and the location of the label and returns true if the label if valid. 
  * else retruns false and prints a error */
-boolean bad_label(char* file_name, char* label, char* line_content, long line_number)
+boolean invalid_label(char* file_name, char* label, char* line_content, long line_number)
 {
     int i = 0;
 
@@ -359,7 +359,7 @@ boolean valid_source_operand(line_info* line) {
     }
 
     /* if source operand is a label, check it */
-    if(get_addressing_type(line->source_operand) == DIRECT_ADDRESSING && bad_label(line->file_name, line->source_operand, line->line_content, line->line_number))
+    if(get_addressing_type(line->source_operand) == DIRECT_ADDRESSING && invalid_label(line->file_name, line->source_operand, line->line_content, line->line_number))
             return FALSE;
 
     if(get_addressing_type(line->source_operand) == IMMEDIATE_ADDRESSING &&( instruction_number_too_big(line->source_operand) || instruction_number_too_small(line->source_operand))){
@@ -410,7 +410,7 @@ boolean valid_target_operand(line_info* line) {
     }
 
     /* if target address is an lable, check it */
-    if(get_addressing_type(line->target_operand) == DIRECT_ADDRESSING && bad_label(line->file_name, line->target_operand, line->line_content, line->line_number))
+    if(get_addressing_type(line->target_operand) == DIRECT_ADDRESSING && invalid_label(line->file_name, line->target_operand, line->line_content, line->line_number))
             return FALSE;
 
     if(get_addressing_type(line->target_operand) == IMMEDIATE_ADDRESSING && (instruction_number_too_big(line->target_operand) || instruction_number_too_small(line->target_operand))){

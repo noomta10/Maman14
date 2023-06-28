@@ -42,7 +42,7 @@ static boolean validate_line(line_info* line) {
     boolean valid_line_flag = TRUE;
     /* if there's a bad lable print the error and continue to check rest of line */
     if (line->label_flag){
-        if (bad_label(line->file_name, line->label, line->line_content, line->line_number))
+        if (invalid_label(line->file_name, line->label, line->line_content, line->line_number))
             valid_line_flag = FALSE;
     }
 
