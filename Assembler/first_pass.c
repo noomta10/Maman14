@@ -15,27 +15,6 @@
 #include "info_check.h"
 
 
-/* Gets a line and calls functions to add the data to the tables */
-static boolean process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_entry** symbol_table_head, data_table_entry** data_table,
-    entry_entry** ent, extern_entry** ext, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head) {
-    /* Checks and prints errors in the line */
-    if (!validate_line(line)) {
-        printf("debug: invalid line\n");
-        return FALSE;
-    }
-    /* If the line contans data, add it to the memory */
-    if (line->directive_flag) {
-        if (!add_data_to_table(line, symbol_table_head, data_table, ext, ent, DC, IC))
-            return FALSE;
-    }
-    /* If the line is instruction, add it to memory */
-    if (line->instruction_flag){
-        if (!add_instruction_to_table(line, symbol_table_head, ext, code_table_head, uninitialized_symbol_head, IC))
-            return FALSE;
-    }
-    return TRUE;    
-}
-
 /* Calls functions to check errors based on the type of the line */
 static boolean validate_line(line_info* line) {
     boolean valid_line_flag = TRUE;
@@ -58,6 +37,28 @@ static boolean validate_line(line_info* line) {
     }
     return valid_line_flag;
 }
+
+/* Gets a line and calls functions to add the data to the tables */
+static boolean process_line_first_pass(line_info* line, long* IC, long* DC, symbols_table_entry** symbol_table_head, data_table_entry** data_table,
+    entry_entry** ent, extern_entry** ext, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head) {
+    /* Checks and prints errors in the line */
+    if (!validate_line(line)) {
+        printf("debug: invalid line\n");
+        return FALSE;
+    }
+    /* If the line contans data, add it to the memory */
+    if (line->directive_flag) {
+        if (!add_data_to_table(line, symbol_table_head, data_table, ext, ent, DC, IC))
+            return FALSE;
+    }
+    /* If the line is instruction, add it to memory */
+    if (line->instruction_flag){
+        if (!add_instruction_to_table(line, symbol_table_head, ext, code_table_head, uninitialized_symbol_head, IC))
+            return FALSE;
+    }
+    return TRUE;    
+}
+
 
 /* Gets a string that contains the line that was read and extact the infomaing by saving it in line_info */
 static void extract_command_info(char* content, line_info* line) {

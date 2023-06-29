@@ -165,7 +165,7 @@ typedef struct entry_entry{
 	struct entry_entry *next;
 	long address;
 	char *name;
-	int line_number;
+	long line_number;
 	char *line_content;
 } entry_entry;
 

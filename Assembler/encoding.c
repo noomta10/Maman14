@@ -44,5 +44,5 @@ char* encode_base64(unsigned int number) {
     final_base64[2] = '\0';
 
     return final_base64_pointer;
-   // return final_base64;
+   /* return final_base64; */
 }
