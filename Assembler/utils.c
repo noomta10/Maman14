@@ -46,8 +46,13 @@ boolean is_reserved_name(char* name) {
 		strcmp(name, "bne") == 0 || strcmp(name, "red") == 0 ||
 		strcmp(name, "prn") == 0 || strcmp(name, "jsr") == 0 ||
 		strcmp(name, "rts") == 0 || strcmp(name, "stop") == 0 ||
-		strcmp(name, ".string") == 0 || strcmp(name, ".data") == 0 ||
-		strcmp(name, ".entry") == 0 || strcmp(name, ".extern") == 0) {
+		strcmp(name, "string") == 0 || strcmp(name, "data") == 0 ||
+		strcmp(name, "entry") == 0 || strcmp(name, "extern") == 0 ||
+		strcmp(name, "@r0") == 0 || strcmp(name, "@r1") == 0 ||
+		strcmp(name, "@r2") == 0 || strcmp(name, "@r3") == 0 ||
+		strcmp(name, "@r4") == 0 || strcmp(name, "@r5") == 0 ||
+		strcmp(name, "@r6") == 0 || strcmp(name, "@r7") == 0)
+	{
 		return TRUE;
 	}
 	return FALSE;
