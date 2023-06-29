@@ -4,5 +4,3 @@ boolean first_pass(char* file_name, FILE *am_file, symbols_table_entry** symbol_
 
 /* Gets an operand and return its addressing type: immediate, register or direct */
 addressing_type get_addressing_type(char* operand);
-
-

@@ -1,4 +1,3 @@
-
 /* Clears the string */
 void reset_str(char *string);
 
@@ -34,5 +33,3 @@ register_type get_register_number(char* register_name);
 
 /* Deletes the new line character in the end of the string */
 void remove_new_line_character(char* string);
-
-

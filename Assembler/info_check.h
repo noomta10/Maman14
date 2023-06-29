@@ -79,5 +79,5 @@ boolean instruction_number_too_small(char* string_number);
 /* Checks if the string is empty */
 boolean string_is_empty(char* string);
 
-/* Checks if there's a extra comma at the end of the line */
+/* Checks if there is an extra comma at the end of the line */
 boolean extra_comma(char* line);

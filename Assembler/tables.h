@@ -1,16 +1,18 @@
-#define UNINITIALIZED_VALUE 0
+#define UNINITIALIZED_VALUE 0 /* Initial value for variables */
 
 
+/* Adding a node to a linked list */
 #define ADD_NODE_TO_LIST(prev, ptr, head) \
-/*seting the list root if list is empty*/ \
+/* Seting the list root if list is empty */ \
 if (!*(head)) \
 	*(head) = (ptr);  \
-/*adding the node to the list*/ \
+/* Adding the node to the list*/ \
 if(prev) \
 	(prev)->next = (ptr); \
 (prev) = (ptr);\
 (ptr) = (ptr)->next = NULL;
 
+/* Setting a previous pointer in a linked list */
 #define SET_PREV_POINTER(prev, head_ptr) \
 while(head_ptr) \
 { \
@@ -18,6 +20,7 @@ while(head_ptr) \
 	(head_ptr) = (head_ptr)->next; \
 }
 
+/* Freeing a linked list */
 #define FREE_TABLE(current_entry, next_entry) \
 /* If table is empty, return */ \
 if (!current_entry) \
@@ -31,36 +34,42 @@ while (current_entry->next != NULL) { \
 }
 
 
+/* Represents the first code word in a sentence in the code image */
 typedef struct {
-	unsigned int ARE: 2;
+	unsigned int ARE: 2; 
 	unsigned int target_addressing: 3;
 	unsigned int opcode: 4;
 	unsigned int source_addressing: 3;
 } code_word;
 
+/* Represents extra code word in a sentence in the code image */
 typedef struct {
 	unsigned int ARE: 2;
 	unsigned int data: 10;
 } extra_code_word;
 
+/* Represents a register related extra code word in a sentence in the code image */
 typedef struct {
 	unsigned int ARE: 2;
 	unsigned int source_register : 5;
 	unsigned int target_register: 5;
 } register_word;
 
+/* Contains the three possible encodings structs for a word in the code image */
 typedef union {
 	code_word code_word_value;
 	extra_code_word extra_code_word_value;
 	register_word register_word_value;
 } word_value;
 
+/* Contains the three possible encodings types for a word in the code image */
 typedef enum {
 	TYPE_CODE_WORD,
 	TYPE_EXTRA_CODE_WORD,
 	TYPE_REGISTER_WORD
 } word_type;
 
+/* Contains opcodes */
 typedef enum {
 	MOV_OPCODE = 0,
 	CMP_OPCODE = 1,
@@ -80,6 +89,7 @@ typedef enum {
 	STOP_OPCODE = 15
 } opcode_type;
 
+/* Contains addressing types */
 typedef enum {
 	NO_OPERAND = 0,
 	IMMEDIATE_ADDRESSING = 1,
@@ -87,12 +97,14 @@ typedef enum {
 	REGISTER_ADDRESSING = 5
 } addressing_type;
 
+/* Contains ARE types */
 typedef enum {
 	ABSOLUTE = 0,
 	EXTERNAL = 1,
 	RELOCATABLE = 2
 } ARE_type;
 
+/* Contains registers and NO_REGISTER if register is invalid or does not exist */
 typedef enum {
 	NO_REGISTER = 0,
 	R0 = 0,
@@ -105,38 +117,42 @@ typedef enum {
 	R7 = 7
 } register_type;
 
+/* Contains two possible line types */
 typedef enum {
 	DIRECTIVE, 
 	INSTRUCTION
 } line_type;
 
+/* .string or .data directive types */
 typedef enum {
 	TYPE_STRING,
 	TYPE_NUMBER
 } data_types;
 
-typedef struct code_table_entry{/*code table for code values*/
+/* Code table for code values */
+typedef struct code_table_entry{ 
 	struct code_table_entry* next;
 	word_type type;
 	word_value value;
-	long address;/* IC */
+	long address; /* Address of IC */
 } code_table_entry; 
 
-
+/* Kind of data */
 typedef union{
 	char character;
 	long number;
 } data_value;
 
-typedef struct data_table_entry{/*data table for data values*/
+/* Data table for data values */
+typedef struct data_table_entry{
 	struct data_table_entry *next;
-	long address; /*address of DC*/
+	long address; /* address of DC */
 	data_value data; /* Character or number */
 	data_types type; /* String or number */
 } data_table_entry;
 
-
-typedef struct extern_entry{/*data table for extern flags */
+/* Data table for externs */
+typedef struct extern_entry{
 	struct extern_entry *next;
 	long address;
 	long line_number;
@@ -144,7 +160,8 @@ typedef struct extern_entry{/*data table for extern flags */
 	char *name;
 } extern_entry;
 
-typedef struct entry_entry{/*data table for entry flags */
+/* Data table for entries */
+typedef struct entry_entry{
 	struct entry_entry *next;
 	long address;
 	char *name;
@@ -152,23 +169,22 @@ typedef struct entry_entry{/*data table for entry flags */
 	char *line_content;
 } entry_entry;
 
-typedef struct symbols_table_entry{/*struct for the symbols table*/
-	struct symbols_table_entry *next;/*pointer to the next entry*/
-	long address;/*address of IC or DC*/
-	long L;/*if data type, length of data*/
+/* Represents a symbols table entry */
+typedef struct symbols_table_entry {
+	struct symbols_table_entry *next;/* Pointer to the next entry */
+	long address;/* Address of IC or DC */
+	long L;/* If data type, length of data */
 	char* name;
 	line_type address_type;
 } symbols_table_entry;
 
-typedef struct uninitialized_symbols_table_entry{/*struct for the symbols table*/
-	struct uninitialized_symbols_table_entry *next;/*pointer to the next entry*/
-	long address;/*address of IC or DC*/
+/* Represents an uninitialized symbols table entry */
+typedef struct uninitialized_symbols_table_entry{
+	struct uninitialized_symbols_table_entry *next; /* Pointer to the next entry */
+	long address; /* Address of IC or DC */
 	char* name;
 	extra_code_word* extra_code_word_value;
 } uninitialized_symbols_table_entry;
-
-
-
 
 
 /* Calls functions to add directive lines data to the table */
@@ -225,7 +241,7 @@ code_table_entry* get_register_word(char* source_register, char* target_register
 /* Returns a code word for a number or a label */
 code_table_entry* get_extra_word(uninitialized_symbols_table_entry** uninitialized_symbol_head, char* operand, long* IC);
 
-/* DEBUGING*/
+/* DEBUG */
 void print_code_table_in_binary(code_table_entry* code_table);
 
 /* Adds the final ic number to dc */

@@ -7,6 +7,7 @@ typedef struct mcros_table_entry {
 } mcros_table_entry;
 
 /* Get a pointer to the source file and the file name.
-Read the file libe by line and convert the mcros in the file.
-If errors were found, return FALSE, else, TRUE. */
+Read the file line by line and handle the mcros in the file.
+If errors were found, pre-assembler failed, return FALSE, and continue to the next files if there are any.
+Else, pre-assembler succeeded, return TRUE. */
 boolean pre_assembler(FILE* source_file, char* file_name);
