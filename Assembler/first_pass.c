@@ -10,7 +10,6 @@
 #include "first_pass.h"
 #include "utils.h"
 #include "string_handling.h"
-#include "debuging.h"
 #include "info_check.h"
 
 
@@ -47,7 +46,6 @@ static boolean process_line_first_pass(line_info* line, long* IC, long* DC, symb
     
     /* Checks and prints errors in the line */
     if (!validate_line(line)) {
-        printf("debug: invalid line\n");
         return FALSE;
     }
     
@@ -156,7 +154,6 @@ boolean first_pass(char* file_name, FILE* am_file, symbols_table_entry** symbol_
     /* Reading '.as' file line by line until the end */
     while (fgets(line_content, MAX_LINE_LENGTH, am_file) != NULL) {
         line->line_number++;
-        printf("Debug: line %ld %s", line->line_number, line_content);
         /* Checks line size */
         if (line_too_long(am_file, line_content)){
             *error_flag = TRUE;
@@ -200,7 +197,7 @@ boolean first_pass(char* file_name, FILE* am_file, symbols_table_entry** symbol_
         *error_flag = TRUE;
     }
 
-    return *error_flag; 
+    return !*error_flag; 
 }
 
 

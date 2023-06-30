@@ -531,7 +531,7 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_
         return FALSE;
     }
     if (exists_in_extern_table(label_name, ext_head)) {
-        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "label is already declared as extern");
+        PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The label is already declared as an extern.");
         return FALSE;
     }
 

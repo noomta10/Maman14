@@ -11,18 +11,6 @@
 static const char base64_chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 
-/* DEBUG */
-void print_decimal_to_binary(int num, int number_of_bits_to_print) {
-    int i = 0;
-    /* Iterate over each bit from left to right */
-    for (i = number_of_bits_to_print - 1; i >= 0; i--) {
-        int bit = (num >> i) & 1; /* Extract the i-th bit */
-        printf("%d", bit);
-    }
-    printf(" ");
-}
-
-
 /*  Encode a 6-bit number to base64 */
 char encode_six_bit_number(unsigned int bits) {
     return base64_chars[bits];

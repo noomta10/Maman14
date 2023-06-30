@@ -15,7 +15,7 @@
 
 /* Print detailed error */
 #define PRINT_ERROR(file_name, line_number, line_content, error_message)\
-printf("Error in file '%s', line %ld: \"%s\":\n%s\n",file_name, line_number, line_content, error_message)
+printf("Error in file '%s', line %ld: \"%s\":\n%s\n\n",file_name, line_number, line_content, error_message)
 
 /* Booleans- TRUE and FALSE */
 typedef enum {FALSE = 0, TRUE = 1} boolean;

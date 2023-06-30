@@ -3,7 +3,6 @@
 #include "assembler.h"
 #include "line_info.h"
 #include "tables.h"
-#include "debuging.h"
 #include "write_files.h"
 
 /* Add entries addresses from the symbols table to the entries table */

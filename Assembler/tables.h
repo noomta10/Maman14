@@ -244,7 +244,9 @@ code_table_entry* get_register_word(char* source_register, char* target_register
 /* Returns a code word for a number or a label */
 code_table_entry* get_extra_word(uninitialized_symbols_table_entry** uninitialized_symbol_head, char* operand, long* IC);
 
-/* DEBUG */
+/* 
+
+*/
 void print_code_table_in_binary(code_table_entry* code_table);
 
 /* Adds the final ic number to dc */
