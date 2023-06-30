@@ -280,6 +280,10 @@ boolean check_extra_or_missing_operands(line_info* line) {
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Missing operand.");
             return FALSE;
         }
+        if (line->extra_chars_flag) {
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Invalid characters after end of command.");
+            return FALSE;
+        }
     }
     /* Checking not, clr, inc, dec, jmp, bne, red, prn, jsr commands */
     else if (strcmp(line->opcode, "not") == 0 ||

@@ -176,7 +176,7 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
 
         /* Check if there is an invalid comma after last number */
         if (extra_comma(line->directive_data) && first_number_check) {
-            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "There is an invalid comma after last number.");
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "There is an invalid comma after last element.");
             first_number_check = FALSE;
         }
 
