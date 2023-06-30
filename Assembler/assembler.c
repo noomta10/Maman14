@@ -56,7 +56,7 @@ void process_file(char* file_name) {
 	/* Check if .am file opened successfully */
 	file_pointer = fopen(full_am_name, "r");
 	if (file_pointer == NULL) {
-		fprintf(stderr, "Error: The file '%s' couldn't be opened\n", full_am_name);
+		perror("Error: The file '%s' couldn't be opened\n", full_am_name);
 		free(full_file_name);
 		free(full_am_name);
 		return;
