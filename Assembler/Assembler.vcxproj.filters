@@ -106,6 +106,8 @@
     <None Include="1_program_too_big.as" />
     <None Include="temp_error_lines.as" />
     <None Include="1_invalid_operand_label.as" />
+    <None Include="1_invalid_instruction.as" />
+    <None Include="full_list.as" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="data_test.as" />

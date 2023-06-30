@@ -35,7 +35,7 @@ boolean process_file(char* file_name) {
 	/* Check if file opened successfully */
 	file_pointer = fopen(full_file_name, "r");
 	if (file_pointer == NULL) {
-		fprintf(stderr, "Error: The file %s couldn't be opened\n", full_file_name);
+		perror(full_file_name);
 		free(full_file_name);
 		free(full_am_name);
 		return FALSE;
@@ -100,10 +100,11 @@ boolean process_file(char* file_name) {
 	}
 
 	/* DEBUG- printing values after second pass */
-	print_uninitialized_symbols_table(uninitialized_symbol_entry_head);
-	print_code_table_in_binary(code_entry_head);
+	//print_uninitialized_symbols_table(uninitialized_symbol_entry_head);
+	//print_code_table_in_binary(code_entry_head);
 	printf("IC: %ld\n", IC);
 	printf("DC: %ld\n", DC);
+	print_code_table_in_binary(code_entry_head);
 
 	/* Free memory */
 	free(full_file_name);

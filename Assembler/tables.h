@@ -135,6 +135,7 @@ typedef struct code_table_entry{
 	word_type type;
 	word_value value;
 	long address; /* Address of IC */
+	char* info;
 } code_table_entry; 
 
 /* Kind of data */

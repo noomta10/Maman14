@@ -358,6 +358,7 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
    
     /* Adding opcode word */
     code_table_temp = get_opcode_word(line, IC);
+    code_table_temp->info = line->line_content;/* For debugging */ 
     source_addressing_type = code_table_temp->value.code_word_value.source_addressing;
     target_addressing_type = code_table_temp->value.code_word_value.target_addressing;
     ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
@@ -367,18 +368,21 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
     /* If there's only one operand and it is a register */
     if(source_addressing_type == NO_OPERAND && target_addressing_type == REGISTER_ADDRESSING){
         code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
+        code_table_temp->info = line->target_operand;/* For debugging */
         ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
         L++;
     }
     /* If there's only one operand and it is a direct or immediate addressing */
     else if(source_addressing_type == NO_OPERAND && (target_addressing_type == DIRECT_ADDRESSING || target_addressing_type == IMMEDIATE_ADDRESSING)){
             code_table_temp = get_extra_word(uninitialized_symbol_head, line->target_operand, IC);
+            code_table_temp->info = line->target_operand;/* For debugging */
             ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
             L++;
     }
     /* If both operands are registers */
     else if(source_addressing_type == REGISTER_ADDRESSING && target_addressing_type == REGISTER_ADDRESSING){
         code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
+        code_table_temp->info = line->line_content;/* For debugging */
         ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
         L++;
     }    
@@ -386,30 +390,36 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
     else if( source_addressing_type == REGISTER_ADDRESSING){
         /* Add register to table*/
         code_table_temp  = get_register_word(line->source_operand, line->target_operand, IC);
+        code_table_temp->info = line->source_operand;/* For debugging */
         ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
         L++;
         /* Add extra word to table */
         code_table_temp = get_extra_word(uninitialized_symbol_head, line->target_operand, IC);
+        code_table_temp->info = line->target_operand;/* For debugging */
         ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
         L++;
     }
     else if( target_addressing_type == REGISTER_ADDRESSING){
         /* Add extra word to table */
         code_table_temp = get_extra_word(uninitialized_symbol_head, line->source_operand, IC);
+        code_table_temp->info = line->source_operand;/* For debugging */
         ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
         L++;
         /* Add register to table*/
         code_table_temp  = get_register_word(line->source_operand, line->target_operand, IC);
+        code_table_temp->info = line->target_operand;/* For debugging */
         ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
         L++;
     }
-    else if(!(source_addressing_type == NO_OPERAND && target_addressing_type == NO_OPERAND)){
+    else if(source_addressing_type != NO_OPERAND && target_addressing_type != NO_OPERAND){
         /* Add extra words to table */
         code_table_temp = get_extra_word(uninitialized_symbol_head, line->source_operand, IC);
+        code_table_temp->info = line->source_operand;/* For debugging */
         ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
         L++;
         /* Add extra words to table */
         code_table_temp = get_extra_word(uninitialized_symbol_head, line->target_operand, IC);
+        code_table_temp->info = line->target_operand;/* For debugging */
         ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
         L++;
     }

@@ -163,6 +163,7 @@
     <None Include="1_invalid_operand_label.as" />
     <None Include="data_test.am" />
     <None Include="every_line_has_an_error.as" />
+    <None Include="full_list.as" />
     <None Include="instruction_lines.as" />
     <None Include="label_check.as" />
     <None Include="1_line_too_long.as" />

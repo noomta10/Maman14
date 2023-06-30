@@ -19,6 +19,7 @@ void print_decimal_to_binary(int num, int number_of_bits_to_print) {
         int bit = (num >> i) & 1; /* Extract the i-th bit */
         printf("%d", bit);
     }
+    printf(" ");
 }
 
 
