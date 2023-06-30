@@ -79,12 +79,12 @@ boolean process_file(char* file_name) {
 	/* DEBUG- printing  IC, DC and data tables */
 	printf("IC = %ld\n", IC);
 	printf("DC = %ld\n\n", DC);
-	if(data_entry_head) print_data_table(data_entry_head);
-	if(symbol_entry_head) print_symbol_table(symbol_entry_head);
-	if(entry_entry_head) print_entry_table(entry_entry_head);
-	if (extern_entry_head) print_extern_table(extern_entry_head);
-	if (code_entry_head) print_code_word(code_entry_head);
-	if (uninitialized_symbol_entry_head) print_uninitialized_symbols_table(uninitialized_symbol_entry_head);
+	//if(data_entry_head) print_data_table(data_entry_head);
+	//if(symbol_entry_head) print_symbol_table(symbol_entry_head);
+	//if(entry_entry_head) print_entry_table(entry_entry_head);
+	//if (extern_entry_head) print_extern_table(extern_entry_head);
+	//if (code_entry_head) print_code_word(code_entry_head);
+	//if (uninitialized_symbol_entry_head) print_uninitialized_symbols_table(uninitialized_symbol_entry_head);
 
 	/* Second pass, return FALSE if falied */
 	if (!second_pass(uninitialized_symbol_entry_head, symbol_entry_head, extern_entry_head, entry_entry_head, full_file_name, file_name, IC, DC, code_entry_head, data_entry_head)) {
@@ -100,11 +100,10 @@ boolean process_file(char* file_name) {
 	}
 
 	/* DEBUG- printing values after second pass */
-	//print_uninitialized_symbols_table(uninitialized_symbol_entry_head);
-	//print_code_table_in_binary(code_entry_head);
+	print_symbol_table(symbol_entry_head);
+	print_code_table_in_binary(code_entry_head);
 	printf("IC: %ld\n", IC);
 	printf("DC: %ld\n", DC);
-	print_code_table_in_binary(code_entry_head);
 
 	/* Free memory */
 	free(full_file_name);
