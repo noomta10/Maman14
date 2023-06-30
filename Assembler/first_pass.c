@@ -154,10 +154,11 @@ boolean first_pass(char* file_name, FILE* am_file, symbols_table_entry** symbol_
         line->line_content = copy_string(line_content);
 
         /* Checking if line is empty or command line */
-        if (ignore_line(line_content)){
-            reset_line_info(line);
+        if (ignore_line(line_content)) {
+            reset_str(line_content);
             continue;
         }
+        
 
         /* Processing line */
         extract_command_info(line_content, line);

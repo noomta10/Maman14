@@ -35,4 +35,4 @@ write_files.o:  write_files.c write_files.h
 	gcc -c -g -ansi -Wall -pedantic write_files.c -o write_files.o
 
 clean:
-	rm -f assembler.o pre_assembler.o utils.o assembler *.o
+	rm -f assembler *.o *.as *.am *.ext *.ent
