@@ -111,6 +111,5 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="data_test.as" />
-    <Text Include="directory_to_test_files.txt" />
   </ItemGroup>
 </Project>
