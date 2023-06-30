@@ -161,22 +161,11 @@
     <None Include="1_invalid_number.as" />
     <None Include="1_invalid_directive.as" />
     <None Include="1_invalid_operand_label.as" />
-    <None Include="data_test.am" />
-    <None Include="every_line_has_an_error.as" />
-    <None Include="full_list.as" />
-    <None Include="instruction_lines.as" />
-    <None Include="label_check.as" />
+    <None Include="valid_program.as" />
     <None Include="1_line_too_long.as" />
     <None Include="makefile" />
     <None Include="1_program_too_big.as" />
-    <None Include="temp_error_lines.as" />
-    <None Include="test.as" />
-    <None Include="test_lable.am" />
     <None Include="workbook_example.as" />
-    <None Include="workbook_example.ob" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="data_test.as" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

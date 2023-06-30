@@ -30,7 +30,6 @@ static unsigned int get_bits_word(code_table_entry* current_code_entry) {
 		final_bits_word = final_bits_word | current_code_entry->value.register_word_value.target_register << 2;
 		final_bits_word = final_bits_word | current_code_entry->value.register_word_value.source_register << 7;
 	}
-
 	return final_bits_word;
 }
 
@@ -49,6 +48,7 @@ void write_entry_file(char* file_name, entry_entry* entry_table_head) {
 	entry_file_name = add_file_postfix(file_name, ".ent");
 	entry_file = fopen(entry_file_name, "w");
 
+	/* File opening error */
 	if (!entry_file) {
 		fprintf(stderr, "Error: couldn't open file %s\n", entry_file_name);
 		return;
@@ -56,6 +56,7 @@ void write_entry_file(char* file_name, entry_entry* entry_table_head) {
 
 	current_entry_entry = entry_table_head;
 	
+	/* As long as there are entries in the table, print them to the file */
 	while (current_entry_entry) {
 		fprintf(entry_file, "%s %5ld\n", current_entry_entry->name, current_entry_entry->address);
 		current_entry_entry = current_entry_entry->next;
@@ -82,6 +83,7 @@ void write_extern_file(char* file_name, extern_entry* extern_table_head, uniniti
 	extern_file_name = add_file_postfix(file_name, ".ext");
 	extern_file = fopen(extern_file_name, "w");
 
+	/* File opening error */
 	if (!extern_file) {
 		fprintf(stderr, "Error: couldn't open file %s\n", extern_file_name);
 		return;
@@ -89,6 +91,7 @@ void write_extern_file(char* file_name, extern_entry* extern_table_head, uniniti
 
 	current_extern_entry = extern_table_head;
 
+	/* As long as there are externs in the table, print them to the file */
 	while (current_extern_entry) {
 		current_uninitialized_entry = uninitialized_entry_head;
 
@@ -147,5 +150,3 @@ void write_object_file(char* file_name, long IC, long DC, code_table_entry* code
 	fclose(object_file);
 	free(object_file_name);
 }
-
-

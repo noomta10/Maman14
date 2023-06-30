@@ -10,7 +10,8 @@
 #include "pre_assembler.h"
 #include "utils.h"
 
-/* Frees the macro list */
+
+/* Frees the macros table */
 static void free_table_memory(mcros_table_entry* first_mcro_entry) {
 	mcros_table_entry* current_mcro_entry = first_mcro_entry;
 	mcros_table_entry* next_mcro_entry;
@@ -26,24 +27,25 @@ static void free_table_memory(mcros_table_entry* first_mcro_entry) {
 }
 
 
+/* Handle existing mcro. If the first word is an existing mcro, replace it with its content.
+Return TRUE if first word is a mcro name and was replaced with mcro value. else, return FALSE. */
 static boolean handle_existing_mcro(mcros_table_entry* first_mcro_entry, char* first_word, FILE* am_file) {
 	mcros_table_entry* current_mcro_entry = first_mcro_entry;
 
 	/* Loops through the table to check if the first word is a defined macro in the table */
 	while (current_mcro_entry) {
-		/* If the first word is a defined macro in the table, write its value to the .am file, and return TRUE */
+		/* If the first word is a defined macro in the table, write its value to the '.am' file, and return TRUE */
 		if (strcmp(first_word, current_mcro_entry->name) == 0) {
 			fprintf(am_file, "%s", current_mcro_entry->value);
 			return TRUE;
 		}
-
 		current_mcro_entry = current_mcro_entry->next;
 	}
-
 	return FALSE;
 }
 
-
+/* Add mcro to table. Distinguish between three cases:
+Add head of the list, add line to existing mcro in the table, and add a new mcro. */
 static void add_mcro_to_table(char* mcro_name, char* mcro_value, mcros_table_entry** first_mcro_entry) {
 	mcros_table_entry* new_mcro_entry = (mcros_table_entry*)malloc_with_check(sizeof(mcros_table_entry));
 	mcros_table_entry* current_mcro_entry;
@@ -59,7 +61,6 @@ static void add_mcro_to_table(char* mcro_name, char* mcro_value, mcros_table_ent
 		*first_mcro_entry = new_mcro_entry;
 		return;
 	}
-
 	current_mcro_entry = *first_mcro_entry;
 
 	/* If mcro already exists in the table, append value to mcro */
@@ -72,7 +73,6 @@ static void add_mcro_to_table(char* mcro_name, char* mcro_value, mcros_table_ent
 			current_mcro_entry->value[total_length] = '\0';
 			return;
 		}
-
 		current_mcro_entry = current_mcro_entry->next;
 	}
 
@@ -97,21 +97,21 @@ static void add_mcro_to_table(char* mcro_name, char* mcro_value, mcros_table_ent
 }
 
 
+/* If the line contains mcro definition or an existing mcro- handle it. */
 static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** first_mcro_entry, FILE* source_file, char* saved_line, char* file_name, char* am_file_name, boolean* error_flag, int* line_number) {
 	char* first_word;
 	char* mcro_name = NULL;
 	char* saved_mcro_name = NULL;
 	char* as_file_name;
-
 	first_word = strtok(line, " \t\n");
 
-	/* If it is an empty line, print it to the .am file continue to next line */
+	/* If it is an empty line, print it to the '.am' file continue to next line */
 	if (first_word == NULL) {
 		fprintf(am_file, "\n");
 		return TRUE;
 	}
 
-	/* If first word is a defined mcro in the table, write its value to the .am file and continue to next line */
+	/* If first word is a defined mcro in the table, write its value to the '.am' file and continue to next line */
 	if (handle_existing_mcro(*first_mcro_entry, first_word, am_file)) {
 		return TRUE;
 	}
@@ -127,7 +127,7 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 		/* Check if mcro name is a reserved word */
 		if (is_reserved_name(mcro_name)) {
 			as_file_name = add_file_postfix(file_name, ".as");
-			printf("Error: pre-assembler failure error in file '%s', line %d:\nMcro \"%s\" must not be an instruction or a directive name.\n", as_file_name, *line_number, mcro_name);
+			printf("Error: pre-assembler failure error in file '%s', line %d:\nMcro \"%s\" must not be an instruction, a directive or a register name.\n", as_file_name, *line_number, mcro_name);
 			free(as_file_name);
 			*error_flag = TRUE;
 		}
@@ -138,11 +138,11 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 			(*line_number)++;
 			strcpy(saved_line, line);
 			first_word = strtok(line, " \t\n");
+
 			/* Stop if "endmcro" was encountered */
 			if (strcmp(first_word, "endmcro") == 0) {
 				break;
 			}
-
 			add_mcro_to_table(saved_mcro_name, saved_line, first_mcro_entry);
 		}
 		
@@ -154,6 +154,7 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 }
 
 
+/* Create an '.am' file, loop through all the lines in the original '.as' file */
 boolean pre_assembler(FILE* source_file, char* file_name) {
 	boolean error_flag = FALSE;
 	char line[MAX_LINE_LENGTH];
@@ -163,7 +164,6 @@ boolean pre_assembler(FILE* source_file, char* file_name) {
 	FILE* am_file;
 	boolean line_is_mcro_related = FALSE;
 	char* am_file_name = add_file_postfix(file_name, ".am");
-
 
 	/* Create an empty .am file */
 	am_file = fopen(am_file_name, "w");
@@ -178,8 +178,8 @@ boolean pre_assembler(FILE* source_file, char* file_name) {
 		/* Allocate memory for the line, and copy it */
 		saved_line = (char*)malloc_with_check(sizeof(line));
 		strcpy(saved_line, line);
-
 		line_is_mcro_related = handle_mcro_line(line, am_file, &first_mcro_entry, source_file, saved_line, file_name, am_file_name, &error_flag, &line_number);
+		
 		/* If the line is a mcro name or definiton, handle it */
 		if (line_is_mcro_related == TRUE) {
 			continue;
@@ -189,9 +189,11 @@ boolean pre_assembler(FILE* source_file, char* file_name) {
 		fprintf(am_file, "%s", saved_line);
 	}
 
+	/* If errors were encountered in the pre-assembler, return FALSE */
 	if (error_flag) {
 		return FALSE;
 	}
+
 	/* Close the file */
 	fclose(am_file);
 
@@ -203,6 +205,5 @@ boolean pre_assembler(FILE* source_file, char* file_name) {
 	if (first_mcro_entry) {
 		free_table_memory(first_mcro_entry);
 	}
-
 	return TRUE;
 }

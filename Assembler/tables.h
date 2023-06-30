@@ -1,5 +1,7 @@
 #define UNINITIALIZED_VALUE 0 /* Initial value for variables */
-
+#define NO_EXTREA_WORDS 0 /* Zero extra words */
+#define ONE_EXTRA_WORD 1 /* One extra word */
+#define TWO_EXTRA_WORDS 2 /* Two extra words */
 
 /* Adding a node to a linked list */
 #define ADD_NODE_TO_LIST(prev, ptr, head) \

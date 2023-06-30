@@ -1,4 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,6 +7,7 @@
 #include "utils.h"
 #include "line_info.h"
 #include "tables.h"
+
 
 /* Adds postfix to the file name */
 char* add_file_postfix(char* file_name, char* postfix) {
@@ -15,26 +17,32 @@ char* add_file_postfix(char* file_name, char* postfix) {
 	return full_file_name;
 }
 
-/* Allowcates memory and checks for failer */
+
+/* Allocates memory and checks for failure */
 void* malloc_with_check(size_t length) {
 	void* pointer = malloc(length);
+
+	/* If allocation failed, print an error and exit */
 	if (pointer == NULL) {
 		fprintf(stderr, "Error: memory allocation failed\n");
-		exit(-1);
+		exit(MEMORY_ALLOCATION_ERROR);
 	}
 	return pointer;
 }
+
 
 /* Reallocs memory and checks for failer */
 void* realloc_with_check(char* ptr, size_t length) {
 	void* pointer = realloc(ptr, length);
 
+	/* If reallocation failed, print an error and exit */
 	if (pointer == NULL) {
 		fprintf(stderr, "Error: memory reallocation failed\n");
-		exit(-1);
+		exit(MEMORY_REALLOCATION_ERROR);
 	}
 	return pointer;
 }
+
 
 /* Checks if the name if a reseved word */
 boolean is_reserved_name(char* name) {
@@ -57,5 +65,3 @@ boolean is_reserved_name(char* name) {
 	}
 	return FALSE;
 }
-
-

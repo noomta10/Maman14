@@ -2,6 +2,8 @@
 
 #define NO_ERRORS 0 /* Return value for main function- program was completed successfully */
 #define NO_FILES_GIVEN_ERROR -1 /* Return value for main function- no files were given */
+#define MEMORY_ALLOCATION_ERROR -2 /* Return value for memory allocation failure */
+#define MEMORY_REALLOCATION_ERROR -3 /* Return value for memory reallocaiton failure */
 #define MAX_LINE_LENGTH 81 /* Maximum line length plus one for '\n' */
 #define IC_START_ADDRESS 100 /* Initial address of IC in the code image */
 #define MAX_LABEL_LENGTH 31 /* Maximum label length */

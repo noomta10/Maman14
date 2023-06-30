@@ -2,8 +2,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-
-
 #include "assembler.h"
 #include "line_info.h"
 #include "tables.h"
@@ -29,13 +27,15 @@ void reset_line_info(line_info* line) {
     line->extra_chars_flag = FALSE;
 }
 
+
 /* Frees the data table */
 void free_data_table(data_table_entry* head) {
     data_table_entry* temp;
     printf("free data table\n");
     /* If head is null, return */
-    if(!head)
+    if (!head) {
         return;
+    }
     
     /* Freeing all nodes */
     while(head->next != NULL) {
@@ -45,32 +45,33 @@ void free_data_table(data_table_entry* head) {
     }    
 }
 
+
 /* Frees the symbol table */
 void free_symbols_table(symbols_table_entry* head) {
     symbols_table_entry* next_entry;
-    printf("Debug: freeing symbols table\n");
     FREE_TABLE(head, next_entry);
 }
+
 
 /* Frees the extern table */
 void free_extern_table(extern_entry* head) {
     extern_entry* next_entry;
-    printf("Debug: freeing extern table\n");
     FREE_TABLE(head, next_entry);
 }
+
 
 /* Frees the entry table */
 void free_entry_table(entry_entry* head) {
     entry_entry* next_entry;
-    printf("Debug: freeing entry table\n");
     FREE_TABLE(head, next_entry);
 
 }
 
+
 /* Frees the code table */
 void free_code_table(code_table_entry* head) {
     code_table_entry* next_entry;
-    printf("Debug: freeing code table\n");
+
     while (head != NULL) {
         next_entry = head->next;
         free(head);
@@ -78,28 +79,31 @@ void free_code_table(code_table_entry* head) {
     }
 }
 
+
 /* Calls fuctions to add data to the tables */
 boolean add_data_to_table(line_info* line, symbols_table_entry** symbol_table_head, data_table_entry** data_table_head, extern_entry** ext_head, entry_entry** ent_head, long* DC, long* IC) {   
     /* Directive command is string */    
-    if (strcmp(line->directive_command, "string") == 0)
+    if (strcmp(line->directive_command, "string") == 0) {
         return add_string_to_table(line, data_table_head, symbol_table_head, *ext_head, DC);
-
+    }
 
     /* Directive command is data */
-    if (strcmp(line->directive_command, "data") == 0)
+    if (strcmp(line->directive_command, "data") == 0) {
         return add_number_to_table(line, data_table_head, symbol_table_head, *ext_head, DC);
+    }
 
     /* Directive command is entry */
-    if (strcmp(line->directive_command, "entry") == 0)
+    if (strcmp(line->directive_command, "entry") == 0) {
         return add_entry_to_table(line, *symbol_table_head, *ext_head, ent_head);
+    }
 
     /* Directive command is extern */
-    if (strcmp(line->directive_command, "extern") == 0)
+    if (strcmp(line->directive_command, "extern") == 0) {
         return add_extern_to_table(line, *symbol_table_head, ext_head, *ent_head);
-
-    printf("debug: need to check if directive command is string, data, entry or extern.");
+    }
     return FALSE;
 }
+
 
 /* Adding the string to the data table */
 boolean add_string_to_table(line_info* line, data_table_entry** data_table_head, symbols_table_entry** symbol_table_head, extern_entry* ext_head, long* DC) {
@@ -112,6 +116,7 @@ boolean add_string_to_table(line_info* line, data_table_entry** data_table_head,
     /* Skip the " */
     skip_white_spaces(&string_to_add);
     string_to_add++;
+
     /* Copying the string to data_table until " reached */
     while (*string_to_add != '"' && !end_of_string(string_to_add)) {
         data_table_ptr = (data_table_entry*)malloc_with_check(sizeof(data_table_entry));
@@ -131,16 +136,16 @@ boolean add_string_to_table(line_info* line, data_table_entry** data_table_head,
     ADD_NODE_TO_LIST(data_table_prev, data_table_ptr, data_table_head);
     L++;
 
-
     /*check if there is a label and add it*/
     if (line->label_flag) {
-        if (!add_symbol_to_table(line, symbol_table_head, ext_head, TYPE_STRING, *DC, L))
+        if (!add_symbol_to_table(line, symbol_table_head, ext_head, TYPE_STRING, *DC, L)) {
             return FALSE;
+        }
     }
-
     *DC += L;
     return TRUE;        
 }
+
 
 /* Adds numbers to the data table */
 boolean add_number_to_table(line_info* line, data_table_entry** data_table_head, symbols_table_entry** symbol_table_head, extern_entry* ext_head, long* DC) {
@@ -151,19 +156,23 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
     int i = 0;
     int L = 0;
     boolean first_number_check = TRUE;
-    
-    SET_PREV_POINTER(data_table_prev, data_table_ptr)
-    
+
+    SET_PREV_POINTER(data_table_prev, data_table_ptr) 
     token = (char*)malloc_with_check(strlen(data_to_extract) * sizeof(char));
 
     /* Reading numbers */
     skip_white_spaces(&data_to_extract);
+
     while (!end_of_string(data_to_extract)) {
         /* Read the number */
-        if (*data_to_extract == '-' || *data_to_extract == '+')/*check for + or - sign*/
+        if (*data_to_extract == '-' || *data_to_extract == '+') { /* Check for + or - sign */
             token[i++] = *data_to_extract++;
-        while (isdigit(*data_to_extract))
+        }
+
+        while (isdigit(*data_to_extract)) {
             token[i++] = *data_to_extract++;
+        }
+
         token[i] = '\0';
 
         /* Check if there is an invalid comma after last number */
@@ -172,7 +181,7 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
             first_number_check = FALSE;
         }
 
-        /* checking for errors in the number */
+        /* Checking for errors in the number */
         if (!is_number(token)) {
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Data directive must contain numbers only.");
             return FALSE;
@@ -215,18 +224,20 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Expected a comma between the numbers.");
             return FALSE;
         }
-    }/* end of reading numbers */
+    } /* End of reading numbers */
      
 
-    /*check if there is a label and add it*/
-    if (line->label)
-        if(!add_symbol_to_table(line, symbol_table_head, ext_head, DIRECTIVE, *DC, L))
+    /* Check if there is a label and add it */
+    if (line->label) {
+        if (!add_symbol_to_table(line, symbol_table_head, ext_head, DIRECTIVE, *DC, L)) {
             return FALSE;
+        }
+    }
     *DC += L;
-
     free(token);
     return TRUE;
 }
+
 
 /* Adds entry lable to the entry table */
 boolean add_entry_to_table(line_info* line, symbols_table_entry* symbols_table_head, extern_entry* ext_head, entry_entry** ent_head) {
@@ -242,8 +253,9 @@ boolean add_entry_to_table(line_info* line, symbols_table_entry* symbols_table_h
         /* Copy the next lable */
         skip_white_spaces(&entry_lables);
         token = copy_next_word(entry_lables);
-        while (!isspace(*entry_lables) && *entry_lables != ',' && *entry_lables != '\0')
+        while (!isspace(*entry_lables) && *entry_lables != ',' && *entry_lables != '\0') {
             entry_lables++;
+        }
 
         /* Check existsents in tables */
         if (exists_in_entry_table(token, *ent_head)) {
@@ -261,8 +273,9 @@ boolean add_entry_to_table(line_info* line, symbols_table_entry* symbols_table_h
             return FALSE;
         }
         /* Check if it's a bad lable */
-        if (invalid_label(line->file_name, token, line->line_content, line->line_number))
+        if (invalid_label(line->file_name, token, line->line_content, line->line_number)) {
             return FALSE;
+        }
 
         /* Adding label to table */
         ent_ptr = (entry_entry*)malloc_with_check(sizeof(entry_entry));
@@ -274,11 +287,12 @@ boolean add_entry_to_table(line_info* line, symbols_table_entry* symbols_table_h
     }
 
     /* If theres a lable print a warning */
-    if(line->label_flag)
+    if (line->label_flag) {
         printf("Warning: in line %ld %s\n label `%s` is being igored\n", line->line_number, line->line_content, token);
-
+    }
     return TRUE;
 }
+
 
 /* Adds extern lable to the extern table */
 boolean add_extern_to_table(line_info* line, symbols_table_entry* symbols_table_head, extern_entry** ext_head, entry_entry* ent_head) {
@@ -290,36 +304,37 @@ boolean add_extern_to_table(line_info* line, symbols_table_entry* symbols_table_
 
     SET_PREV_POINTER(ext_prev, ext_ptr);
 
-
-    while(!end_of_string(extern_lables)){
+    while (!end_of_string(extern_lables)){
         /* Copy the next lable */
         skip_white_spaces(&extern_lables);
         token = copy_next_word(extern_lables);
-        while (!isspace(*extern_lables) && *extern_lables != ',' && *extern_lables != '\0')
+        while (!isspace(*extern_lables) && *extern_lables != ',' && *extern_lables != '\0') {
             extern_lables++;
+        }
 
         /* Check existsents in tables */
-        if(exists_in_symbol_table(token, symbols_table_head)) {
+        if (exists_in_symbol_table(token, symbols_table_head)) {
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The label is already declared as an extern.");
             return FALSE;
         }
-        if(exists_in_entry_table(token, ent_head)) {
+        if (exists_in_entry_table(token, ent_head)) {
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The label is already declared as an entry.");
             return FALSE;
         }
-        if(exists_in_extern_table(token, *ext_head)) {
+        if (exists_in_extern_table(token, *ext_head)) {
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The label is already declared as an extern.");
             return FALSE;
         }
         /* Look for the comma */
         skip_white_spaces(&extern_lables);
-        if(!check_comma(&extern_lables) && !end_of_string(extern_lables)){
+        if (!check_comma(&extern_lables) && !end_of_string(extern_lables)){
             PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Missing a comma between the labels.");
             return FALSE;
         }
         /* check if it's a bad lable */
-        if(invalid_label(line->file_name, token, line->line_content, line->line_number))
+        if (invalid_label(line->file_name, token, line->line_content, line->line_number)) {
             return FALSE;
+        }
 
         /* Adding label to table */
         ext_ptr = (extern_entry*)malloc_with_check(sizeof(extern_entry));
@@ -329,28 +344,28 @@ boolean add_extern_to_table(line_info* line, symbols_table_entry* symbols_table_
         ext_ptr->address = 0;
         ADD_NODE_TO_LIST(ext_prev, ext_ptr, ext_head);
     }
+
     /* If theres a lable print a warning */
     if (line->label_flag) {
         printf("Warning: in file '%s', line %ld %s:\nLabel '%s' is being ignored.\n", line->file_name, line->line_number, line->line_content, token);
     }
-
     return TRUE;
 }
+
 
 /* Calls functions to encode based on the line type */
 boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_trable_head, extern_entry** ext_head, code_table_entry** code_table_head, uninitialized_symbols_table_entry** uninitialized_symbol_head, long* IC) {
     code_table_entry* code_table_temp = NULL;
     code_table_entry* code_table_prev = NULL;
-
     addressing_type source_addressing_type = 0;
     addressing_type target_addressing_type = 0;
-
     long L = 0;    
     long copy_IC = *IC;
 
     /* Start adding to word memory from address 100 */
-    if(*code_table_head == NULL)
+    if (*code_table_head == NULL) {
         add_100_to_code_table(code_table_head, IC);
+    }
 
     /* Set prev pointer */
     code_table_temp = *code_table_head;
@@ -366,28 +381,28 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
 
     /* Adding extra words if needed */
     /* If there's only one operand and it is a register */
-    if(source_addressing_type == NO_OPERAND && target_addressing_type == REGISTER_ADDRESSING){
+    if (source_addressing_type == NO_OPERAND && target_addressing_type == REGISTER_ADDRESSING) {
         code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
         code_table_temp->info = line->target_operand;/* For debugging */
         ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
         L++;
     }
     /* If there's only one operand and it is a direct or immediate addressing */
-    else if(source_addressing_type == NO_OPERAND && (target_addressing_type == DIRECT_ADDRESSING || target_addressing_type == IMMEDIATE_ADDRESSING)){
-            code_table_temp = get_extra_word(uninitialized_symbol_head, line->target_operand, IC);
-            code_table_temp->info = line->target_operand;/* For debugging */
-            ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
-            L++;
+    else if (source_addressing_type == NO_OPERAND && (target_addressing_type == DIRECT_ADDRESSING || target_addressing_type == IMMEDIATE_ADDRESSING)) {
+        code_table_temp = get_extra_word(uninitialized_symbol_head, line->target_operand, IC);
+        code_table_temp->info = line->target_operand;/* For debugging */
+        ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
+        L++;
     }
     /* If both operands are registers */
-    else if(source_addressing_type == REGISTER_ADDRESSING && target_addressing_type == REGISTER_ADDRESSING){
+    else if (source_addressing_type == REGISTER_ADDRESSING && target_addressing_type == REGISTER_ADDRESSING) {
         code_table_temp = get_register_word(line->source_operand, line->target_operand, IC);
         code_table_temp->info = line->line_content;/* For debugging */
         ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
         L++;
     }    
     /* If source operand is register and target is a number or lable */
-    else if( source_addressing_type == REGISTER_ADDRESSING){
+    else if (source_addressing_type == REGISTER_ADDRESSING) {
         /* Add register to table*/
         code_table_temp  = get_register_word(line->source_operand, line->target_operand, IC);
         code_table_temp->info = line->source_operand;/* For debugging */
@@ -399,7 +414,7 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
         ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
         L++;
     }
-    else if( target_addressing_type == REGISTER_ADDRESSING){
+    else if (target_addressing_type == REGISTER_ADDRESSING) {
         /* Add extra word to table */
         code_table_temp = get_extra_word(uninitialized_symbol_head, line->source_operand, IC);
         code_table_temp->info = line->source_operand;/* For debugging */
@@ -411,7 +426,7 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
         ADD_NODE_TO_LIST(code_table_prev, code_table_temp, code_table_head);
         L++;
     }
-    else if(source_addressing_type != NO_OPERAND && target_addressing_type != NO_OPERAND){
+    else if (source_addressing_type != NO_OPERAND && target_addressing_type != NO_OPERAND) {
         /* Add extra words to table */
         code_table_temp = get_extra_word(uninitialized_symbol_head, line->source_operand, IC);
         code_table_temp->info = line->source_operand;/* For debugging */
@@ -425,12 +440,14 @@ boolean add_instruction_to_table(line_info* line, symbols_table_entry** symbol_t
     }
 
     /* Adding label to symbol table */
-    if(line->label_flag)
-        if(!add_symbol_to_table(line, symbol_trable_head, *ext_head, INSTRUCTION, copy_IC, L))
+    if (line->label_flag) {
+        if (!add_symbol_to_table(line, symbol_trable_head, *ext_head, INSTRUCTION, copy_IC, L)) {
             return FALSE;
-
+        }
+    }
     return TRUE;
 }
+
 
 /* Returns opcode encoded word */
 code_table_entry* get_opcode_word(line_info* line, long* IC) {
@@ -445,6 +462,7 @@ code_table_entry* get_opcode_word(line_info* line, long* IC) {
     return code_table_temp;
 }
 
+
 /* Returns register encoded word */
 code_table_entry* get_register_word(char* source_register, char* target_register, long* IC) {
     /* Creating a code word with register info*/
@@ -457,10 +475,10 @@ code_table_entry* get_register_word(char* source_register, char* target_register
     return code_table_temp;
 }
 
+
 /* Returns extra encoded word for operands that are labels and numbers */
 code_table_entry* get_extra_word(uninitialized_symbols_table_entry** uninitialized_symbol_head, char* operand, long* IC) {
     /* Creating a code word with extra info */
-
     uninitialized_symbols_table_entry* uninitialized_symbol_prev = NULL;
     uninitialized_symbols_table_entry* uninitialized_symbol_ptr = *uninitialized_symbol_head;
     code_table_entry* code_table_temp = (code_table_entry*)malloc_with_check(sizeof(code_table_entry));
@@ -468,35 +486,38 @@ code_table_entry* get_extra_word(uninitialized_symbols_table_entry** uninitializ
     SET_PREV_POINTER(uninitialized_symbol_prev, uninitialized_symbol_ptr);
 
     code_table_temp->type = TYPE_EXTRA_CODE_WORD;
-    if(is_number(operand)) {
+    if (is_number(operand)) {
         code_table_temp->value.extra_code_word_value.ARE = ABSOLUTE;
         code_table_temp->value.extra_code_word_value.data = atoi(operand);
     }
     else {
         code_table_temp->value.extra_code_word_value.ARE = UNINITIALIZED_VALUE;
         code_table_temp->value.extra_code_word_value.data = UNINITIALIZED_VALUE;
-
         uninitialized_symbol_ptr = (uninitialized_symbols_table_entry*)malloc_with_check(sizeof(uninitialized_symbols_table_entry));
         uninitialized_symbol_ptr->address = *IC;
         uninitialized_symbol_ptr->name = operand;
         uninitialized_symbol_ptr->extra_code_word_value = &code_table_temp->value.extra_code_word_value;
         ADD_NODE_TO_LIST(uninitialized_symbol_prev, uninitialized_symbol_ptr, uninitialized_symbol_head);
-        
     }
     code_table_temp->address = (*IC)++;
     return code_table_temp;
 }
 
+
 /* Returns the number of extra words needed for addressing */
 int extra_words_for_addressing(line_info* line) {
-    if (line->source_operand == NULL && line->target_operand == NULL)
-        return 0;
-    if(line->source_operand == NULL || line->target_operand == NULL)
-        return 1;
-    if(is_register(line->source_operand) == 0 && is_register(line->target_operand) == 0)
-        return 1;
-    return 2;
+    if (line->source_operand == NULL && line->target_operand == NULL) {
+        return NO_EXTREA_WORDS;
+    }
+    if (line->source_operand == NULL || line->target_operand == NULL) {
+        return ONE_EXTRA_WORD;
+    }
+    if (is_register(line->source_operand) == 0 && is_register(line->target_operand) == 0) {
+        return ONE_EXTRA_WORD;
+    }
+    return TWO_EXTRA_WORDS;
 }
+
 
 /* Adds the symbol to the symbol tabel */
 boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_head, extern_entry* ext_head, line_type type, long address, long L) {
@@ -506,7 +527,7 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_
 
     SET_PREV_POINTER(symbol_table_prev, symbol_table_ptr)
     
-    if(exists_in_symbol_table(label_name, *symbol_table_head)) {
+    if (exists_in_symbol_table(label_name, *symbol_table_head)) {
         PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The label is already declared.");
         return FALSE;
     }
@@ -526,6 +547,7 @@ boolean add_symbol_to_table(line_info* line, symbols_table_entry** symbol_table_
     return TRUE;
 }
 
+
 /* Adds 100 empty words to the code table */
 void add_100_to_code_table(code_table_entry** code_table_head, long* IC) {
     code_table_entry* code_table_ptr = *code_table_head;
@@ -544,45 +566,35 @@ void add_100_to_code_table(code_table_entry** code_table_head, long* IC) {
     }
 }
 
+
 /* Skips to words that were coded based on the file */
 void set_code_table_to_ic_initial_address(code_table_entry** code_table_head) {
     code_table_entry* code_table_ptr = *code_table_head;
-    if (*code_table_head == NULL)
+    
+    if (*code_table_head == NULL) {
         return;
+    }
+
     while (code_table_ptr->address != IC_START_ADDRESS) {
         code_table_ptr = code_table_ptr->next;
     }
     *code_table_head = code_table_ptr;
 }
 
+
 /* Add IC count to all data addresses */
 void add_final_ic_to_dc_count(symbols_table_entry* symbol_table, data_table_entry* data_table, long IC, long* DC) {
     /* Add IC count to all symbols that have DC count */
     while (symbol_table) {
-        if (symbol_table->address_type == DIRECTIVE)
+        if (symbol_table->address_type == DIRECTIVE) {
             symbol_table->address += IC;
+        }
         symbol_table = symbol_table->next;
     }
+   
     /* Updated the address in the data table */
     while (data_table) {
         data_table->address += IC;
         data_table = data_table->next;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
