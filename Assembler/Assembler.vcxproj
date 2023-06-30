@@ -154,17 +154,17 @@
     <ClInclude Include="write_files.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="1_entry_extern_errors.as" />
-    <None Include="1_invalid_instruction.as" />
-    <None Include="1_invalid_label.as" />
-    <None Include="1_invalid_mcro.as" />
-    <None Include="1_invalid_number.as" />
-    <None Include="1_invalid_directive.as" />
-    <None Include="1_invalid_operand_label.as" />
+    <None Include="invalid_entry_extern.as" />
+    <None Include="invalid_instructions.as" />
+    <None Include="invalid_labels.as" />
+    <None Include="invalid_mcros.as" />
+    <None Include="invalid_numbers.as" />
+    <None Include="invalid_directives.as" />
+    <None Include="invalid_operand_label.as" />
     <None Include="valid_program.as" />
-    <None Include="1_line_too_long.as" />
+    <None Include="invalid_line_too_long.as" />
     <None Include="makefile" />
-    <None Include="1_program_too_big.as" />
+    <None Include="invalid_program_too_big.as" />
     <None Include="workbook_example.as" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -31,7 +31,6 @@ void reset_line_info(line_info* line) {
 /* Frees the data table */
 void free_data_table(data_table_entry* head) {
     data_table_entry* temp;
-    printf("free data table\n");
     /* If head is null, return */
     if (!head) {
         return;

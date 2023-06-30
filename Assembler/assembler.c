@@ -15,7 +15,7 @@
 
 /* Prosseses a file by calling pre-prosesser, first and second pass. 
 Return TRUE if the file was processed successfuly, or FALSE if one of the steps failed. */
-boolean process_file(char* file_name) {
+void process_file(char* file_name) {
 	FILE* file_pointer = NULL;
 	boolean error_flag = FALSE;
 	long IC = 0;
@@ -38,7 +38,7 @@ boolean process_file(char* file_name) {
 		perror(full_file_name);
 		free(full_file_name);
 		free(full_am_name);
-		return FALSE;
+		return;
 	}
 
 	/* Pre_assembler, create .am file, return FALSE if falied */
@@ -47,7 +47,7 @@ boolean process_file(char* file_name) {
 		fclose(file_pointer);
 		free(full_file_name);
 		free(full_am_name);
-		return FALSE;
+		return;
 	}
 
 	/* Close file */
@@ -59,7 +59,7 @@ boolean process_file(char* file_name) {
 		fprintf(stderr, "Error: The file '%s' couldn't be opened\n", full_am_name);
 		free(full_file_name);
 		free(full_am_name);
-		return FALSE;
+		return;
 	}
 
 	/* First_pass, return FALSE if falied */
@@ -73,7 +73,7 @@ boolean process_file(char* file_name) {
 		free_extern_table(extern_entry_head);
 		free_symbols_table(symbol_entry_head);
 		fclose(file_pointer);
-		return FALSE;
+		return;
 	}
 
 	/* DEBUG- printing  IC, DC and data tables */
@@ -96,7 +96,7 @@ boolean process_file(char* file_name) {
 		free_extern_table(extern_entry_head);
 		free_symbols_table(symbol_entry_head);
 		fclose(file_pointer);
-		return FALSE;
+		return;
 	}
 
 	/* DEBUG- printing values after second pass */
@@ -118,13 +118,14 @@ boolean process_file(char* file_name) {
 	fclose(file_pointer);
 
 	printf("FILE WAS PROCESSED SUCCESSFULY\n");
-	return TRUE;
 }
 
-/* Main function sends to prosses file all files that were given as comand line arguments one by one */
+
+/* Main function handle all files that were given as command line arguments one by one */
 int main(int argc, char* argv[]) {
 	int file_number;
 
+	/* If no file name was given, print an error message and exit */
 	if(argc == 1) {
 		fprintf(stderr, "Error: No files were given\n");
 		return NO_FILES_GIVEN_ERROR;
@@ -132,7 +133,7 @@ int main(int argc, char* argv[]) {
 
 	/* Process each file by arguments */
 	for (file_number = 1; file_number < argc; ++file_number) {
-		printf("\n\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~ PROCESSING FILE \"%s.as\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~\n", argv[file_number]);
+		printf("\n\n ~~~~~~~~~ PROCESSING FILE \"%s.as\" ~~~~~~~~~\n", argv[file_number]);
 		process_file(argv[file_number]);
 	}
 
