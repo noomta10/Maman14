@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
+#include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
 #include "assembler.h"
@@ -102,7 +103,10 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 	char* mcro_name = NULL;
 	char* saved_mcro_name = NULL;
 	char* as_file_name;
-	first_word = strtok(line, " \t\n");
+	char* extra_characters;
+	//char* full_line = malloc_with_check(strlen(line));
+	//full_line = strcpy(full_line, line);
+	first_word = strtok(line, " \t");
 
 	/* If it is an empty line, print it to the '.am' file continue to next line */
 	if (first_word == NULL) {
@@ -118,7 +122,13 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 	/* If its the beginning of a mcro definition */
 	if (strcmp(first_word, "mcro") == 0) {
 		mcro_name = strtok(NULL, " \t\n");
-
+		extra_characters = strtok(NULL, " \t\n");
+		if (has_extra_characters(extra_characters)) {
+			as_file_name = add_file_postfix(file_name, ".as");
+			printf("Error: pre-assembler failure error in file '%s', line %d:\nThere are extra invalid characters after the mcros name.\n\n", as_file_name, *line_number);
+			free(as_file_name);
+			*error_flag = TRUE;
+		}
 		/* Allocate memory for the mcro name, and copy it */
 		saved_mcro_name = (char*)malloc_with_check(strlen(mcro_name) + 1);
 		strcpy(saved_mcro_name, mcro_name);
@@ -144,11 +154,9 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 			}
 			add_mcro_to_table(saved_mcro_name, saved_line, first_mcro_entry);
 		}
-		
 		free(saved_mcro_name);
 		return TRUE;
 	}
-
 	return FALSE;
 }
 
@@ -205,4 +213,23 @@ boolean pre_assembler(FILE* source_file, char* file_name) {
 		free_table_memory(first_mcro_entry);
 	}
 	return TRUE;
+}
+
+
+/* Check if there are extra invalid characters after mcro name */
+static boolean has_extra_characters(char* extra_characters) {
+	int i;
+
+	/* If extra characters are null, return FALSE */
+	if (!extra_characters) {
+		return FALSE;
+	}
+
+	/* If there is a character that is not a space of a tab in the extra characters, return TRUE, else, return FALSE */
+	for (i = 0; i < strlen(extra_characters); i++) {
+		if (!isspace(extra_characters[i])) {
+			return TRUE;
+		}
+	}
+	return FALSE;
 }
