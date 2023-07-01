@@ -9,6 +9,7 @@
 #include "tables.h"
 #include "pre_assembler.h"
 #include "utils.h"
+#include "string_handling.h"
 
 
 /* Check if there are extra invalid characters after mcro name */
@@ -123,8 +124,9 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 	char* saved_mcro_name = NULL;
 	char* as_file_name;
 	char* extra_characters;
-	/* char* full_line = malloc_with_check(strlen(line));*/
-	/* full_line = strcpy(full_line, line); */
+	char* full_line = malloc_with_check(strlen(line)+1);
+	full_line = strcpy(full_line, line);
+	remove_new_line_character(full_line);
 	first_word = strtok(line, " \t\n");
 
 	/* If it is an empty line, print it to the '.am' file continue to next line */
@@ -144,7 +146,7 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 		extra_characters = strtok(NULL, " \t\n");
 		if (has_extra_characters(extra_characters)) {
 			as_file_name = add_file_postfix(file_name, ".as");
-			printf("Error: pre-assembler failure error in file '%s', line %d:\nThere are extra invalid characters after the mcros name.\n\n", as_file_name, *line_number);
+			printf("Error: pre-assembler failure error in file '%s', line %d: \"%s\"\nExtra invalid characters were found after the mcros name.\n\n", as_file_name, *line_number, full_line);
 			free(as_file_name);
 			*error_flag = TRUE;
 		}
@@ -173,9 +175,11 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 			}
 			add_mcro_to_table(saved_mcro_name, saved_line, first_mcro_entry);
 		}
+		free(full_line);
 		free(saved_mcro_name);
 		return TRUE;
 	}
+	free(full_line);
 	return FALSE;
 }
 
