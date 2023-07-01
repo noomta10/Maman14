@@ -329,13 +329,20 @@ boolean check_extra_or_missing_operands(line_info* line) {
 
 /* Checks if the operands are valid */
 boolean check_operands(line_info* line) {
+    boolean error_flag = FALSE;
+
     /* Checking if source operand is valid */
     if (!valid_source_operand(line)) {
-        return FALSE;
+        error_flag = TRUE;
     }
     
     /* Checking target operand */
     if (!valid_target_operand(line)) {
+        error_flag = TRUE;
+    }
+
+    /* Check if errors were found */
+    if (error_flag) {
         return FALSE;
     }
     return TRUE;

@@ -3,7 +3,7 @@ mcro my_macro bla bla bla
 456
 endmcro
 
-mcro jmp														
+mcro jmp												 												
 123
 456
 endmcro
