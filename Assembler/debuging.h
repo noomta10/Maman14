@@ -6,3 +6,4 @@
 //void print_entry_table(entry_entry *ent);
 //void print_code_word(code_table_entry* code_table);
 //void print_uninitialized_symbols_table(uninitialized_symbols_table_entry* uninitialized_symbols_table);
+//void print_code_table_in_binary(code_table_entry* code_table);

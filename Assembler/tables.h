@@ -137,7 +137,6 @@ typedef struct code_table_entry{
 	word_type type;
 	word_value value;
 	long address; /* Address of IC */
-	char* info;
 } code_table_entry; 
 
 /* Kind of data */
@@ -243,11 +242,6 @@ code_table_entry* get_register_word(char* source_register, char* target_register
 
 /* Returns a code word for a number or a label */
 code_table_entry* get_extra_word(uninitialized_symbols_table_entry** uninitialized_symbol_head, char* operand, long* IC);
-
-/* 
-
-*/
-void print_code_table_in_binary(code_table_entry* code_table);
 
 /* Adds the final ic number to dc */
 void add_final_ic_to_dc_count(symbols_table_entry* symbol_table, data_table_entry* data_table, long IC, long* DC);
