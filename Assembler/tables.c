@@ -268,7 +268,7 @@ boolean add_entry_to_table(line_info* line, symbols_table_entry* symbols_table_h
         /* Look for the comma */
         skip_white_spaces(&entry_lables);
         if (!check_comma(&entry_lables) && !end_of_string(entry_lables)){
-            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "missing a comma between the labels");
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Missing a comma between the labels.");
             return FALSE;
         }
         /* Check if it's a bad lable */
@@ -287,7 +287,7 @@ boolean add_entry_to_table(line_info* line, symbols_table_entry* symbols_table_h
 
     /* If theres a lable print a warning */
     if (line->label_flag) {
-        printf("Warning: in line %ld %s\n label `%s` is being igored\n", line->line_number, line->line_content, token);
+        printf("Warning: in line %ld %s\nLabel `%s` is being ignored.\n", line->line_number, line->line_content, token);
     }
     return TRUE;
 }
