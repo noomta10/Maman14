@@ -11,6 +11,25 @@
 #include "utils.h"
 
 
+/* Check if there are extra invalid characters after mcro name */
+static boolean has_extra_characters(char* extra_characters) {
+	int i;
+
+	/* If extra characters are null, return FALSE */
+	if (!extra_characters) {
+		return FALSE;
+	}
+
+	/* If there is a character that is not a space of a tab in the extra characters, return TRUE, else, return FALSE */
+	for (i = 0; i < strlen(extra_characters); i++) {
+		if (!isspace(extra_characters[i])) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+
 /* Frees the macros table */
 static void free_table_memory(mcros_table_entry* first_mcro_entry) {
 	mcros_table_entry* current_mcro_entry = first_mcro_entry;
@@ -104,8 +123,8 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 	char* saved_mcro_name = NULL;
 	char* as_file_name;
 	char* extra_characters;
-	//char* full_line = malloc_with_check(strlen(line));
-	//full_line = strcpy(full_line, line);
+	/* char* full_line = malloc_with_check(strlen(line));*/
+	/* full_line = strcpy(full_line, line); */
 	first_word = strtok(line, " \t\n");
 
 	/* If it is an empty line, print it to the '.am' file continue to next line */
@@ -175,7 +194,8 @@ boolean pre_assembler(FILE* source_file, char* file_name) {
 	/* Create an empty .am file */
 	am_file = fopen(am_file_name, "w");
 	if (am_file == NULL) {
-		perror("Error: The file '%s' could not be opened\n", am_file_name);
+		printf("File: %s\n", am_file_name);
+		perror("Error: Could not open file");
 		return FALSE;
 	}
 
@@ -213,23 +233,4 @@ boolean pre_assembler(FILE* source_file, char* file_name) {
 		free_table_memory(first_mcro_entry);
 	}
 	return TRUE;
-}
-
-
-/* Check if there are extra invalid characters after mcro name */
-static boolean has_extra_characters(char* extra_characters) {
-	int i;
-
-	/* If extra characters are null, return FALSE */
-	if (!extra_characters) {
-		return FALSE;
-	}
-
-	/* If there is a character that is not a space of a tab in the extra characters, return TRUE, else, return FALSE */
-	for (i = 0; i < strlen(extra_characters); i++) {
-		if (!isspace(extra_characters[i])) {
-			return TRUE;
-		}
-	}
-	return FALSE;
 }

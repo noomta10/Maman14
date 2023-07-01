@@ -16,7 +16,6 @@
 Return TRUE if the file was processed successfuly, or FALSE if one of the steps failed. */
 void process_file(char* file_name) {
 	FILE* file_pointer = NULL;
-	boolean error_flag = FALSE;
 	long IC = 0;
 	long DC = 0;
 	symbols_table_entry* symbol_entry_head = NULL;
@@ -34,7 +33,8 @@ void process_file(char* file_name) {
 	/* Check if file opened successfully */
 	file_pointer = fopen(full_file_name, "r");
 	if (file_pointer == NULL) {
-		perror(full_file_name);
+		printf("File: '%s'\n", full_file_name);
+		perror("Error: Could not open file");
 		free(full_file_name);
 		free(full_am_name);
 		return;
@@ -42,7 +42,6 @@ void process_file(char* file_name) {
 
 	/* Pre_assembler, create .am file, return FALSE if falied */
 	if (!pre_assembler(file_pointer, file_name)) {
-		printf("PRE-ASSEMBLER FAILED\n");
 		fclose(file_pointer);
 		free(full_file_name);
 		free(full_am_name);
@@ -55,7 +54,8 @@ void process_file(char* file_name) {
 	/* Check if .am file opened successfully */
 	file_pointer = fopen(full_am_name, "r");
 	if (file_pointer == NULL) {
-		perror("Error: The file '%s' couldn't be opened\n", full_am_name);
+		printf("File: '%s'\n", full_am_name);
+		perror("Error: Could not open file");
 		free(full_file_name);
 		free(full_am_name);
 		return;
@@ -63,7 +63,6 @@ void process_file(char* file_name) {
 
 	/* First_pass, return FALSE if falied */
 	if (first_pass(file_name, file_pointer, &symbol_entry_head, &data_entry_head, &entry_entry_head, &extern_entry_head, &code_entry_head, &uninitialized_symbol_entry_head, &IC, &DC)) {
-		printf("DEBUG: start 2nd pass\n");
 		second_pass(uninitialized_symbol_entry_head, symbol_entry_head, extern_entry_head, entry_entry_head, full_file_name, file_name, IC, DC, code_entry_head, data_entry_head);
 	}
 
