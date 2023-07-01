@@ -192,12 +192,12 @@ boolean add_number_to_table(line_info* line, data_table_entry** data_table_head,
         }
 
         if(data_number_too_big(token)) {
-            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The number is too big.");
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Data numbers must be between -2048 and 2047.");
             return FALSE;
         }
 
         if (data_number_too_small(token)) {
-            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "The number is too small.");
+            PRINT_ERROR(line->file_name, line->line_number, line->line_content, "Data numbers must be between -2048 and 2047.");
             return FALSE;
         }
 
