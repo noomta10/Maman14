@@ -87,14 +87,14 @@ int main(int argc, char* argv[]) {
 
 	/* If no file name was given, print an error message and exit */
 	if(argc == 1) {
-		fprintf(stderr, "Error: No files were given\n");
+		fprintf(stderr, "Error: No files were given\n\n");
 		return NO_FILES_GIVEN_ERROR;
 	}
 
 	/* Process each file by arguments */
 	for (file_number = 1; file_number < argc; ++file_number) {
-		printf("\n\n ~~~~~~~~~ PROCESSING FILE \"%s.as\" ~~~~~~~~~\n", argv[file_number]);
 		process_file(argv[file_number]);
+		printf("\n\n");
 	}
 
 	return NO_ERRORS;

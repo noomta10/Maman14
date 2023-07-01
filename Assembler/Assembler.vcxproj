@@ -162,6 +162,7 @@
     <None Include="invalid_directives.as" />
     <None Include="invalid_operand_label.as" />
     <None Include="invalid_addressing.as" />
+    <None Include="invalid_program.as" />
     <None Include="valid_program.as" />
     <None Include="invalid_line_too_long.as" />
     <None Include="makefile" />

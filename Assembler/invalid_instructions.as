@@ -6,6 +6,9 @@ prn -5, -6
 stopp
 jsr 1
 lea 1, @r1
+mov @r1, 5,
 
-mov 3,, @r2
+
 mov @r1 5
+.data 1,,2
+mov 3,, @r2
