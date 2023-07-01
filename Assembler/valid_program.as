@@ -70,3 +70,15 @@ ARR2: .string "Example String"
 .extern E
 
 .entry A
+
+mcro my_data_mcro
+.data 1, 2, 3
+.data -4, -5, -6
+.data 7, 8, 9
+endmcro
+my_data_mcro
+mcro my_instruction_mcro
+sub @r1, @r4
+bne E
+endmcro
+my_instruction_mcro

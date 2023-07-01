@@ -106,7 +106,7 @@ static boolean handle_mcro_line(char line[], FILE* am_file, mcros_table_entry** 
 	char* extra_characters;
 	//char* full_line = malloc_with_check(strlen(line));
 	//full_line = strcpy(full_line, line);
-	first_word = strtok(line, " \t");
+	first_word = strtok(line, " \t\n");
 
 	/* If it is an empty line, print it to the '.am' file continue to next line */
 	if (first_word == NULL) {

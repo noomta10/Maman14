@@ -75,7 +75,7 @@ static boolean check_entry_defined_in_file(entry_entry* head_entry_entry, symbol
 
 
 /* Check if all symbols that were used as operands are defined */
-static boolean check_defined_symbol_operand(symbols_table_entry* head_symbols_entry, extern_entry* head_extern_entry, uninitialized_symbols_table_entry* head_uninitialized_entry) {
+static boolean check_defined_symbol_operand(symbols_table_entry* head_symbols_entry, extern_entry* head_extern_entry, uninitialized_symbols_table_entry* head_uninitialized_entry, char* as_file_name) {
 	uninitialized_symbols_table_entry* current_uninitialized_entry = head_uninitialized_entry;
 	symbols_table_entry* current_symbols_entry;
 	extern_entry* current_extern_entry;
@@ -108,7 +108,7 @@ static boolean check_defined_symbol_operand(symbols_table_entry* head_symbols_en
 
 		/* If the symbol is not defined as an entry, extern or in the current file, print an error message and return FALSE */
 		if (!symbol_operand_defined) {
-			printf("Error: operand symbol %s is not a known symbol.\n", current_uninitialized_entry->name);
+			printf("Error: in file '%s'\nOperand symbol '%s' is not a known symbol.\n", as_file_name, current_uninitialized_entry->name);
 			return FALSE;
 		}
 		current_uninitialized_entry = current_uninitialized_entry->next;
@@ -131,7 +131,7 @@ boolean second_pass(uninitialized_symbols_table_entry* head_uninitialized_symbol
 	}
 
 	/* If a symbol is not defined as an entry, extern or in the current file, print an error message and return FALSE */
-	if (!check_defined_symbol_operand(head_symbols_entry, head_extern_entry, head_uninitialized_symbols_entry)) {
+	if (!check_defined_symbol_operand(head_symbols_entry, head_extern_entry, head_uninitialized_symbols_entry, as_file_name)) {
 		return FALSE;
 	}
 
