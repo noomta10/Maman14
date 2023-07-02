@@ -88,7 +88,6 @@ static void add_mcro_to_table(char* mcro_name, char* mcro_value, mcros_table_ent
 		if (strcmp(current_mcro_entry->name, mcro_name) == 0) {
 			total_length = strlen(current_mcro_entry->value) + strlen(mcro_value);
 			current_mcro_entry->value = realloc_with_check(current_mcro_entry->value, (total_length + 1));
-			strcpy(current_mcro_entry->value, current_mcro_entry->value);
 			strcat(current_mcro_entry->value, mcro_value);
 			current_mcro_entry->value[total_length] = '\0';
 			return;
@@ -100,7 +99,6 @@ static void add_mcro_to_table(char* mcro_name, char* mcro_value, mcros_table_ent
 	if (strcmp(current_mcro_entry->name, mcro_name) == 0) {
 		total_length = strlen(current_mcro_entry->value) + strlen(mcro_value);
 		current_mcro_entry->value = realloc_with_check(current_mcro_entry->value, (total_length + 1));
-		strcpy(current_mcro_entry->value, current_mcro_entry->value);
 		strcat(current_mcro_entry->value, mcro_value);
 		current_mcro_entry->value[total_length] = '\0';
 		return;
