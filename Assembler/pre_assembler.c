@@ -196,6 +196,7 @@ boolean pre_assembler(FILE* source_file, char* file_name) {
 	/* Create an empty .am file */
 	am_file = fopen(am_file_name, "w");
 	if (am_file == NULL) {
+		free(am_file_name);
 		printf("File: %s\n", am_file_name);
 		perror("Error: Could not open file");
 		return FALSE;
@@ -220,6 +221,17 @@ boolean pre_assembler(FILE* source_file, char* file_name) {
 
 	/* If errors were encountered in the pre-assembler, return FALSE */
 	if (error_flag) {
+		fclose(am_file);
+		free(saved_line);
+		/* If there are mcros in the table, free them */
+		if (first_mcro_entry) {
+			free_table_memory(first_mcro_entry);
+		}
+		/* Remove the '.am' file */
+		if (!remove(am_file_name) == 0) {
+			perror("Error: Unable to delete '.am' file.");
+		}
+		free(am_file_name);
 		return FALSE;
 	}
 

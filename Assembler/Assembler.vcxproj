@@ -154,6 +154,7 @@
     <ClInclude Include="write_files.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="invalid_directives.am" />
     <None Include="invalid_entry_extern.as" />
     <None Include="invalid_instructions.as" />
     <None Include="invalid_labels.as" />
