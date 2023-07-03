@@ -6,6 +6,7 @@
 .data 1, 2 4 5 
 .data 1,,2
 
+.string "
 .string
 .string abc
 .string "abc
